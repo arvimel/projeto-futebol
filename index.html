@@ -3,36 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIVE EXCLUSIVA | Futebol Ao Vivo</title>
+    <title>LIVE EXCLUSIVA | Canal Sport Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #050505; color: white; overflow-x: hidden; }
-        .video-container { aspect-ratio: 16/9; background: #111; border: 1px solid #333; position: relative; overflow: hidden; }
+        .video-container { aspect-ratio: 16/9; background: #000; border: 1px solid #333; position: relative; overflow: hidden; }
         #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 5px; font-size: 13px; transition: all 0.2s; font-weight: bold; text-align: center; }
+        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 5px; font-size: 13px; transition: all 0.2s; font-weight: bold; text-align: center; color: white; }
         .btn-valor:hover { background: #059669; border-color: #10b981; transform: scale(1.05); }
         .progress-bar { height: 12px; background: #1f2937; border-radius: 6px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #059669, #10b981); transition: width 1s ease-in-out; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #059669, #10b981); transition: width 1.5s ease-in-out; }
     </style>
 </head>
 <body class="p-4">
-    <script>
-        // === PAINEL DE CONTROLE (EDITE AQUI NO DIA DO JOGO) ===
-        const TITULO_EVENTO = "GRANDE FINAL: PALMEIRAS X SANTOS";
-        const VALOR_ATUAL_PREMIO = "600,00"; 
-        const PROXIMA_META_VALOR = "1.000,00";
-        const PORCENTAGEM_CONCLUIDA = 65; // Coloque de 0 a 100
-        const LINK_BASE_KIWIFI = "https://pay.kiwify.com.br/SEU_LINK_AQUI"; 
-        // =====================================================
-    </script>
-
     <div class="max-w-6xl mx-auto">
         <div class="mb-6 border-b border-gray-800 pb-4">
             <div class="flex justify-between items-center mb-2">
-                <h1 class="text-green-500 font-black italic tracking-tighter text-2xl font-mono">CANAL ESPORTE PRO</h1>
-                <div class="bg-red-600 px-3 py-1 rounded text-[10px] animate-pulse uppercase font-black">Ao Vivo</div>
+                <h1 class="text-green-500 font-black italic tracking-tighter text-2xl font-mono uppercase">CANAL SPORT PRO</h1>
+                <div class="bg-red-600 px-3 py-1 rounded text-[10px] animate-pulse uppercase font-black italic">Ao Vivo</div>
             </div>
-            <p class="text-gray-400 text-sm font-bold uppercase tracking-widest"><script>document.write(TITULO_EVENTO)</script></p>
+            <p id="display-titulo" class="text-gray-400 text-sm font-bold uppercase tracking-widest text-zinc-500 italic">CARREGANDO EVENTO...</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -40,43 +30,46 @@
                 <div class="video-container rounded-lg mb-4 shadow-2xl">
                     <div id="paywall">
                         <h2 class="text-xl font-bold text-yellow-500 mb-2 uppercase">Acesso Grátis Encerrado</h2>
-                        <p class="mb-4 text-gray-300 text-sm">Escolha um valor para liberar o sinal HD e disputar o prêmio:</p>
+                        <p class="mb-4 text-gray-300 text-sm italic">Garanta o E-book para liberar o sinal HD e disputar o PIX de:</p>
+                        <p class="text-green-400 text-3xl font-black mb-6">R$ <span id="paywall-premio">...</span></p>
+                        
                         <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6 w-full max-w-md px-2">
                             <script>
+                                const linkBase = "https://pay.kiwify.com.br/SEU_LINK_AQUI"; 
                                 const valores = ["5,00", "10,00", "25,00", "50,00", "100,00", "150,00", "250,00", "350,00", "500,00"];
                                 valores.forEach(v => {
-                                    document.write(`<a href="${LINK_BASE_KIWIFI}?off=${v}" target="_blank" class="btn-valor text-white">R$ ${v}</a>`);
+                                    document.write(`<a href="${linkBase}?off=${v}" target="_blank" class="btn-valor">R$ ${v}</a>`);
                                 });
                             </script>
                         </div>
                     </div>
-                    <div id="player-placeholder" class="h-full flex flex-col items-center justify-center bg-black">
-                        <p class="text-gray-600 animate-pulse font-mono text-xs">AGUARDANDO CONEXÃO COM O SERVIDOR...</p>
+                    <div class="h-full flex flex-col items-center justify-center bg-black">
+                        <p class="text-gray-700 animate-pulse font-mono text-[10px] tracking-[5px]">SINAL CRIPTOGRAFADO</p>
                     </div>
                 </div>
 
-                <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-800 mb-6">
+                <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-800 mb-6 shadow-lg">
                     <div class="flex justify-between items-end mb-2">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase">Meta para o prêmio subir para R$ <script>document.write(PROXIMA_META_VALOR)</script></span>
-                        <span class="text-xs font-black text-green-500"><script>document.write(PORCENTAGEM_CONCLUIDA)</script>%</span>
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Meta de Arrecadação para Próximo Nível</span>
+                        <span id="display-porcentagem" class="text-xs font-black text-green-500">0%</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" id="fill-bar"></div>
+                        <div id="fill-bar" class="progress-fill"></div>
                     </div>
-                    <p class="mt-3 text-center text-lg font-bold">PRÊMIO ATUAL: <span class="text-green-400">R$ <script>document.write(VALOR_ATUAL_PREMIO)</script></span></p>
+                    <p class="mt-3 text-center text-lg font-black italic uppercase">Prêmio Atual: <span class="text-green-400">R$ <span id="display-premio">...</span></span></p>
                 </div>
             </div>
 
             <div class="space-y-4">
-                <div class="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
+                <div class="bg-zinc-900 p-5 rounded-xl border border-zinc-800 shadow-xl">
                     <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
-                        <h3 class="text-xs font-black text-green-500 uppercase italic">Top Doadores</h3>
-                        <span id="timer" class="text-xl font-black text-yellow-500 font-mono">05:00</span>
+                        <h3 class="text-xs font-black text-green-500 uppercase italic tracking-widest">Liderança Live</h3>
+                        <span id="timer" class="text-xl font-black text-yellow-500 font-mono italic">05:00</span>
                     </div>
                     <ul class="space-y-4 text-sm font-mono" id="ranking-list">
-                        <li class="flex justify-between items-center text-gray-500">
+                        <li class="flex justify-between items-center text-gray-600 italic">
                             <span>1. Aguardando...</span>
-                            <span class="font-bold">R$ 0,00</span>
+                            <span class="font-bold underline">R$ 0,00</span>
                         </li>
                     </ul>
                 </div>
@@ -85,19 +78,32 @@
     </div>
 
     <script>
-        // Inicia a barra de progresso
-        setTimeout(() => {
-            document.getElementById('fill-bar').style.width = PORCENTAGEM_CONCLUIDA + '%';
-        }, 500);
+        // FUNÇÃO PARA BUSCAR DADOS DO BANCO (WORKER)
+        async function carregarDados() {
+            try {
+                const res = await fetch('/api/data');
+                const data = await res.json();
+                
+                if (data.titulo) {
+                    document.getElementById('display-titulo').innerText = data.titulo;
+                    document.getElementById('display-premio').innerText = data.premio;
+                    document.getElementById('paywall-premio').innerText = data.premio;
+                    document.getElementById('display-porcentagem').innerText = data.meta + '%';
+                    document.getElementById('fill-bar').style.width = data.meta + '%';
+                }
+            } catch (e) {
+                console.error("Erro ao carregar dados do banco.");
+            }
+        }
 
-        // Lógica do Timer
+        // Lógica do Timer com Segurança (Anti-F5)
         const duration = 5 * 60;
         let timerDisplay = document.getElementById('timer');
         let paywall = document.getElementById('paywall');
         
         function startTimer() {
             let timeLeft = localStorage.getItem('soccer_timer');
-            timeLeft = (timeLeft === null) ? duration : parseInt(timeLeft);
+            timeLeft = (timeLeft === null || timeLeft === "0") ? duration : parseInt(timeLeft);
 
             const countdown = setInterval(() => {
                 let minutes = Math.floor(timeLeft / 60);
@@ -115,7 +121,11 @@
                 }
             }, 1000);
         }
-        window.onload = startTimer;
+
+        window.onload = () => {
+            carregarDados();
+            startTimer();
+        };
     </script>
 </body>
 </html>
