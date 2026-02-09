@@ -6,44 +6,96 @@
     <title>LIVE EXCLUSIVA | Futebol Ao Vivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #050505; color: white; }
-        .video-container { aspect-ratio: 16/9; background: #111; border: 1px solid #333; }
+        body { background-color: #050505; color: white; overflow-x: hidden; }
+        .video-container { aspect-ratio: 16/9; background: #111; border: 1px solid #333; position: relative; overflow: hidden; }
+        #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 8px; border-radius: 5px; font-size: 12px; transition: all 0.2s; }
+        .btn-valor:hover { background: #059669; border-color: #10b981; }
     </style>
 </head>
 <body class="p-4">
+    <script>
+        // CONFIGURAÇÃO DO DONO (MUDE AQUI FACILMENTE)
+        const VALOR_PREMIO = "1.000,00"; 
+        const LINK_BASE_KIWIFI = "https://pay.kiwify.com.br/XXXXXX"; // Seu link principal
+    </script>
+
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
             <h1 class="text-xl font-bold text-green-500">CANAL ESPORTE PRO</h1>
-            <div class="bg-red-600 px-3 py-1 rounded text-sm animate-pulse">AO VIVO</div>
+            <div class="bg-red-600 px-3 py-1 rounded text-sm animate-pulse uppercase">Ao Vivo</div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2">
-                <div class="video-container rounded-lg flex items-center justify-center mb-4">
-                    <p class="text-gray-500">Aguardando sinal da transmissão...</p>
+                <div class="video-container rounded-lg mb-4">
+                    <div id="paywall">
+                        <h2 class="text-2xl font-bold text-yellow-500 mb-2">ACESSO EXPIRADO!</h2>
+                        <p class="mb-6 text-gray-300">Garanta o E-book para liberar o sinal HD e disputar o PIX de <span class="text-green-400 font-bold">R$ <script>document.write(VALOR_PREMIO)</script></span></p>
+                        
+                        <div class="grid grid-cols-4 gap-2 mb-6 w-full max-w-sm">
+                            <script>
+                                const valores = ["0,50", "1,50", "5,00", "10,00", "25,00", "50,00", "100,00", "150,00", "250,00", "350,00", "500,00"];
+                                valores.forEach(v => {
+                                    document.write(`<a href="${LINK_BASE_KIWIFI}?off=${v}" target="_blank" class="btn-valor">R$ ${v}</a>`);
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    
+                    <div id="player-placeholder" class="h-full flex flex-col items-center justify-center">
+                        <div class="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p class="text-gray-500">Sincronizando sinal...</p>
+                    </div>
                 </div>
-                <div class="bg-gray-900 p-4 rounded-lg">
-                    <h2 class="text-lg font-semibold">Assista em HD sem travamentos</h2>
-                    <p class="text-sm text-gray-400">Tempo de acesso gratuito: <span id="timer" class="text-yellow-500 font-mono">05:00</span></p>
+
+                <div class="bg-gray-900 p-4 rounded-lg flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-semibold italic">Disputa pelo PIX de R$ <script>document.write(VALOR_PREMIO)</script></h2>
+                        <p class="text-xs text-gray-400 font-mono">Tempo de teste: <span id="timer" class="text-yellow-500 font-bold">05:00</span></p>
+                    </div>
                 </div>
             </div>
 
             <div class="space-y-4">
-                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800 text-center">
-                    <p class="text-sm mb-2 text-gray-300">Garanta o E-book e dispute o PIX de R$ 1.000,00</p>
-                    <a href="#" class="bg-green-600 hover:bg-green-700 block w-full py-3 rounded-md font-bold transition">COMPRAR E-BOOK AGORA</a>
-                </div>
-
                 <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
-                    <h3 class="text-md font-bold mb-4 border-b border-gray-800 pb-2">TOP DOADORES (Ranking)</h3>
-                    <ul class="space-y-3 text-sm">
-                        <li class="flex justify-between"><span>1. Wilson ****</span> <span class="text-green-400">R$ 150,00</span></li>
-                        <li class="flex justify-between"><span>2. Marcos ****</span> <span class="text-green-400">R$ 50,00</span></li>
-                        <li class="flex justify-between text-gray-500 italic"><span>Aguardando doações...</span></li>
+                    <h3 class="text-md font-bold mb-4 border-b border-gray-800 pb-2 text-green-400 uppercase">Top Doadores</h3>
+                    <ul class="space-y-3 text-sm" id="ranking-list">
+                        <li class="flex justify-between border-b border-gray-800 pb-1 text-gray-500"><span>Aguardando doações...</span></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        const duration = 5 * 60;
+        let timerDisplay = document.getElementById('timer');
+        let paywall = document.getElementById('paywall');
+        
+        function startTimer() {
+            // SEGURANÇA CONTRA F5: Recupera o tempo salvo ou inicia novo
+            let timeLeft = localStorage.getItem('soccer_timer');
+            if (timeLeft === null) {
+                timeLeft = duration;
+            }
+
+            const countdown = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    paywall.style.display = 'flex';
+                    timerDisplay.textContent = "EXPIRADO";
+                } else {
+                    timeLeft--;
+                    localStorage.setItem('soccer_timer', timeLeft);
+                }
+            }, 1000);
+        }
+        window.onload = startTimer;
+    </script>
 </body>
 </html>
