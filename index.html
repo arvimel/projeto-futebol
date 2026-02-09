@@ -9,30 +9,39 @@
         body { background-color: #050505; color: white; overflow-x: hidden; }
         .video-container { aspect-ratio: 16/9; background: #111; border: 1px solid #333; position: relative; overflow: hidden; }
         #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 5px; font-size: 13px; transition: all 0.2s; font-weight: bold; }
+        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 5px; font-size: 13px; transition: all 0.2s; font-weight: bold; text-align: center; }
         .btn-valor:hover { background: #059669; border-color: #10b981; transform: scale(1.05); }
-        .regra-card { background: #111; border-left: 4px solid #059669; padding: 15px; margin-top: 20px; }
+        .progress-bar { height: 12px; background: #1f2937; border-radius: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #059669, #10b981); transition: width 1s ease-in-out; }
     </style>
 </head>
 <body class="p-4">
     <script>
-        const VALOR_PREMIO = "1.000,00"; 
+        // === PAINEL DE CONTROLE (EDITE AQUI NO DIA DO JOGO) ===
+        const TITULO_EVENTO = "GRANDE FINAL: PALMEIRAS X SANTOS";
+        const VALOR_ATUAL_PREMIO = "600,00"; 
+        const PROXIMA_META_VALOR = "1.000,00";
+        const PORCENTAGEM_CONCLUIDA = 65; // Coloque de 0 a 100
         const LINK_BASE_KIWIFI = "https://pay.kiwify.com.br/SEU_LINK_AQUI"; 
+        // =====================================================
     </script>
 
     <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
-            <h1 class="text-xl font-bold text-green-500 tracking-wider font-mono">CANAL ESPORTE PRO</h1>
-            <div class="bg-red-600 px-3 py-1 rounded text-sm animate-pulse uppercase font-black italic">Ao Vivo</div>
+        <div class="mb-6 border-b border-gray-800 pb-4">
+            <div class="flex justify-between items-center mb-2">
+                <h1 class="text-green-500 font-black italic tracking-tighter text-2xl font-mono">CANAL ESPORTE PRO</h1>
+                <div class="bg-red-600 px-3 py-1 rounded text-[10px] animate-pulse uppercase font-black">Ao Vivo</div>
+            </div>
+            <p class="text-gray-400 text-sm font-bold uppercase tracking-widest"><script>document.write(TITULO_EVENTO)</script></p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2">
-                <div class="video-container rounded-lg mb-4 shadow-2xl shadow-green-900/10">
+                <div class="video-container rounded-lg mb-4 shadow-2xl">
                     <div id="paywall">
-                        <h2 class="text-2xl font-bold text-yellow-500 mb-2 font-mono uppercase">Teste Grátis Encerrado</h2>
-                        <p class="mb-6 text-gray-300">Garanta o E-book e dispute o PIX de <br><span class="text-green-400 text-3xl font-black">R$ <script>document.write(VALOR_PREMIO)</script></span></p>
-                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-6 w-full max-w-md">
+                        <h2 class="text-xl font-bold text-yellow-500 mb-2 uppercase">Acesso Grátis Encerrado</h2>
+                        <p class="mb-4 text-gray-300 text-sm">Escolha um valor para liberar o sinal HD e disputar o prêmio:</p>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6 w-full max-w-md px-2">
                             <script>
                                 const valores = ["5,00", "10,00", "25,00", "50,00", "100,00", "150,00", "250,00", "350,00", "500,00"];
                                 valores.forEach(v => {
@@ -41,25 +50,27 @@
                             </script>
                         </div>
                     </div>
-                    <div id="player-placeholder" class="h-full flex flex-col items-center justify-center bg-zinc-900">
-                        <p class="text-gray-400 animate-pulse font-mono tracking-tighter">AGUARDANDO SINAL HD...</p>
+                    <div id="player-placeholder" class="h-full flex flex-col items-center justify-center bg-black">
+                        <p class="text-gray-600 animate-pulse font-mono text-xs">AGUARDANDO CONEXÃO COM O SERVIDOR...</p>
                     </div>
                 </div>
 
-                <div class="regra-card rounded-r-lg">
-                    <h3 class="text-green-500 font-bold uppercase text-sm mb-2 tracking-widest">🏆 Regras da Disputa pelo PIX</h3>
-                    <ul class="text-xs text-gray-400 space-y-2 leading-relaxed">
-                        <li>• <strong class="text-gray-200">COMO GANHAR:</strong> O espectador que realizar o maior valor acumulado em compras de E-book até o final da transmissão leva o prêmio de <span class="text-green-400 font-bold">R$ <script>document.write(VALOR_PREMIO)</script></span>.</li>
-                        <li>• <strong class="text-gray-200">IDENTIFICAÇÃO:</strong> Use sempre o mesmo e-mail na Kiwify para que seus valores sejam somados corretamente no Ranking.</li>
-                        <li>• <strong class="text-gray-200">TRANSPARÊNCIA:</strong> O Ranking lateral é atualizado automaticamente. O resultado final será anunciado ao vivo assim que o juiz apitar o fim do jogo.</li>
-                    </ul>
+                <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-800 mb-6">
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase">Meta para o prêmio subir para R$ <script>document.write(PROXIMA_META_VALOR)</script></span>
+                        <span class="text-xs font-black text-green-500"><script>document.write(PORCENTAGEM_CONCLUIDA)</script>%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="fill-bar"></div>
+                    </div>
+                    <p class="mt-3 text-center text-lg font-bold">PRÊMIO ATUAL: <span class="text-green-400">R$ <script>document.write(VALOR_ATUAL_PREMIO)</script></span></p>
                 </div>
             </div>
 
             <div class="space-y-4">
-                <div class="bg-zinc-900 p-5 rounded-xl border border-zinc-800 shadow-xl">
+                <div class="bg-zinc-900 p-5 rounded-xl border border-zinc-800">
                     <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
-                        <h3 class="text-sm font-black text-green-500 uppercase italic">Ranking Live</h3>
+                        <h3 class="text-xs font-black text-green-500 uppercase italic">Top Doadores</h3>
                         <span id="timer" class="text-xl font-black text-yellow-500 font-mono">05:00</span>
                     </div>
                     <ul class="space-y-4 text-sm font-mono" id="ranking-list">
@@ -74,6 +85,12 @@
     </div>
 
     <script>
+        // Inicia a barra de progresso
+        setTimeout(() => {
+            document.getElementById('fill-bar').style.width = PORCENTAGEM_CONCLUIDA + '%';
+        }, 500);
+
+        // Lógica do Timer
         const duration = 5 * 60;
         let timerDisplay = document.getElementById('timer');
         let paywall = document.getElementById('paywall');
