@@ -4,9 +4,14 @@ export default {
 
     // Rota para o Admin salvar novos dados no KV
     if (request.method === "POST" && url.pathname === "/api/update") {
-      const data = await request.json();
-      await env.DB.put("SESSAO_LIVE", JSON.stringify(data));
-      return new Response("OK", { status: 200 });
+      try {
+        const data = await request.json();
+        // Aqui usamos o binding 'DB' que você configurou na Cloudflare
+        await env.DB.put("SESSAO_LIVE", JSON.stringify(data));
+        return new Response("OK", { status: 200 });
+      } catch (e) {
+        return new Response("Erro no Worker: " + e.message, { status: 500 });
+      }
     }
 
     // Rota para o site buscar os dados do KV
