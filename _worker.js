@@ -1,80 +1,23 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>ADMIN | Canal Sport Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-zinc-950 text-white p-8">
-    <div class="max-w-md mx-auto bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-2xl">
-        <h1 class="text-xl font-bold mb-6 text-green-500 underline uppercase tracking-tighter text-center italic">Painel Canal Sport Pro</h1>
-        
-        <div class="space-y-4">
-            <div>
-                <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Título da Live (Ex: Palmeiras x Santos)</label>
-                <input id="titulo" type="text" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Prêmio (R$)</label>
-                    <input id="premio" type="text" placeholder="600,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
-                </div>
-                <div>
-                    <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">% da Meta</label>
-                    <input id="meta" type="number" placeholder="75" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
-                </div>
-            </div>
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
 
-            <div class="pt-4 border-t border-zinc-800">
-                <label class="block text-[10px] uppercase font-black text-red-500 mb-1">Senha do Perito</label>
-                <input id="senha" type="password" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-red-500">
-            </div>
+    // Rota para o Admin salvar novos dados no KV
+    if (request.method === "POST" && url.pathname === "/api/update") {
+      const data = await request.json();
+      await env.DB.put("SESSAO_LIVE", JSON.stringify(data));
+      return new Response("OK", { status: 200 });
+    }
 
-            <button onclick="salvar()" class="w-full bg-green-600 hover:bg-green-700 py-3 rounded font-black uppercase transition active:scale-95">
-                Atualizar Site Ao Vivo
-            </button>
-            <p id="status" class="text-center text-xs font-mono mt-2"></p>
-        </div>
-    </div>
+    // Rota para o site buscar os dados do KV
+    if (url.pathname === "/api/data") {
+      const value = await env.DB.get("SESSAO_LIVE");
+      return new Response(value || "{}", {
+        headers: { "content-type": "application/json" }
+      });
+    }
 
-    <script>
-        async function salvar() {
-            const status = document.getElementById('status');
-            const senhaDigitada = document.getElementById('senha').value;
-            
-            // SENHA CONFIGURADA POR VOCÊ
-            if (senhaDigitada !== '23100311') {
-                status.innerText = "ACESSO NEGADO: SENHA INCORRETA!";
-                status.className = "text-center text-xs font-mono mt-2 text-red-500";
-                return;
-            }
-
-            const dados = {
-                titulo: document.getElementById('titulo').value,
-                premio: document.getElementById('premio').value,
-                meta: document.getElementById('meta').value
-            };
-
-            status.innerText = "Sincronizando com Cloudflare KV...";
-            status.className = "text-center text-xs font-mono mt-2 text-gray-500";
-
-            try {
-                const res = await fetch('/api/update', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
-
-                if (res.ok) {
-                    status.innerText = "SUCESSO! Site atualizado.";
-                    status.className = "text-center text-xs font-mono mt-2 text-green-500 font-bold";
-                } else { throw new Error(); }
-            } catch (err) {
-                status.innerText = "ERRO! Verifique o Binding DB na Cloudflare.";
-                status.className = "text-center text-xs font-mono mt-2 text-red-500";
-            }
-        }
-    </script>
-</body>
-</html>
+    // Mantém o funcionamento normal das páginas HTML
+    return env.ASSETS.fetch(request);
+  }
+};
