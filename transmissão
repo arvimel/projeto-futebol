@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Futebol - Oficial</title>
+    <style>
+        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 50px; }
+        .container { border: 2px solid #222; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
+        h1 { color: #0f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Transmissão em Breve</h1>
+        <p>Aguarde o início da partida.</p>
+        <div id="status">Servidor Online 🟢</div>
+    </div>
+</body>
+</html>
