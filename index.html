@@ -3,18 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Futebol - Oficial</title>
+    <title>LIVE EXCLUSIVA | Futebol Ao Vivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 50px; }
-        .container { border: 2px solid #222; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
-        h1 { color: #0f0; }
+        body { background-color: #050505; color: white; }
+        .video-container { aspect-ratio: 16/9; background: #111; border: 1px solid #333; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Transmissão em Breve</h1>
-        <p>Aguarde o início da partida.</p>
-        <div id="status">Servidor Online 🟢</div>
+<body class="p-4">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
+            <h1 class="text-xl font-bold text-green-500">CANAL ESPORTE PRO</h1>
+            <div class="bg-red-600 px-3 py-1 rounded text-sm animate-pulse">AO VIVO</div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+                <div class="video-container rounded-lg flex items-center justify-center mb-4">
+                    <p class="text-gray-500">Aguardando sinal da transmissão...</p>
+                </div>
+                <div class="bg-gray-900 p-4 rounded-lg">
+                    <h2 class="text-lg font-semibold">Assista em HD sem travamentos</h2>
+                    <p class="text-sm text-gray-400">Tempo de acesso gratuito: <span id="timer" class="text-yellow-500 font-mono">05:00</span></p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800 text-center">
+                    <p class="text-sm mb-2 text-gray-300">Garanta o E-book e dispute o PIX de R$ 1.000,00</p>
+                    <a href="#" class="bg-green-600 hover:bg-green-700 block w-full py-3 rounded-md font-bold transition">COMPRAR E-BOOK AGORA</a>
+                </div>
+
+                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                    <h3 class="text-md font-bold mb-4 border-b border-gray-800 pb-2">TOP DOADORES (Ranking)</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex justify-between"><span>1. Wilson ****</span> <span class="text-green-400">R$ 150,00</span></li>
+                        <li class="flex justify-between"><span>2. Marcos ****</span> <span class="text-green-400">R$ 50,00</span></li>
+                        <li class="flex justify-between text-gray-500 italic"><span>Aguardando doações...</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
