@@ -6,84 +6,104 @@
     <title>LIVE EXCLUSIVA | Canal Sport Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #050505; color: white; overflow-x: hidden; }
-        .video-container { aspect-ratio: 16/9; background: #000; border: 1px solid #333; position: relative; overflow: hidden; }
-        #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.95); z-index: 50; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 5px; font-size: 13px; transition: all 0.2s; font-weight: bold; text-align: center; color: white; }
-        .btn-valor:hover { background: #059669; border-color: #10b981; transform: scale(1.05); }
-        .progress-bar { height: 12px; background: #1f2937; border-radius: 6px; overflow: hidden; }
+        body { background-color: #050505; color: white; overflow: hidden; }
+        .video-container { aspect-ratio: 16/9; background: #000; position: relative; }
+        #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.97); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 2px solid #10b981; }
+        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 12px; border-radius: 8px; font-size: 14px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; }
+        .btn-valor:hover { background: #059669; transform: translateY(-2px); border-color: #10b981; }
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #059669, #10b981); transition: width 1.5s ease-in-out; }
     </style>
 </head>
-<body class="p-4">
+<body class="p-2 sm:p-4">
     <div class="max-w-6xl mx-auto">
-        <div class="mb-6 border-b border-gray-800 pb-4">
-            <div class="flex justify-between items-center mb-2">
-                <h1 class="text-green-500 font-black italic tracking-tighter text-2xl font-mono uppercase">CANAL SPORT PRO</h1>
-                <div class="bg-red-600 px-3 py-1 rounded text-[10px] animate-pulse uppercase font-black italic">Ao Vivo</div>
+        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-3">
+            <div>
+                <h1 class="text-green-500 font-black italic tracking-tighter text-2xl uppercase">CANAL SPORT PRO</h1>
+                <p id="display-titulo" class="text-[10px] text-zinc-500 font-bold uppercase tracking-[3px]">CARREGANDO...</p>
             </div>
-            <p id="display-titulo" class="text-gray-400 text-sm font-bold uppercase tracking-widest text-zinc-500 italic">CARREGANDO EVENTO...</p>
+            <div class="flex items-center gap-3">
+                <span id="timer" class="text-xl font-black text-yellow-500 font-mono tracking-tighter italic">05:00</span>
+                <div class="bg-red-600 px-2 py-1 rounded text-[10px] animate-pulse font-black uppercase">Ao Vivo</div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div class="lg:col-span-2">
-                <div class="video-container rounded-lg mb-4 shadow-2xl">
+                <div class="video-container rounded-lg overflow-hidden shadow-2xl border border-zinc-800">
                     <div id="paywall">
-                        <h2 class="text-xl font-bold text-yellow-500 mb-2 uppercase">Acesso Grátis Encerrado</h2>
-                        <p class="mb-4 text-gray-300 text-sm italic">Garanta o E-book para liberar o sinal HD e disputar o PIX de:</p>
-                        <p class="text-green-400 text-3xl font-black mb-6">R$ <span id="paywall-premio">...</span></p>
+                        <h2 class="text-xl font-black text-yellow-500 mb-1 uppercase italic">Acesso Grátis Encerrado</h2>
+                        <p class="mb-6 text-zinc-400 text-xs text-center max-w-sm">Garanta seu E-book para liberar o sinal HD e disputar o prêmio de <span class="text-green-500 font-bold">R$ <span id="paywall-premio">...</span></span></p>
                         
-                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6 w-full max-w-md px-2">
-                            <script>
-                                const linkBase = "https://pay.kiwify.com.br/SEU_LINK_AQUI"; 
-                                const valores = ["5,00", "10,00", "25,00", "50,00", "100,00", "150,00", "250,00", "350,00", "500,00"];
-                                valores.forEach(v => {
-                                    document.write(`<a href="${linkBase}?off=${v}" target="_blank" class="btn-valor">R$ ${v}</a>`);
-                                });
-                            </script>
-                        </div>
+                        <div id="grid-links" class="grid grid-cols-3 gap-2 w-full max-w-md">
+                            </div>
                     </div>
-                    <div class="h-full flex flex-col items-center justify-center bg-black">
-                        <p class="text-gray-700 animate-pulse font-mono text-[10px] tracking-[5px]">SINAL CRIPTOGRAFADO</p>
-                    </div>
+
+                    <iframe id="video-player" width="100%" height="100%" 
+                        src="https://www.youtube.com/embed/6m_f696K0_I?autoplay=1&controls=0&modestbranding=1&rel=0" 
+                        title="Canal Sport Pro Live" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
                 </div>
 
-                <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-800 mb-6 shadow-lg">
+                <div class="mt-4 bg-zinc-900/50 p-4 rounded-xl border border-zinc-800">
                     <div class="flex justify-between items-end mb-2">
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Meta de Arrecadação para Próximo Nível</span>
-                        <span id="display-porcentagem" class="text-xs font-black text-green-500">0%</span>
+                        <span class="text-[10px] font-black text-zinc-500 uppercase">Progresso do Leilão</span>
+                        <span id="display-porcentagem" class="text-xs font-black text-green-500 italic">0%</span>
                     </div>
-                    <div class="progress-bar">
+                    <div class="h-3 bg-zinc-800 rounded-full overflow-hidden">
                         <div id="fill-bar" class="progress-fill"></div>
                     </div>
-                    <p class="mt-3 text-center text-lg font-black italic uppercase">Prêmio Atual: <span class="text-green-400">R$ <span id="display-premio">...</span></span></p>
+                    <div class="text-center mt-3">
+                        <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Prêmio acumulado hoje</p>
+                        <p class="text-2xl font-black text-white italic tracking-tighter">R$ <span id="display-premio" class="text-green-500">...</span></p>
+                    </div>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <div class="bg-zinc-900 p-5 rounded-xl border border-zinc-800 shadow-xl">
-                    <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
-                        <h3 class="text-xs font-black text-green-500 uppercase italic tracking-widest">Liderança Live</h3>
-                        <span id="timer" class="text-xl font-black text-yellow-500 font-mono italic">05:00</span>
-                    </div>
-                    <ul class="space-y-4 text-sm font-mono" id="ranking-list">
-                        <li class="flex justify-between items-center text-gray-600 italic">
-                            <span>1. Aguardando...</span>
-                            <span class="font-bold underline">R$ 0,00</span>
-                        </li>
-                    </ul>
-                </div>
+            <div class="bg-zinc-900/30 p-4 rounded-xl border border-zinc-800 h-fit">
+                <h3 class="text-[10px] font-black text-green-500 uppercase tracking-widest mb-4 border-b border-zinc-800 pb-2 italic">Top Doadores (Live)</h3>
+                <ul class="space-y-3" id="ranking-list">
+                    <li class="flex justify-between items-center text-xs font-mono text-zinc-500 italic">
+                        <span>1. Aguardando...</span>
+                        <span class="text-zinc-400 font-bold">R$ 0,00</span>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 
     <script>
-        // FUNÇÃO PARA BUSCAR DADOS DO BANCO (WORKER)
+        // 1. ADICIONE SEUS LINKS DA KIWIFY AQUI
+        const linksKiwify = {
+            "5,00": "LINK_AQUI",
+            "10,00": "LINK_AQUI",
+            "25,00": "LINK_AQUI",
+            "50,00": "LINK_AQUI",
+            "100,00": "LINK_AQUI",
+            "150,00": "LINK_AQUI",
+            "250,00": "LINK_AQUI",
+            "350,00": "LINK_AQUI",
+            "500,00": "LINK_AQUI",
+            "1.000,00": "LINK_AQUI"
+        };
+
+        // Gera os botões automaticamente
+        const grid = document.getElementById('grid-links');
+        Object.keys(linksKiwify).forEach(valor => {
+            const a = document.createElement('a');
+            a.href = linksKiwify[valor];
+            a.target = "_blank";
+            a.className = "btn-valor";
+            a.innerText = `R$ ${valor}`;
+            grid.appendChild(a);
+        });
+
+        // 2. BUSCA DADOS DO BANCO (ADMIN)
         async function carregarDados() {
             try {
                 const res = await fetch('/api/data');
                 const data = await res.json();
-                
                 if (data.titulo) {
                     document.getElementById('display-titulo').innerText = data.titulo;
                     document.getElementById('display-premio').innerText = data.premio;
@@ -91,29 +111,29 @@
                     document.getElementById('display-porcentagem').innerText = data.meta + '%';
                     document.getElementById('fill-bar').style.width = data.meta + '%';
                 }
-            } catch (e) {
-                console.error("Erro ao carregar dados do banco.");
-            }
+            } catch (e) { console.error("Erro banco dados"); }
         }
 
-        // Lógica do Timer com Segurança (Anti-F5)
+        // 3. LOGICA DO CRONOMETRO ANTI-F5
         const duration = 5 * 60;
-        let timerDisplay = document.getElementById('timer');
-        let paywall = document.getElementById('paywall');
-        
+        const timerDisplay = document.getElementById('timer');
+        const paywall = document.getElementById('paywall');
+        const player = document.getElementById('video-player');
+
         function startTimer() {
             let timeLeft = localStorage.getItem('soccer_timer');
             timeLeft = (timeLeft === null || timeLeft === "0") ? duration : parseInt(timeLeft);
 
             const countdown = setInterval(() => {
-                let minutes = Math.floor(timeLeft / 60);
-                let seconds = timeLeft % 60;
-                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                let min = Math.floor(timeLeft / 60);
+                let sec = timeLeft % 60;
+                timerDisplay.innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
                 
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     paywall.style.display = 'flex';
-                    timerDisplay.textContent = "EXPIRADO";
+                    player.style.display = 'none';
+                    timerDisplay.innerText = "EXPIRADO";
                     localStorage.setItem('soccer_timer', 0);
                 } else {
                     timeLeft--;
@@ -122,10 +142,7 @@
             }, 1000);
         }
 
-        window.onload = () => {
-            carregarDados();
-            startTimer();
-        };
+        window.onload = () => { carregarDados(); startTimer(); };
     </script>
 </body>
 </html>
