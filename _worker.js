@@ -3,13 +3,10 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === "POST" && url.pathname === "/api/update") {
-      try {
-        const data = await request.json();
-        await env.DB.put("SESSAO_LIVE", JSON.stringify(data));
-        return new Response("OK", { status: 200 });
-      } catch (e) {
-        return new Response("Erro: " + e.message, { status: 500 });
-      }
+      const data = await request.json();
+      // Salva tudo o que vier do Admin no banco KV
+      await env.DB.put("SESSAO_LIVE", JSON.stringify(data));
+      return new Response("OK", { status: 200 });
     }
 
     if (url.pathname === "/api/data") {
