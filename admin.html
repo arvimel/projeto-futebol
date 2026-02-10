@@ -5,58 +5,82 @@
     <title>ADMIN | Canal Sport Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-zinc-950 text-white p-8">
-    <div class="max-w-md mx-auto bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-2xl text-center">
-        <h1 class="text-xl font-bold mb-6 text-green-500 underline uppercase tracking-tighter italic">Painel Canal Sport Pro</h1>
+<body class="bg-zinc-950 text-white p-4">
+    <div class="max-w-2xl mx-auto bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-2xl">
+        <h1 class="text-xl font-bold mb-6 text-green-500 underline uppercase text-center italic">Central de Comando Sport Pro</h1>
         
-        <div class="space-y-4 text-left">
-            <div>
-                <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Título da Live (Ex: Palmeiras x Santos)</label>
-                <input id="titulo" type="text" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <h3 class="text-xs font-black text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-1">Configurações de Transmissão</h3>
                 <div>
-                    <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Prêmio (R$)</label>
-                    <input id="premio" type="text" placeholder="600,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                    <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Título da Live</label>
+                    <input id="titulo" type="text" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">% da Meta</label>
-                    <input id="meta" type="number" placeholder="75" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                    <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">ID do Vídeo YouTube (Ex: 6m_f696K0_I)</label>
+                    <input id="videoId" type="text" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Prêmio (R$)</label>
+                        <input id="premio" type="text" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">% da Meta</label>
+                        <input id="meta" type="number" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-zinc-800">
+                    <label class="block text-[10px] uppercase font-black text-red-500 mb-1">Senha Master</label>
+                    <input id="senha" type="password" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-red-500">
                 </div>
             </div>
 
-            <div class="pt-4 border-t border-zinc-800">
-                <label class="block text-[10px] uppercase font-black text-red-500 mb-1">Senha do Perito</label>
-                <input id="senha" type="password" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-red-500">
+            <div class="space-y-3">
+                <h3 class="text-xs font-black text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-1">Links de Checkout (Kiwify)</h3>
+                <input id="link5" type="text" placeholder="Link R$ 5,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-green-500">
+                <input id="link10" type="text" placeholder="Link R$ 10,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-green-500">
+                <input id="link25" type="text" placeholder="Link R$ 25,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-green-500">
+                <input id="link50" type="text" placeholder="Link R$ 50,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-green-500">
+                <input id="link100" type="text" placeholder="Link R$ 100,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-green-500">
+                <input id="link250" type="text" placeholder="Link R$ 250,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-green-500">
+                <input id="link500" type="text" placeholder="Link R$ 500,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-green-500">
             </div>
-
-            <button onclick="salvar()" class="w-full bg-green-600 hover:bg-green-700 py-3 rounded font-black uppercase transition active:scale-95 shadow-lg shadow-green-900/20">
-                Atualizar Site Ao Vivo
-            </button>
-            <p id="status" class="text-center text-xs font-mono mt-2"></p>
         </div>
+
+        <button onclick="salvar()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-4 rounded font-black uppercase shadow-lg shadow-green-900/20 active:scale-95">
+            PUBLICAR TODAS AS ALTERAÇÕES
+        </button>
+        <p id="status" class="text-center text-xs font-mono mt-3"></p>
     </div>
 
     <script>
         async function salvar() {
             const status = document.getElementById('status');
-            const senhaDigitada = document.getElementById('senha').value;
-            
-            if (senhaDigitada !== '23100311') {
-                status.innerText = "ACESSO NEGADO: SENHA INCORRETA!";
-                status.className = "text-center text-xs font-mono mt-2 text-red-500";
+            if (document.getElementById('senha').value !== '23100311') {
+                status.innerText = "SENHA INCORRETA!";
+                status.className = "text-center text-xs font-mono mt-3 text-red-500";
                 return;
             }
 
             const dados = {
                 titulo: document.getElementById('titulo').value,
+                videoId: document.getElementById('videoId').value,
                 premio: document.getElementById('premio').value,
-                meta: document.getElementById('meta').value
+                meta: document.getElementById('meta').value,
+                links: {
+                    "5,00": document.getElementById('link5').value,
+                    "10,00": document.getElementById('link10').value,
+                    "25,00": document.getElementById('link25').value,
+                    "50,00": document.getElementById('link50').value,
+                    "100,00": document.getElementById('link100').value,
+                    "250,00": document.getElementById('link250').value,
+                    "500,00": document.getElementById('link500').value
+                }
             };
 
-            status.innerText = "Sincronizando com Cloudflare KV...";
-            status.className = "text-center text-xs font-mono mt-2 text-gray-500";
+            status.innerText = "Salvando no Banco de Dados...";
+            status.className = "text-center text-xs font-mono mt-3 text-zinc-500";
 
             try {
                 const res = await fetch('/api/update', {
@@ -64,15 +88,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
                 });
-
                 if (res.ok) {
-                    status.innerText = "SUCESSO! Site atualizado.";
-                    status.className = "text-center text-xs font-mono mt-2 text-green-500 font-bold";
-                } else { throw new Error(); }
-            } catch (err) {
-                status.innerText = "ERRO! Verifique o Binding DB na Cloudflare.";
-                status.className = "text-center text-xs font-mono mt-2 text-red-500";
-            }
+                    status.innerText = "TUDO ATUALIZADO COM SUCESSO!";
+                    status.className = "text-center text-xs font-mono mt-3 text-green-500 font-bold";
+                }
+            } catch (err) { status.innerText = "ERRO DE CONEXÃO!"; }
         }
     </script>
 </body>
