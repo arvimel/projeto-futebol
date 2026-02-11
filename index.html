@@ -85,12 +85,15 @@
     </div>
 
     <script>
+        let videoIdAtual = ""; // Controle para evitar refresh no player
+
         async function carregarDados() {
             try {
                 const res = await fetch('/api/data');
                 const data = await res.json();
                 
                 if (data.titulo) {
+                    // Atualiza textos e barra sem interromper o vídeo
                     document.getElementById('display-titulo').innerText = data.titulo;
                     document.getElementById('display-premio').innerText = data.premio;
                     document.getElementById('fill-bar').style.width = data.meta + '%';
@@ -98,11 +101,16 @@
                     document.getElementById('display-lider-nome').innerText = data.liderNome || "AGUARDANDO...";
                     document.getElementById('display-lider-valor').innerText = data.liderValor || "0,00";
                     
-                    document.getElementById('video-player').src = `https://www.youtube.com/embed/${data.videoId}?autoplay=1&controls=0&modestbranding=1&rel=0`;
+                    // SÓ ATUALIZA O VÍDEO SE O ID MUDAR NO ADMIN
+                    if (data.videoId && data.videoId !== videoIdAtual) {
+                        videoIdAtual = data.videoId;
+                        document.getElementById('video-player').src = `https://www.youtube.com/embed/${data.videoId}?autoplay=1&controls=0&modestbranding=1&rel=0`;
+                    }
 
+                    // Atualiza os botões de doação
                     const grid = document.getElementById('grid-links');
-                    grid.innerHTML = '';
                     if(data.links) {
+                        grid.innerHTML = '';
                         Object.keys(data.links).forEach(valor => {
                             if (data.links[valor]) {
                                 const a = document.createElement('a');
@@ -145,6 +153,7 @@
         window.onload = () => { 
             carregarDados(); 
             startTimer(); 
+            // Atualiza dados a cada 10s, mas o vídeo agora é protegido pela trava videoIdAtual
             setInterval(carregarDados, 10000); 
         };
     </script>
