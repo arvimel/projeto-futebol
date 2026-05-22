@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIVE EXCLUSIVA | Canal Sport Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <style>
         body { background-color: #050505; color: white; overflow-x: hidden; }
         .video-container { aspect-ratio: 16/9; background: #000; position: relative; }
@@ -12,6 +14,8 @@
         .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 13px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; }
         .btn-valor:hover { background: #059669; transform: scale(1.05); }
         .destaque-times { font-size: 1.75rem; line-height: 1; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
+        /* Ajuste para o player ocupar 100% do container */
+        .video-js { width: 100% !important; height: 100% !important; }
     </style>
 </head>
 <body class="p-2 sm:p-4 font-sans">
@@ -40,7 +44,10 @@
                         <p class="mb-4 text-zinc-400 text-sm text-center">Doação mínima de R$ 5,00 para liberar o acesso HD</p>
                         <div id="grid-links" class="grid grid-cols-3 gap-2 w-full max-w-md"></div>
                     </div>
-                    <iframe id="video-player" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    
+                    <div id="wrapper-player" class="w-full h-full">
+                        <video id="video-player" class="video-js vjs-default-skin" autoplay muted playsinline></video>
+                    </div>
                 </div>
 
                 <div class="mt-4 bg-yellow-500/10 border-2 border-yellow-500/30 p-4 rounded-xl flex items-center gap-4">
@@ -85,7 +92,12 @@
     </div>
 
     <script>
-        let videoIdAtual = ""; // Controle para evitar refresh no player
+        let urlVideoAtual = ""; 
+        let player = videojs('video-player', {
+            controls: false, // Oculta barra de progresso para focar na experiência de TV
+            fluid: true,
+            liveui: false
+        });
 
         async function carregarDados() {
             try {
@@ -93,7 +105,6 @@
                 const data = await res.json();
                 
                 if (data.titulo) {
-                    // Atualiza textos e barra sem interromper o vídeo
                     document.getElementById('display-titulo').innerText = data.titulo;
                     document.getElementById('display-premio').innerText = data.premio;
                     document.getElementById('fill-bar').style.width = data.meta + '%';
@@ -101,13 +112,17 @@
                     document.getElementById('display-lider-nome').innerText = data.liderNome || "AGUARDANDO...";
                     document.getElementById('display-lider-valor').innerText = data.liderValor || "0,00";
                     
-                    // SÓ ATUALIZA O VÍDEO SE O ID MUDAR NO ADMIN
-                    if (data.videoId && data.videoId !== videoIdAtual) {
-                        videoIdAtual = data.videoId;
-                        document.getElementById('video-player').src = `https://www.youtube.com/embed/${data.videoId}?autoplay=1&controls=0&modestbranding=1&rel=0`;
+                    // LÓGICA DE VERIFICAÇÃO DO STREAMING DIRETO:
+                    // No campo "videoId", agora vamos colocar a URL completa do HLS (Ex: http://SEU_IP:8888/live/jogo/index.m3u8)
+                    if (data.videoId && data.videoId !== urlVideoAtual) {
+                        urlVideoAtual = data.videoId;
+                        player.src({
+                            src: data.videoId,
+                            type: 'application/x-mpegURL'
+                        });
+                        player.play().catch(e => console.log("Player aguardando interação inicial."));
                     }
 
-                    // Atualiza os botões de doação
                     const grid = document.getElementById('grid-links');
                     if(data.links) {
                         grid.innerHTML = '';
@@ -129,7 +144,7 @@
         const duration = 5 * 60;
         const timerDisplay = document.getElementById('timer');
         const paywall = document.getElementById('paywall');
-        const player = document.getElementById('video-player');
+        const videoWrapper = document.getElementById('wrapper-player');
 
         function startTimer() {
             let timeLeft = localStorage.getItem('soccer_timer');
@@ -141,7 +156,8 @@
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     paywall.style.display = 'flex';
-                    player.style.display = 'none';
+                    videoWrapper.style.display = 'none'; // Corta o sinal do player completamente
+                    player.dispose(); // Destrói o processo de streaming no cliente
                     timerDisplay.innerText = "EXPIRADO";
                 } else {
                     timeLeft--;
@@ -153,7 +169,6 @@
         window.onload = () => { 
             carregarDados(); 
             startTimer(); 
-            // Atualiza dados a cada 10s, mas o vídeo agora é protegido pela trava videoIdAtual
             setInterval(carregarDados, 10000); 
         };
     </script>
