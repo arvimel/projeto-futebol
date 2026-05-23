@@ -5,17 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LIVE EXCLUSIVA | Canal Sport Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
     <style>
         body { background-color: #050505; color: white; overflow-x: hidden; }
         .video-container { aspect-ratio: 16/9; background: #000; position: relative; }
         #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.97); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 2px solid #10b981; }
-        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 13px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; }
+        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 13px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; text-decoration: none; display: block; }
         .btn-valor:hover { background: #059669; transform: scale(1.05); }
         .destaque-times { font-size: 1.75rem; line-height: 1; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
-        /* Ajuste para o player ocupar 100% do container */
-        .video-js { width: 100% !important; height: 100% !important; }
     </style>
 </head>
 <body class="p-2 sm:p-4 font-sans">
@@ -39,14 +36,16 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2">
                 <div class="video-container rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
+                    
                     <div id="paywall">
                         <h2 class="text-2xl font-black text-yellow-500 mb-1 uppercase italic">Sinal Bloqueado</h2>
                         <p class="mb-4 text-zinc-400 text-sm text-center">Doação mínima de R$ 5,00 para liberar o acesso HD</p>
-                        <div id="grid-links" class="grid grid-cols-3 gap-2 w-full max-w-md"></div>
+                        <div id="grid-links" class="grid grid-cols-3 gap-2 w-full max-w-md">
+                            </div>
                     </div>
                     
                     <div id="wrapper-player" class="w-full h-full">
-                        <video id="video-player" class="video-js vjs-default-skin" autoplay muted playsinline></video>
+                        <div id="twitch-inline-player" class="w-full h-full"></div>
                     </div>
                 </div>
 
@@ -93,11 +92,7 @@
 
     <script>
         let urlVideoAtual = ""; 
-        let player = videojs('video-player', {
-            controls: false, // Oculta barra de progresso para focar na experiência de TV
-            fluid: true,
-            liveui: false
-        });
+        let twitchPlayer = null;
 
         async function carregarDados() {
             try {
@@ -112,17 +107,28 @@
                     document.getElementById('display-lider-nome').innerText = data.liderNome || "AGUARDANDO...";
                     document.getElementById('display-lider-valor').innerText = data.liderValor || "0,00";
                     
-                    // LÓGICA DE VERIFICAÇÃO DO STREAMING DIRETO:
-                    // No campo "videoId", agora vamos colocar a URL completa do HLS (Ex: http://SEU_IP:8888/live/jogo/index.m3u8)
-                    if (data.videoId && data.videoId !== urlVideoAtual) {
+                    // LÓGICA DO TWITCH:
+                    // Se o tempo não tiver expirado, mantém o sinal rodando
+                    let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
+                    if (!isExpired && data.videoId && data.videoId !== urlVideoAtual) {
                         urlVideoAtual = data.videoId;
-                        player.src({
-                            src: data.videoId,
-                            type: 'application/x-mpegURL'
-                        });
-                        player.play().catch(e => console.log("Player aguardando interação inicial."));
+                        if (data.videoId.includes('twitch.tv')) {
+                            const canal = data.videoId.split('/').pop().trim();
+                            
+                            document.getElementById('twitch-inline-player').innerHTML = '';
+                            
+                            twitchPlayer = new Twitch.Player("twitch-inline-player", {
+                                channel: canal,
+                                width: "100%",
+                                height: "100%",
+                                parent: ["projeto-futebol.pages.dev"],
+                                autoplay: true,
+                                muted: false
+                            });
+                        }
                     }
 
+                    // LINKS DO APORTE (KIWIFY)
                     const grid = document.getElementById('grid-links');
                     if(data.links) {
                         grid.innerHTML = '';
@@ -141,29 +147,51 @@
             } catch (e) { console.error("Erro sincronização"); }
         }
 
+        // --- TRAVA ANTIFRAUDE ROBUSTA ORIGINAL ---
         const duration = 5 * 60;
         const timerDisplay = document.getElementById('timer');
         const paywall = document.getElementById('paywall');
         const videoWrapper = document.getElementById('wrapper-player');
 
         function startTimer() {
+            // Verifica se o usuário já gastou todo o tempo anteriormente
+            if (localStorage.getItem('soccer_timer_expired') === 'true') {
+                bloquearAcesso();
+                return;
+            }
+
             let timeLeft = localStorage.getItem('soccer_timer');
-            timeLeft = (timeLeft === null || timeLeft === "0") ? duration : parseInt(timeLeft);
+            timeLeft = (timeLeft === null) ? duration : parseInt(timeLeft);
+
+            if (timeLeft <= 0) {
+                bloquearAcesso();
+                return;
+            }
+
             const countdown = setInterval(() => {
                 let min = Math.floor(timeLeft / 60);
                 let sec = timeLeft % 60;
                 timerDisplay.innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+                
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    paywall.style.display = 'flex';
-                    videoWrapper.style.display = 'none'; // Corta o sinal do player completamente
-                    player.dispose(); // Destrói o processo de streaming no cliente
-                    timerDisplay.innerText = "EXPIRADO";
+                    bloquearAcesso();
                 } else {
                     timeLeft--;
                     localStorage.setItem('soccer_timer', timeLeft);
                 }
             }, 1000);
+        }
+
+        function bloquearAcesso() {
+            localStorage.setItem('soccer_timer', '0');
+            localStorage.setItem('soccer_timer_expired', 'true'); // Trava antifraude gravada no HD do usuário
+            timerDisplay.innerText = "EXPIRADO";
+            paywall.style.display = 'flex';
+            videoWrapper.innerHTML = ''; // Arranca o player do Twitch do código
+            if (twitchPlayer) {
+                try { twitchPlayer.pause(); } catch(e){}
+            }
         }
 
         window.onload = () => { 
