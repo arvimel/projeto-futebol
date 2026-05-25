@@ -196,9 +196,11 @@
             navigator.clipboard.writeText(input.value).then(() => alert('Link copiado! Envie para o usuário via WhatsApp.'));
         }
 
-        async function salvar() {
+       async function salvar() {
             const status = document.getElementById('status');
-            if (document.getElementById('senha').value !== SENHA_MASTER) {
+            const senhaDigitada = document.getElementById('senha').value;
+
+            if (senhaDigitada !== SENHA_MASTER) {
                 status.innerText = "SENHA INCORRETA!";
                 status.className = "text-center text-xs font-mono mt-3 text-red-500";
                 return;
@@ -206,7 +208,7 @@
 
             const dados = {
                 titulo: document.getElementById('titulo').value,
-                videoId: document.getElementById('videoId').value,
+                videoId: document.getElementById('videoId').value.trim(),
                 idPartida: document.getElementById('idPartida').value,
                 links: {
                     "5,00": document.getElementById('link5').value,
@@ -215,6 +217,32 @@
                     "100,00": document.getElementById('link100').value,
                 }
             };
+
+            status.innerText = "Enviando dados...";
+            status.className = "text-center text-xs font-mono mt-3 text-zinc-500";
+
+            try {
+                // CORREÇÃO: Enviando o cabeçalho 'x-admin-senha' exigido pelo _worker.js
+                const res = await fetch('/api/update', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-admin-senha': senhaDigitada 
+                    },
+                    body: JSON.stringify(dados)
+                });
+                if (res.ok) {
+                    status.innerText = "✅ SUCESSO! DADOS ATUALIZADOS NA LIVE.";
+                    status.className = "text-center text-xs font-mono mt-3 text-green-500 font-bold";
+                } else {
+                    status.innerText = "❌ ERRO AO SALVAR! VERIFIQUE AS PERMISSÕES.";
+                    status.className = "text-center text-xs font-mono mt-3 text-red-500";
+                }
+            } catch (err) {
+                status.innerText = "❌ ERRO DE REDE!";
+                status.className = "text-center text-xs font-mono mt-3 text-red-500";
+            }
+        }
 
             status.innerText = "Enviando dados...";
             status.className = "text-center text-xs font-mono mt-3 text-zinc-500";
