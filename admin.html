@@ -6,71 +6,127 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-zinc-950 text-white p-4">
-    <div class="max-w-2xl mx-auto bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-2xl">
-        <h1 class="text-xl font-bold mb-6 text-green-500 underline uppercase text-center italic font-mono">Painel de Comando</h1>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-500">Controle da Live</h3>
-                <div>
-                    <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Título da Live</label>
-                    <input id="titulo" type="text" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
-                </div>
-                <div>
-                    <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">ID do Vídeo YouTube</label>
-                    <input id="videoId" type="text" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
+    <div class="max-w-3xl mx-auto space-y-6">
+
+        <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-2xl">
+            <h1 class="text-xl font-bold mb-6 text-green-500 underline uppercase text-center italic font-mono">⚙️ Painel de Comando</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-500">Controle da Live</h3>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Prêmio 60% (R$)</label>
-                        <input id="premio" type="text" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Título da Live</label>
+                        <input id="titulo" type="text" placeholder="Ex: Palmeiras x Flamengo" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">% da Meta</label>
-                        <input id="meta" type="number" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">URL/Canal do Vídeo (YouTube ou Twitch)</label>
+                        <input id="videoId" type="text" placeholder="Ex: https://twitch.tv/canalxyz" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">ID da Partida (muda o timer ao trocar)</label>
+                        <input id="idPartida" type="text" placeholder="Ex: partida-001" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
+                    </div>
+
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-green-500">Status do Leilão (somente leitura)</h3>
+                    <div class="bg-black rounded-lg p-3 border border-zinc-800 space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-zinc-400">Prêmio acumulado:</span>
+                            <span id="info-acumulado" class="text-green-400 font-black">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-zinc-400">Líder atual:</span>
+                            <span id="info-lider" class="text-white font-bold">—</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-zinc-400">Maior lance:</span>
+                            <span id="info-lance" class="text-yellow-400 font-bold">R$ 0,00</span>
+                        </div>
+                        <button onclick="zerarLeilao()" class="w-full mt-2 bg-red-900 hover:bg-red-700 text-red-300 text-[10px] font-black uppercase py-1 rounded transition">🗑️ Zerar Leilão (nova rodada)</button>
+                    </div>
+
+                    <div class="pt-2 border-t border-zinc-800">
+                        <label class="block text-[10px] uppercase font-black text-red-500 mb-1">Senha Master</label>
+                        <input id="senha" type="password" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-red-500">
                     </div>
                 </div>
 
-                <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-1 mt-6 text-green-500">Líder do Leilão</h3>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Nome/E-mail Líder</label>
-                        <input id="liderNome" type="text" placeholder="Ex: Wilson" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Lance Total (R$)</label>
-                        <input id="liderValor" type="text" placeholder="Ex: 40,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-green-500">
-                    </div>
-                </div>
+                <div class="space-y-3">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-blue-400">📺 Liberar Acesso Manual (R$ 2,00)</h3>
+                    <p class="text-zinc-500 text-[10px]">Para quem pagou R$ 2,00 via PIX estático. Cole o ID do pagamento do Asaas ou use token temporário.</p>
 
-                <div class="pt-4 border-t border-zinc-800">
-                    <label class="block text-[10px] uppercase font-black text-red-500 mb-1">Senha Master</label>
-                    <input id="senha" type="password" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-red-500">
+                    <div>
+                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Token de Liberação (qualquer texto)</label>
+                        <input id="token-liberacao" type="text" placeholder="Ex: assistir-joao-silva" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-blue-500">
+                    </div>
+                    <button onclick="liberarManual()" class="w-full bg-blue-700 hover:bg-blue-600 py-2 rounded font-black uppercase text-sm transition active:scale-95">
+                        ✅ Gerar Link de Liberação
+                    </button>
+                    <div id="link-liberacao" class="hidden bg-black border border-blue-700 rounded p-3">
+                        <p class="text-[10px] text-blue-400 uppercase font-black mb-1">Envie este link para o usuário:</p>
+                        <input type="text" id="link-liberacao-valor" readonly class="w-full bg-zinc-900 text-blue-300 text-[10px] p-2 rounded border border-zinc-700 font-mono">
+                        <button onclick="copiarLinkLiberacao()" class="mt-2 w-full bg-blue-900 hover:bg-blue-800 text-blue-300 text-[10px] font-black uppercase py-1 rounded">📋 Copiar Link</button>
+                    </div>
+
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-zinc-400">Checkouts Kiwify (opcional)</h3>
+                    <input id="link5" type="text" placeholder="Link R$ 5,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
+                    <input id="link10" type="text" placeholder="Link R$ 10,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
+                    <input id="link50" type="text" placeholder="Link R$ 50,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
+                    <input id="link100" type="text" placeholder="Link R$ 100,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
                 </div>
             </div>
 
-            <div class="space-y-3">
-                <h3 class="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-1">Checkouts Kiwify</h3>
-                <input id="link5" type="text" placeholder="Link R$ 5,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none">
-                <input id="link10" type="text" placeholder="Link R$ 10,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none">
-                <input id="link25" type="text" placeholder="Link R$ 25,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none">
-                <input id="link50" type="text" placeholder="Link R$ 50,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none">
-                <input id="link100" type="text" placeholder="Link R$ 100,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none">
-                <input id="link250" type="text" placeholder="Link R$ 250,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none">
-                <input id="link500" type="text" placeholder="Link R$ 500,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none">
-            </div>
+            <button onclick="salvar()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-4 rounded font-black uppercase transition active:scale-95 shadow-lg shadow-green-900/40 text-lg">
+                💾 Atualizar Tudo Agora
+            </button>
+            <p id="status" class="text-center text-xs font-mono mt-3"></p>
         </div>
-
-        <button onclick="salvar()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-4 rounded font-black uppercase transition active:scale-95 shadow-lg shadow-green-900/40">
-            Atualizar Tudo Agora
-        </button>
-        <p id="status" class="text-center text-xs font-mono mt-3"></p>
     </div>
 
     <script>
+        const SENHA_MASTER = '23100311';
+
+        // Carrega status do leilão ao abrir
+        async function carregarStatus() {
+            try {
+                const res = await fetch('/api/status-leilao');
+                const data = await res.json();
+                document.getElementById('info-acumulado').innerText = 'R$ ' + (data.acumulado || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                document.getElementById('info-lider').innerText = data.lider || '—';
+                document.getElementById('info-lance').innerText = 'R$ ' + (data.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            } catch(e) { console.error(e); }
+        }
+
+        async function zerarLeilao() {
+            if (document.getElementById('senha').value !== SENHA_MASTER) {
+                return alert('Senha incorreta!');
+            }
+            if (!confirm('Zerar o leilão? Isso apaga acumulado, líder e maior lance.')) return;
+            await fetch('/api/zerar-leilao', { method: 'POST', headers: { 'x-admin-senha': SENHA_MASTER } });
+            await carregarStatus();
+            alert('Leilão zerado!');
+        }
+
+        function liberarManual() {
+            if (document.getElementById('senha').value !== SENHA_MASTER) {
+                return alert('Digite a senha master primeiro!');
+            }
+            const token = document.getElementById('token-liberacao').value.trim();
+            if (!token) return alert('Digite um token de identificação.');
+
+            // Gera um link especial que libera o acesso quando aberto
+            const link = `${window.location.origin}/?liberar=${encodeURIComponent(token)}&ts=${Date.now()}`;
+            document.getElementById('link-liberacao').classList.remove('hidden');
+            document.getElementById('link-liberacao-valor').value = link;
+        }
+
+        function copiarLinkLiberacao() {
+            const input = document.getElementById('link-liberacao-valor');
+            navigator.clipboard.writeText(input.value).then(() => alert('Link copiado! Envie para o usuário via WhatsApp.'));
+        }
+
         async function salvar() {
             const status = document.getElementById('status');
-            if (document.getElementById('senha').value !== '23100311') {
+            if (document.getElementById('senha').value !== SENHA_MASTER) {
                 status.innerText = "SENHA INCORRETA!";
                 status.className = "text-center text-xs font-mono mt-3 text-red-500";
                 return;
@@ -79,18 +135,12 @@
             const dados = {
                 titulo: document.getElementById('titulo').value,
                 videoId: document.getElementById('videoId').value,
-                premio: document.getElementById('premio').value,
-                meta: document.getElementById('meta').value,
-                liderNome: document.getElementById('liderNome').value,
-                liderValor: document.getElementById('liderValor').value,
+                idPartida: document.getElementById('idPartida').value,
                 links: {
                     "5,00": document.getElementById('link5').value,
                     "10,00": document.getElementById('link10').value,
-                    "25,00": document.getElementById('link25').value,
                     "50,00": document.getElementById('link50').value,
                     "100,00": document.getElementById('link100').value,
-                    "250,00": document.getElementById('link250').value,
-                    "500,00": document.getElementById('link500').value
                 }
             };
 
@@ -104,11 +154,17 @@
                     body: JSON.stringify(dados)
                 });
                 if (res.ok) {
-                    status.innerText = "SUCESSO! DADOS ATUALIZADOS NA LIVE.";
+                    status.innerText = "✅ SUCESSO! DADOS ATUALIZADOS NA LIVE.";
                     status.className = "text-center text-xs font-mono mt-3 text-green-500 font-bold";
                 }
-            } catch (err) { status.innerText = "ERRO DE REDE!"; }
+            } catch (err) {
+                status.innerText = "❌ ERRO DE REDE!";
+                status.className = "text-center text-xs font-mono mt-3 text-red-500";
+            }
         }
+
+        carregarStatus();
+        setInterval(carregarStatus, 10000);
     </script>
 </body>
 </html>
