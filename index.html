@@ -8,7 +8,8 @@
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
     <style>
         body { background-color: #050505; color: white; overflow-x: hidden; }
-        .video-container { aspect-ratio: 16/9; background: #000; position: relative; }
+        /* Ajuste na proporção e largura máxima para dar mais destaque ao jogo em telas mobile */
+        .video-container { aspect-ratio: 16/9; background: #000; position: relative; width: 100%; }
         #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.97); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 2px solid #10b981; }
         .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 13px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; text-decoration: none; cursor: pointer; }
         .btn-valor:hover { background: #059669; transform: scale(1.05); }
@@ -16,16 +17,16 @@
         .copia-cola-input { width: 100%; padding: 8px; background: #18181b; border: 1px solid #3f3f46; color: #34d399; border-radius: 6px; text-align: center; font-size: 12px; font-family: monospace; }
     </style>
 </head>
-<body class="p-2 sm:p-4 font-sans">
+<body class="p-1 sm:p-4 font-sans">
     <div class="max-w-6xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-zinc-800 pb-4 gap-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b border-zinc-800 pb-4 gap-4 px-1">
             <div>
                 <h1 class="text-green-500 font-black italic tracking-tighter text-3xl uppercase leading-none mb-1">CANAL SPORT PRO</h1>
                 <div class="bg-zinc-900/80 px-3 py-2 rounded-lg border-l-4 border-green-500">
                     <p id="display-titulo" class="destaque-times font-black text-white uppercase italic tracking-tighter">CARREGANDO PARTIDA...</p>
                 </div>
             </div>
-            <div class="flex items-center gap-4 bg-zinc-900 p-3 rounded-xl border border-zinc-800">
+            <div class="flex items-center justify-between w-full md:w-auto gap-4 bg-zinc-900 p-3 rounded-xl border border-zinc-800">
                 <div class="text-right">
                     <p class="text-[9px] text-zinc-500 uppercase font-black leading-none">Tempo Restante</p>
                     <span id="timer" class="text-2xl font-black text-yellow-500 font-mono italic">05:00</span>
@@ -34,8 +35,8 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="lg:col-span-2 w-full">
                 <div class="video-container rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
                     
                     <div id="paywall">
@@ -68,14 +69,14 @@
                     </div>
                 </div>
 
-                <div class="mt-4 bg-yellow-500/10 border-2 border-yellow-500/30 p-4 rounded-xl flex items-center gap-4">
+                <div class="mt-4 bg-yellow-500/10 border-2 border-yellow-500/30 p-4 rounded-xl flex items-center gap-4 mx-1">
                     <div class="text-2xl">💡</div>
                     <p class="text-sm font-bold text-yellow-200 uppercase italic leading-tight tracking-tight">
                         O maior lance individual via PIX leva o prêmio acumulado no final do jogo! O ranking atualiza na hora.
                     </p>
                 </div>
 
-                <div class="mt-4 bg-zinc-900/50 p-5 rounded-xl border border-zinc-800 flex justify-between items-center shadow-lg">
+                <div class="mt-4 bg-zinc-900/50 p-5 rounded-xl border border-zinc-800 flex justify-between items-center shadow-lg mx-1">
                     <div class="w-2/3">
                         <div class="flex justify-between mb-1">
                             <span class="text-[10px] text-zinc-500 uppercase font-black tracking-widest">Meta Arrecadada</span>
@@ -92,7 +93,7 @@
                 </div>
             </div>
 
-            <div class="space-y-4">
+            <div class="space-y-4 px-1 lg:px-0">
                 <div class="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800 h-fit shadow-xl">
                     <h3 class="text-[11px] font-black text-green-500 uppercase tracking-widest mb-4 border-b border-zinc-800 pb-2 italic text-center">🏆 Líder do Leilão PIX</h3>
                     <div id="lider-box" class="bg-green-950/20 border-2 border-green-500/50 p-6 rounded-xl text-center mb-4 relative overflow-hidden">
@@ -112,33 +113,37 @@
     <script>
         let urlVideoAtual = ""; 
         let twitchPlayer = null;
-        // MUDANÇA: Coloque aqui o link real do seu Worker da Cloudflare (ex: https://seu-worker.subdominio.workers.dev)
+        let idPartidaAtual = ""; 
         const URL_DO_SEU_WORKER = "/"; 
 
         async function carregarDados() {
             try {
-                // Ajustado para buscar os dados de leilão unificados do seu Worker
                 const res = await fetch(`${URL_DO_SEU_WORKER}api/status-leilao`);
                 const data = await res.json();
                 
-                // Puxa as informações da partida do seu endpoint padrão do Supabase
                 const resSupabase = await fetch('/api/data');
                 const dataSupa = await resSupabase.json();
                 
                 if (dataSupa.titulo) {
                     document.getElementById('display-titulo').innerText = dataSupa.titulo;
                     
-                    // Atualiza o painel do leilão em tempo real baseado no banco de dados KV/Supabase
+                    // --- ATUALIZAÇÃO: DETECTA NOVO JOGO E LIMPA AS TRAVAS DO NAVEGADOR ---
+                    if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual) {
+                        idPartidaAtual = dataSupa.idPartida;
+                        localStorage.removeItem('soccer_timer_expired');
+                        localStorage.removeItem('soccer_timer');
+                        window.location.reload();
+                        return;
+                    }
+                    
                     document.getElementById('display-premio').innerText = data.acumulado.toFixed(2);
                     document.getElementById('display-lider-nome').innerText = data.lider.toUpperCase();
                     document.getElementById('display-lider-valor').innerText = data.maiorLance.toFixed(2);
                     
-                    // Cálculo da barra de meta dinâmico com base no prêmio
-                    let porcentagemMeta = Math.min(Math.floor((data.acumulado / 500) * 100), 100); // Ex: Meta de R$ 500
+                    let porcentagemMeta = Math.min(Math.floor((data.acumulado / 500) * 100), 100); 
                     document.getElementById('fill-bar').style.width = porcentagemMeta + '%';
                     document.getElementById('meta-porcentagem').innerText = porcentagemMeta + '%';
                     
-                    // LÓGICA DO TWITCH:
                     let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
                     if (!isExpired && dataSupa.videoId && dataSupa.videoId !== urlVideoAtual) {
                         urlVideoAtual = dataSupa.videoId;
@@ -160,12 +165,10 @@
             } catch (e) { console.error("Erro sincronização"); }
         }
 
-        // --- FUNÇÃO PARA GERAR O PIX DINÂMICO VIA ASAAS ---
         async function gerarPixAsaas(valorEscolhido) {
             const nomeDoador = prompt("Digite seu nome completo para aparecer no Ranking:");
             if (!nomeDoador) return alert("Você precisa digitar seu nome para participar do leilão!");
 
-            // Altera o layout do paywall para o modo carregando QR Code
             document.getElementById('paywall-valores').classList.add('hidden');
             document.getElementById('paywall-qrcode').classList.remove('hidden');
 
@@ -183,12 +186,8 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // Injeta a imagem QR Code Base64 retornada pelo Asaas
                     document.getElementById('container-img-qrcode').innerHTML = `<img src="data:image/png;base64,${data.encodedImage}" class="w-full h-full object-contain" />`;
-                    // Injeta a chave copia e cola no input
                     document.getElementById('input-copia-cola').value = data.payload;
-
-                    // Inicializa a escuta em tempo real do pagamento
                     escutarPagamentoAsaas(data.paymentId);
                 } else {
                     alert("Erro do Asaas: " + data.error);
@@ -205,7 +204,6 @@
             document.getElementById('paywall-qrcode').classList.add('hidden');
         }
 
-        // --- MONITORA O PAGAMENTO A CADA 3 SEGUNDOS PARA FAZER A LIBERAÇÃO AUTOMÁTICA ---
         function escutarPagamentoAsaas(paymentId) {
             const checagem = setInterval(async () => {
                 try {
@@ -213,20 +211,16 @@
                     const data = await res.json();
 
                     if (data.liberado === true) {
-                        clearInterval(checagem); // Para de consumir a API
-                        
-                        // DESTRUIÇÃO DA TRAVA ANTIFRAUDE (REABRE O JOGO NA HORA!)
+                        clearInterval(checagem);
                         localStorage.removeItem('soccer_timer_expired');
                         localStorage.removeItem('soccer_timer');
-                        
                         alert("Pagamento confirmado com sucesso! Obrigado pelo apoio. Bom jogo!");
-                        window.location.reload(); // Recarrega a página com o player restaurado
+                        window.location.reload();
                     }
                 } catch (e) { console.error("Erro ao checar recebimento."); }
             }, 3000);
         }
 
-        // --- TRAVA ANTIFRAUDE ORIGINAL DO SEU ARNALDO ---
         const duration = 5 * 60;
         const timerDisplay = document.getElementById('timer');
         const paywall = document.getElementById('paywall');
