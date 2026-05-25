@@ -428,30 +428,33 @@
             await postarMensagem(texto, false);
         }
 
+        function temAcessoPago() {
+            return !!(localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token'));
+        }
+
         async function postarMensagem(texto, ehFigurinha = false) {
-            const isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
-            if (isExpired && !localStorage.getItem('chat_nome')) {
+            // So usuarios que pagaram podem usar o chat
+            if (!temAcessoPago()) {
                 mostrarBloqueioChat();
                 return;
             }
 
             let nome = getNomeChat();
             if (nome === 'Visitante' && !localStorage.getItem('chat_nome_perguntado')) {
-                // Usa modal ao invés de prompt nativo
+                // Pede nome antes — depois que confirmar, envia
                 abrirModalNome((nomeFinal) => {
                     nome = nomeFinal;
-                    adicionarMsgLocal({ nome, mensagem: texto, tipo: 'voce', id: Date.now(), ts: Date.now() });
+                    // So manda pro servidor; o polling traz de volta sem duplicar
                     fetch('/api/chat', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' })
                     }).catch(e => console.error('Erro ao enviar msg', e));
                 });
-                return; // aguarda o modal responder
+                return;
             }
 
-            adicionarMsgLocal({ nome, mensagem: texto, tipo: 'voce', id: Date.now(), ts: Date.now() });
-
+            // So manda pro servidor; o polling traz de volta sem duplicar
             try {
                 await fetch('/api/chat', {
                     method: 'POST',
@@ -884,6 +887,11 @@
             });
 
             fecharChat();
+
+            // Bloqueia input do chat imediatamente se nao pagou
+            if (!temAcessoPago()) {
+                mostrarBloqueioChat();
+            }
         };
     </script>
 </body>
