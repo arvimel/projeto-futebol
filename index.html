@@ -8,17 +8,16 @@
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
     <style>
         body { background-color: #050505; color: white; overflow-x: hidden; }
-        /* Ajuste na proporção e largura máxima para dar mais destaque ao jogo em telas mobile */
         .video-container { aspect-ratio: 16/9; background: #000; position: relative; width: 100%; }
         #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.97); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 2px solid #10b981; }
-        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 13px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; text-decoration: none; cursor: pointer; }
+        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 13px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; cursor: pointer; }
         .btn-valor:hover { background: #059669; transform: scale(1.05); }
         .destaque-times { font-size: 1.75rem; line-height: 1; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
         .copia-cola-input { width: 100%; padding: 8px; background: #18181b; border: 1px solid #3f3f46; color: #34d399; border-radius: 6px; text-align: center; font-size: 12px; font-family: monospace; }
     </style>
 </head>
 <body class="p-1 sm:p-4 font-sans">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b border-zinc-800 pb-4 gap-4 px-1">
             <div>
                 <h1 class="text-green-500 font-black italic tracking-tighter text-3xl uppercase leading-none mb-1">CANAL SPORT PRO</h1>
@@ -36,26 +35,26 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div class="lg:col-span-2 w-full">
+            <div class="lg:col-span-2 w-full flex flex-col gap-4">
                 <div class="video-container rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
                     
                     <div id="paywall">
                         <div id="paywall-valores" class="flex flex-col items-center w-full max-w-md">
                             <h2 class="text-2xl font-black text-yellow-500 mb-1 uppercase italic">Sinal Bloqueado</h2>
-                            <p class="mb-4 text-zinc-400 text-sm text-center">Faça um apoio via PIX profissional. O maior lance leva o prêmio no final!</p>
+                            <p class="mb-4 text-zinc-400 text-sm text-center">Faça um apoio via PIX. O maior lance leva o prêmio acumulado!</p>
                             <div class="grid grid-cols-3 gap-2 w-full mb-4">
                                 <button onclick="gerarPixAsaas(5)" class="btn-valor">R$ 5,00</button>
                                 <button onclick="gerarPixAsaas(10)" class="btn-valor">R$ 10,00</button>
                                 <button onclick="gerarPixAsaas(20)" class="btn-valor">R$ 20,00</button>
                                 <button onclick="gerarPixAsaas(50)" class="btn-valor">R$ 50,00</button>
                                 <button onclick="gerarPixAsaas(100)" class="btn-valor">R$ 100,00</button>
-                                <button onclick="gerarPixAsaas(200)" class="btn-valor">R$ 200,00</button>
+                                <button onclick="abrirValorLivre()" class="btn-valor bg-blue-600 border-blue-500 hover:bg-blue-500">Outro Valor</button>
                             </div>
                         </div>
 
                         <div id="paywall-qrcode" class="hidden flex flex-col items-center w-full max-w-md bg-zinc-900 p-4 rounded-xl border border-zinc-800">
                             <p class="text-xs font-bold text-yellow-500 uppercase mb-2">Escaneie o código abaixo para pagar:</p>
-                            <div id="container-img-qrcode" class="bg-white p-2 rounded-lg w-44 h-44 flex items-center justify-content0 shadow-xl mb-3">
+                            <div id="container-img-qrcode" class="bg-white p-2 rounded-lg w-44 h-44 flex items-center justify-center shadow-xl mb-3">
                                 <span class="text-black text-xs">Gerando PIX...</span>
                             </div>
                             <p class="text-[10px] text-zinc-400 uppercase mb-1">Ou use o PIX Copia e Cola:</p>
@@ -69,14 +68,7 @@
                     </div>
                 </div>
 
-                <div class="mt-4 bg-yellow-500/10 border-2 border-yellow-500/30 p-4 rounded-xl flex items-center gap-4 mx-1">
-                    <div class="text-2xl">💡</div>
-                    <p class="text-sm font-bold text-yellow-200 uppercase italic leading-tight tracking-tight">
-                        O maior lance individual via PIX leva o prêmio acumulado no final do jogo! O ranking atualiza na hora.
-                    </p>
-                </div>
-
-                <div class="mt-4 bg-zinc-900/50 p-5 rounded-xl border border-zinc-800 flex justify-between items-center shadow-lg mx-1">
+                <div class="bg-zinc-900/50 p-5 rounded-xl border border-zinc-800 flex justify-between items-center shadow-lg px-4">
                     <div class="w-2/3">
                         <div class="flex justify-between mb-1">
                             <span class="text-[10px] text-zinc-500 uppercase font-black tracking-widest">Meta Arrecadada</span>
@@ -93,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="space-y-4 px-1 lg:px-0">
+            <div class="space-y-4 w-full">
                 <div class="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800 h-fit shadow-xl">
                     <h3 class="text-[11px] font-black text-green-500 uppercase tracking-widest mb-4 border-b border-zinc-800 pb-2 italic text-center">🏆 Líder do Leilão PIX</h3>
                     <div id="lider-box" class="bg-green-950/20 border-2 border-green-500/50 p-6 rounded-xl text-center mb-4 relative overflow-hidden">
@@ -106,6 +98,13 @@
                     </div>
                     <p class="text-[9px] text-zinc-600 text-center uppercase font-bold">Faça uma doação maior para virar o Líder!</p>
                 </div>
+
+                <div class="bg-yellow-500/10 border border-yellow-500/30 p-4 rounded-xl flex items-center gap-3">
+                    <div class="text-xl">💡</div>
+                    <p class="text-xs font-bold text-yellow-200 uppercase italic leading-tight tracking-tight">
+                        O maior lance individual via PIX leva o prêmio acumulado no final do jogo!
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -114,7 +113,9 @@
         let urlVideoAtual = ""; 
         let twitchPlayer = null;
         let idPartidaAtual = ""; 
-        const URL_DO_SEU_WORKER = "/"; 
+        
+        // CORREÇÃO: Aponta diretamente para as rotas internas de Function do seu Pages
+        const URL_DO_SEU_WORKER = window.location.origin + "/"; 
 
         async function carregarDados() {
             try {
@@ -127,7 +128,6 @@
                 if (dataSupa.titulo) {
                     document.getElementById('display-titulo').innerText = dataSupa.titulo;
                     
-                    // --- ATUALIZAÇÃO: DETECTA NOVO JOGO E LIMPA AS TRAVAS DO NAVEGADOR ---
                     if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual) {
                         idPartidaAtual = dataSupa.idPartida;
                         localStorage.removeItem('soccer_timer_expired');
@@ -155,7 +155,7 @@
                                 channel: canal,
                                 width: "100%",
                                 height: "100%",
-                                parent: ["projeto-futebol.pages.dev"],
+                                parent: [window.location.hostname],
                                 autoplay: true,
                                 muted: false
                             });
@@ -163,6 +163,15 @@
                     }
                 }
             } catch (e) { console.error("Erro sincronização"); }
+        }
+
+        // FUNÇÃO DE VALOR LIVRE SOLICITADO
+        function abrirValorLivre() {
+            const valorDigito = prompt("Digite o valor do seu lance (Ex: 15.50 ou 250):");
+            if (!valorDigito || isNaN(valorDigito) || parseFloat(valorDigito) <= 0) {
+                return alert("Por favor, insira um valor numérico válido maior que zero.");
+            }
+            gerarPixAsaas(parseFloat(valorDigito));
         }
 
         async function gerarPixAsaas(valorEscolhido) {
@@ -194,7 +203,7 @@
                     retornarTelaValores();
                 }
             } catch (err) {
-                alert("Erro ao conectar com a API do Worker.");
+                alert("Erro ao conectar com a API do servidor.");
                 retornarTelaValores();
             }
         }
