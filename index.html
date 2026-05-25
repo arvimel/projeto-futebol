@@ -38,7 +38,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            
             <div class="lg:col-span-2 w-full flex flex-col gap-4">
                 <div class="video-container rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
                     
@@ -130,7 +129,7 @@
                             <button onclick="inserirEmoji('👏')" class="hover:scale-125 transition text-sm">👏</button>
                         </div>
                         <div class="flex gap-1">
-                            <input type="text" id="chat-input" placeholder="Envie uma mensagem..." class="flex-1 bg-zinc-950 border border-zinc-800 px-2 py-1 rounded text-white focus:outline-none focus:border-green-500 text-xs">
+                            <input type="text" id="chat-input" placeholder="Envie uma message..." class="flex-1 bg-zinc-950 border border-zinc-800 px-2 py-1 rounded text-white focus:outline-none focus:border-green-500 text-xs">
                             <button onclick="enviarMensagemChat()" class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded font-bold text-xs text-black">Enviar</button>
                         </div>
                     </div>
@@ -145,7 +144,7 @@
         let twitchPlayer = null;
         let idPartidaAtual = ""; 
         
-        // CORREÇÃO DEFINITIVA: Consome as rotas locais relativas do próprio Cloudflare Pages
+        // AJUSTADO: Sempre batendo internamente nas Pages Functions
         const URL_DO_SEU_WORKER = "/"; 
 
         async function carregarDados() {
@@ -173,7 +172,9 @@
                     
                     let porcentagemMeta = Math.min(Math.floor((data.acumulado / 500) * 100), 100); 
                     document.getElementById('fill-bar').style.width = porcentagemMeta + '%';
-                    document.getElementById('meta-porcentagem').innerText = meta-porcentagem ? porcentagemMeta + '%' : '0%';
+                    
+                    const elMeta = document.getElementById('meta-porcentagem');
+                    if (elMeta) elMeta.innerText = porcentagemMeta + '%';
                     
                     let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
                     if (!isExpired && dataSupa.videoId && dataSupa.videoId !== urlVideoAtual) {
@@ -196,7 +197,7 @@
             } catch (e) { console.error("Erro sincronização"); }
         }
 
-        // TRATAMENTO MATEMÁTICO: Converte frações (vírgula ou ponto) e elimina erros do Asaas
+        // TRATAMENTO MATEMÁTICO PERFEITO PARA CENTAVOS
         function abrirValorLivre() {
             let valorDigito = prompt("Digite o valor do seu lance (Exemplo: 1,25 ou 0,50):");
             if (!valorDigito) return;
@@ -269,7 +270,7 @@
         // LÓGICA DO MURAL DE FOTOS ROTATIVO (3 SEGUNDOS)
         const mockFotos = [
             "<div class='text-center p-2'><span class='text-green-400 font-bold'>🏆 Arnaldo V.</span><br><span class='text-[10px] text-zinc-400'>Apoiou com R$ 100,00</span></div>",
-            "<div class='text-center p-2'><span class='text-blue-400 font-bold'>🔥 Wilson Silva</span><br><span class='text-[10px] text-zinc-400'>Mando o Pix de R$ 50,00</span></div>",
+            "<div class='text-center p-2'><span class='text-blue-400 font-bold'>🔥 Wilson Silva</span><br><span class='text-[10px] text-zinc-400'>Mandou o Pix de R$ 50,00</span></div>",
             "<div class='text-center p-2'><span class='text-purple-400 font-bold'>⚽ Marcos T.</span><br><span class='text-[10px] text-zinc-400'>Entrou com R$ 20,00</span></div>"
         ];
         let fotoIdx = 0;
@@ -369,12 +370,10 @@
             carregarDados(); 
             startTimer(); 
             setInterval(carregarDados, 10000); 
-            // Inicia os motores do Mural e do Chat
             rodarMural();
             setInterval(rodarMural, 3000);
             setInterval(simularMensagens, 4000);
             
-            // Permitir envio pressionando "Enter" no chat
             document.getElementById('chat-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') enviarMensagemChat();
             });
