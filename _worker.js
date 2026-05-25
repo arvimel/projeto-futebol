@@ -20,10 +20,13 @@ export default {
     }
 
     // ─── ASAAS config ──────────────────────────────────────────────
-    // Usa a variável de ambiente ASSAS_API_KEY que você já tem configurada
     const ASAAS_KEY = env.ASSAS_API_KEY;
-    const ASAAS_BASE = "https://api.asaas.com/v3"; // produção
-    // Se for sandbox, troque por: https://sandbox.asaas.com/api/v3
+    const ASAAS_BASE = "https://api.asaas.com/v3";
+    const ASAAS_HEADERS = {
+      "access_token": ASAAS_KEY,
+      "Content-Type": "application/json",
+      "User-Agent": "projeto-futebol/1.0",
+    };
 
     // ═══════════════════════════════════════════════════════════════
     // POST /api/update  →  salva dados da sessão (admin)
@@ -86,10 +89,7 @@ export default {
         const cpfUnico = gerarCpfFake();
         const createRes = await fetch(`${ASAAS_BASE}/customers`, {
           method: "POST",
-          headers: {
-            access_token: ASAAS_KEY,
-            "Content-Type": "application/json",
-          },
+          headers: ASAAS_HEADERS,
           body: JSON.stringify({
             name: nome,
             cpfCnpj: cpfUnico,
@@ -107,10 +107,7 @@ export default {
         // 2) Cria cobrança PIX
         const cobRes = await fetch(`${ASAAS_BASE}/payments`, {
           method: "POST",
-          headers: {
-            access_token: ASAAS_KEY,
-            "Content-Type": "application/json",
-          },
+          headers: ASAAS_HEADERS,
           body: JSON.stringify({
             customer: customerId,
             billingType: "PIX",
@@ -130,7 +127,7 @@ export default {
         // 3) Busca QR Code PIX
         const qrRes = await fetch(
           `${ASAAS_BASE}/payments/${cobData.id}/pixQrCode`,
-          { headers: { access_token: ASAAS_KEY } }
+          { headers: ASAAS_HEADERS }
         );
         const qrData = await qrRes.json();
 
@@ -161,7 +158,7 @@ export default {
 
       try {
         const res = await fetch(`${ASAAS_BASE}/payments/${paymentId}`, {
-          headers: { access_token: ASAAS_KEY },
+          headers: ASAAS_HEADERS,
         });
         const data = await res.json();
 
