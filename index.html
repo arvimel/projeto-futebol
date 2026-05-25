@@ -14,6 +14,9 @@
         .btn-valor:hover { background: #059669; transform: scale(1.05); }
         .destaque-times { font-size: 1.75rem; line-height: 1; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
         .copia-cola-input { width: 100%; padding: 8px; background: #18181b; border: 1px solid #3f3f46; color: #34d399; border-radius: 6px; text-align: center; font-size: 12px; font-family: monospace; }
+        /* Esconder barra de rolagem do chat para manter o design limpo */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="p-1 sm:p-4 font-sans">
@@ -35,6 +38,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            
             <div class="lg:col-span-2 w-full flex flex-col gap-4">
                 <div class="video-container rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
                     
@@ -85,26 +89,53 @@
                 </div>
             </div>
 
-            <div class="space-y-4 w-full">
-                <div class="bg-zinc-900/30 p-5 rounded-xl border border-zinc-800 h-fit shadow-xl">
-                    <h3 class="text-[11px] font-black text-green-500 uppercase tracking-widest mb-4 border-b border-zinc-800 pb-2 italic text-center">🏆 Líder do Leilão PIX</h3>
-                    <div id="lider-box" class="bg-green-950/20 border-2 border-green-500/50 p-6 rounded-xl text-center mb-4 relative overflow-hidden">
+            <div class="space-y-4 w-full flex flex-col">
+                
+                <div class="bg-zinc-900/30 p-4 rounded-xl border border-zinc-800 shadow-xl">
+                    <h3 class="text-[11px] font-black text-green-500 uppercase tracking-widest mb-3 border-b border-zinc-800 pb-2 italic text-center">🏆 Líder do Leilão PIX</h3>
+                    <div id="lider-box" class="bg-green-950/20 border-2 border-green-500/50 p-4 rounded-xl text-center relative overflow-hidden">
                         <div class="absolute top-0 right-0 bg-green-500 text-black font-black text-[8px] px-2 py-0.5 rounded-bl-lg">TOP 1</div>
-                        <p class="text-[10px] text-zinc-400 uppercase font-bold mb-1">Dono do Maior Lance</p>
-                        <p id="display-lider-nome" class="text-2xl font-black text-white uppercase italic tracking-tighter leading-none mb-2">AGUARDANDO...</p>
-                        <div class="inline-block bg-black px-4 py-1 rounded-full border border-green-500/30">
-                            <p class="text-2xl font-black text-green-500 leading-none">R$ <span id="display-lider-valor">0,00</span></p>
+                        <p class="text-[9px] text-zinc-400 uppercase font-bold mb-0.5">Dono do Maior Lance</p>
+                        <p id="display-lider-nome" class="text-xl font-black text-white uppercase italic tracking-tighter leading-none mb-2">AGUARDANDO...</p>
+                        <div class="inline-block bg-black px-3 py-0.5 rounded-full border border-green-500/30">
+                            <p class="text-xl font-black text-green-500 leading-none">R$ <span id="display-lider-valor">0,00</span></p>
                         </div>
                     </div>
-                    <p class="text-[9px] text-zinc-600 text-center uppercase font-bold">Faça uma doação maior para virar o Líder!</p>
                 </div>
 
-                <div class="bg-yellow-500/10 border border-yellow-500/30 p-4 rounded-xl flex items-center gap-3">
-                    <div class="text-xl">💡</div>
-                    <p class="text-xs font-bold text-yellow-200 uppercase italic leading-tight tracking-tight">
-                        O maior lance individual via PIX leva o prêmio acumulado no final do jogo!
-                    </p>
+                <div class="bg-zinc-900/30 p-3 rounded-xl border border-zinc-800 shadow-xl text-center">
+                    <h4 class="text-[9px] font-black text-yellow-500 uppercase tracking-wider mb-2 italic">📸 Galeria de Apoiadores</h4>
+                    <div class="relative w-full h-24 bg-black rounded-lg overflow-hidden border border-zinc-800 flex items-center justify-center">
+                        <div id="mural-slide" class="w-full h-full flex items-center justify-center text-xs font-bold text-zinc-500 uppercase tracking-tight p-2">
+                            Apoiadores da Rodada
+                        </div>
+                    </div>
                 </div>
+
+                <div class="bg-zinc-900/40 border border-zinc-800 rounded-xl flex flex-col flex-1 h-[280px] shadow-xl overflow-hidden">
+                    <div class="bg-zinc-900/80 px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
+                        <span class="text-[10px] font-black text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span> Chat da Live
+                        </span>
+                    </div>
+                    <div id="chat-mensagens" class="flex-1 p-3 overflow-y-auto space-y-2 text-xs no-scrollbar">
+                        <div class="text-zinc-500 italic">Conectando ao chat ao vivo...</div>
+                    </div>
+                    <div class="p-2 bg-zinc-900/60 border-t border-zinc-800 space-y-1.5">
+                        <div class="flex gap-1 justify-center">
+                            <button onclick="inserirEmoji('⚽')" class="hover:scale-125 transition text-sm">⚽</button>
+                            <button onclick="inserirEmoji('🔥')" class="hover:scale-125 transition text-sm">🔥</button>
+                            <button onclick="inserirEmoji('GOOOL!')" class="bg-green-600/30 text-green-400 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase">Gool</button>
+                            <button onclick="inserirEmoji('🏆')" class="hover:scale-125 transition text-sm">🏆</button>
+                            <button onclick="inserirEmoji('👏')" class="hover:scale-125 transition text-sm">👏</button>
+                        </div>
+                        <div class="flex gap-1">
+                            <input type="text" id="chat-input" placeholder="Envie uma mensagem..." class="flex-1 bg-zinc-950 border border-zinc-800 px-2 py-1 rounded text-white focus:outline-none focus:border-green-500 text-xs">
+                            <button onclick="enviarMensagemChat()" class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded font-bold text-xs text-black">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -114,8 +145,8 @@
         let twitchPlayer = null;
         let idPartidaAtual = ""; 
         
-        // CORREÇÃO MESTRE: Aponta de volta para o endereço real da sua API Worker na Cloudflare
-        const URL_DO_SEU_WORKER = "https://futebol-api.arnaldovieirademelo.workers.dev/"; 
+        // CORREÇÃO DEFINITIVA: Consome as rotas locais relativas do próprio Cloudflare Pages
+        const URL_DO_SEU_WORKER = "/"; 
 
         async function carregarDados() {
             try {
@@ -142,7 +173,7 @@
                     
                     let porcentagemMeta = Math.min(Math.floor((data.acumulado / 500) * 100), 100); 
                     document.getElementById('fill-bar').style.width = porcentagemMeta + '%';
-                    document.getElementById('meta-porcentagem').innerText = porcentagemMeta + '%';
+                    document.getElementById('meta-porcentagem').innerText = meta-porcentagem ? porcentagemMeta + '%' : '0%';
                     
                     let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
                     if (!isExpired && dataSupa.videoId && dataSupa.videoId !== urlVideoAtual) {
@@ -165,12 +196,11 @@
             } catch (e) { console.error("Erro sincronização"); }
         }
 
-        // FUNÇÃO DE VALOR LIVRE ATUALIZADA CONTRA ERROS DE DIGITAÇÃO (ACEITA 1,25 / 0,50 / 1,32)
+        // TRATAMENTO MATEMÁTICO: Converte frações (vírgula ou ponto) e elimina erros do Asaas
         function abrirValorLivre() {
-            let valorDigito = prompt("Digite o valor do seu lance (Exemplo: 1,25 ou 10,50):");
+            let valorDigito = prompt("Digite o valor do seu lance (Exemplo: 1,25 ou 0,50):");
             if (!valorDigito) return;
 
-            // Tratamento Antifraude/Erro: Substitui vírgula por ponto e limpa espaços
             valorDigito = valorDigito.replace(',', '.').replace('R$', '').trim();
             const valorFinal = parseFloat(valorDigito);
 
@@ -209,7 +239,7 @@
                     retornarTelaValores();
                 }
             } catch (err) {
-                alert("Erro ao conectar com a API do Worker.");
+                alert("Erro ao conectar com o servidor.");
                 retornarTelaValores();
             }
         }
@@ -236,6 +266,60 @@
             }, 3000);
         }
 
+        // LÓGICA DO MURAL DE FOTOS ROTATIVO (3 SEGUNDOS)
+        const mockFotos = [
+            "<div class='text-center p-2'><span class='text-green-400 font-bold'>🏆 Arnaldo V.</span><br><span class='text-[10px] text-zinc-400'>Apoiou com R$ 100,00</span></div>",
+            "<div class='text-center p-2'><span class='text-blue-400 font-bold'>🔥 Wilson Silva</span><br><span class='text-[10px] text-zinc-400'>Mando o Pix de R$ 50,00</span></div>",
+            "<div class='text-center p-2'><span class='text-purple-400 font-bold'>⚽ Marcos T.</span><br><span class='text-[10px] text-zinc-400'>Entrou com R$ 20,00</span></div>"
+        ];
+        let fotoIdx = 0;
+        function rodarMural() {
+            const el = document.getElementById('mural-slide');
+            if(el) {
+                el.innerHTML = mockFotos[fotoIdx];
+                fotoIdx = (fotoIdx + 1) % mockFotos.length;
+            }
+        }
+
+        // LÓGICA DO CHAT SIMULADO + ENVIO EM REAL-TIME
+        const mensagensPreDefinidas = [
+            { nome: "Lucas_Fla", msg: "Essa transmissão tá lisa demais! ⚽🔥" },
+            { nome: "Perito_Calculista", msg: "Lance feito! Vou levar esse prêmio no final do jogo." },
+            { nome: "Rodrigo_Melo", msg: "Juiz tá roubando muito, tá doido kkk" },
+            { nome: "Canal_Sport_Pro", msg: "⚠️ Apoie a live para garantir seu sinal sem travas!" },
+            { nome: "Wilson_Net", msg: "Pix feito galera, liberou na mesma hora aqui!" }
+        ];
+        
+        function simularMensagens() {
+            const chatBox = document.getElementById('chat-mensagens');
+            if (chatBox.innerHTML.includes("Conectando")) chatBox.innerHTML = "";
+            
+            const msgAleatoria = mensagensPreDefinidas[Math.floor(Math.random() * mensagensPreDefinidas.length)];
+            const div = document.createElement('div');
+            div.innerHTML = `<span class="font-black text-green-400">${msgAleatoria.nome}:</span> <span class="text-zinc-200">${msgAleatoria.msg}</span>`;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function inserirEmoji(emoji) {
+            document.getElementById('chat-input').value += emoji;
+        }
+
+        function enviarMensagemChat() {
+            const input = document.getElementById('chat-input');
+            if (!input.value.trim()) return;
+
+            const chatBox = document.getElementById('chat-mensagens');
+            if (chatBox.innerHTML.includes("Conectando")) chatBox.innerHTML = "";
+
+            const div = document.createElement('div');
+            div.innerHTML = `<span class="font-black text-yellow-500">Você:</span> <span class="text-white">${input.value}</span>`;
+            chatBox.appendChild(div);
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // TRAVA ANTIFRAUDE ORIGINAL
         const duration = 5 * 60;
         const timerDisplay = document.getElementById('timer');
         const paywall = document.getElementById('paywall');
@@ -285,6 +369,15 @@
             carregarDados(); 
             startTimer(); 
             setInterval(carregarDados, 10000); 
+            // Inicia os motores do Mural e do Chat
+            rodarMural();
+            setInterval(rodarMural, 3000);
+            setInterval(simularMensagens, 4000);
+            
+            // Permitir envio pressionando "Enter" no chat
+            document.getElementById('chat-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') enviarMensagemChat();
+            });
         };
     </script>
 </body>
