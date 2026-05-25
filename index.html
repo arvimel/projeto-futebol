@@ -578,21 +578,26 @@
                     return;
                 }
 
-                let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
+              let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
                 if (!isExpired && dataSupa.videoId && dataSupa.videoId !== urlVideoAtual) {
                     urlVideoAtual = dataSupa.videoId;
-                    if (dataSupa.videoId.includes('twitch.tv')) {
-                        const canal = dataSupa.videoId.split('/').pop().trim();
-                        document.getElementById('twitch-inline-player').innerHTML = '';
-                        twitchPlayer = new Twitch.Player("twitch-inline-player", {
-                            channel: canal,
-                            width: "100%",
-                            height: "100%",
-                            parent: [window.location.hostname],
-                            autoplay: true,
-                            muted: false
-                        });
+                    
+                    // Tratamento inteligente: isola o ID do canal não importa como foi digitado no ADM
+                    let canal = dataSupa.videoId;
+                    if (canal.includes('twitch.tv')) {
+                        canal = canal.split('/').filter(Boolean).pop().trim();
                     }
+
+                    document.getElementById('twitch-inline-player').innerHTML = '';
+                    twitchPlayer = new Twitch.Player("twitch-inline-player", {
+                        channel: canal,
+                        width: "100%",
+                        height: "100%",
+                        parent: [window.location.hostname],
+                        autoplay: true,
+                        muted: true // Muted garante autoplay instantâneo nos navegadores mobile
+                    });
+                }
                 }
             } catch (e) { console.error("Erro sincronização", e); }
         }
