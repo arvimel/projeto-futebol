@@ -166,13 +166,29 @@
             }
         }
 
-        function liberarManual() {
+        async function liberarManual() {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
-            const token = document.getElementById('token-liberacao').value.trim();
-            if (!token) return alert('Digite um token de identificação.');
-            const link = `${window.location.origin}/?liberar=${encodeURIComponent(token)}&ts=${Date.now()}`;
-            document.getElementById('link-liberacao').classList.remove('hidden');
-            document.getElementById('link-liberacao-valor').value = link;
+            const identificacao = document.getElementById('token-liberacao').value.trim();
+            if (!identificacao) return alert('Digite um identificador (ex: nome do usuário).');
+
+            try {
+                const res = await fetch('/api/gerar-token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-admin-senha': SENHA_MASTER
+                    },
+                    body: JSON.stringify({ identificacao })
+                });
+                const data = await res.json();
+                if (!data.success) return alert('Erro ao gerar token: ' + (data.error || 'desconhecido'));
+
+                const link = `${window.location.origin}/?token=${data.token}`;
+                document.getElementById('link-liberacao').classList.remove('hidden');
+                document.getElementById('link-liberacao-valor').value = link;
+            } catch(e) {
+                alert('Erro de rede ao gerar token. Tente novamente.');
+            }
         }
 
         function copiarLinkLiberacao() {
