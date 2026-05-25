@@ -203,6 +203,18 @@ export default {
       }
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // POST /api/zerar-leilao  →  zera acumulado e líder (admin)
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "POST" && url.pathname === "/api/zerar-leilao") {
+      const senhaHeader = request.headers.get("x-admin-senha");
+      if (senhaHeader !== "23100311") {
+        return new Response("Unauthorized", { status: 401 });
+      }
+      await env.DB.put("LEILAO_STATUS", JSON.stringify({ acumulado: 0, lider: "Ninguém ainda", maiorLance: 0 }));
+      return json({ success: true });
+    }
+
     return env.ASSETS.fetch(request);
   },
 };
