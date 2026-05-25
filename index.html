@@ -114,8 +114,8 @@
         let twitchPlayer = null;
         let idPartidaAtual = ""; 
         
-        // CORREÇÃO: Aponta diretamente para as rotas internas de Function do seu Pages
-        const URL_DO_SEU_WORKER = window.location.origin + "/"; 
+        // CORREÇÃO MESTRE: Aponta de volta para o endereço real da sua API Worker na Cloudflare
+        const URL_DO_SEU_WORKER = "https://futebol-api.arnaldovieirademelo.workers.dev/"; 
 
         async function carregarDados() {
             try {
@@ -165,13 +165,19 @@
             } catch (e) { console.error("Erro sincronização"); }
         }
 
-        // FUNÇÃO DE VALOR LIVRE SOLICITADO
+        // FUNÇÃO DE VALOR LIVRE ATUALIZADA CONTRA ERROS DE DIGITAÇÃO (ACEITA 1,25 / 0,50 / 1,32)
         function abrirValorLivre() {
-            const valorDigito = prompt("Digite o valor do seu lance (Ex: 15.50 ou 250):");
-            if (!valorDigito || isNaN(valorDigito) || parseFloat(valorDigito) <= 0) {
+            let valorDigito = prompt("Digite o valor do seu lance (Exemplo: 1,25 ou 10,50):");
+            if (!valorDigito) return;
+
+            // Tratamento Antifraude/Erro: Substitui vírgula por ponto e limpa espaços
+            valorDigito = valorDigito.replace(',', '.').replace('R$', '').trim();
+            const valorFinal = parseFloat(valorDigito);
+
+            if (isNaN(valorFinal) || valorFinal <= 0) {
                 return alert("Por favor, insira um valor numérico válido maior que zero.");
             }
-            gerarPixAsaas(parseFloat(valorDigito));
+            gerarPixAsaas(valorFinal);
         }
 
         async function gerarPixAsaas(valorEscolhido) {
@@ -203,7 +209,7 @@
                     retornarTelaValores();
                 }
             } catch (err) {
-                alert("Erro ao conectar com a API do servidor.");
+                alert("Erro ao conectar com a API do Worker.");
                 retornarTelaValores();
             }
         }
