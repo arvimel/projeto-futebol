@@ -76,11 +76,7 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
-            scrollbar-width: thin;
-            scrollbar-color: #27272a transparent;
         }
-        #chat-messages::-webkit-scrollbar { width: 4px; }
-        #chat-messages::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
 
         .chat-msg { font-size: 12px; line-height: 1.5; word-break: break-word; padding: 2px 0; }
         .chat-msg .chat-nome { font-weight: 900; }
@@ -89,7 +85,6 @@
         .chat-msg.tipo-sistema { color: #71717a; font-style: italic; font-size: 11px; }
         .chat-msg.tipo-voce .chat-nome { color: #60a5fa; }
 
-        /* Emoji picker */
         #emoji-picker {
             background: #18181b;
             border: 1px solid #27272a;
@@ -104,7 +99,6 @@
         .emoji-btn { background: none; border: none; cursor: pointer; font-size: 20px; padding: 2px; border-radius: 6px; transition: background 0.15s; }
         .emoji-btn:hover { background: #27272a; }
 
-        /* Figurinhas */
         #sticker-picker {
             background: #18181b;
             border: 1px solid #27272a;
@@ -130,7 +124,6 @@
         }
         .sticker-btn:hover { background: #3f3f46; transform: scale(1.05); }
 
-        /* Unread badge */
         #unread-badge {
             background: #ef4444;
             color: white;
@@ -147,16 +140,7 @@
             right: -4px;
         }
         #unread-badge.show { display: flex; }
-
-        /* Trava de chat */
-        #chat-locked-msg {
-            padding: 8px 12px;
-            background: #18181b;
-            border-top: 1px solid #27272a;
-            font-size: 11px;
-            color: #a1a1aa;
-            text-align: center;
-        }
+        #chat-locked-msg { padding: 8px 12px; background: #18181b; border-top: 1px solid #27272a; font-size: 11px; color: #a1a1aa; text-align: center; }
     </style>
 </head>
 <body class="p-1 sm:p-4 font-sans">
@@ -180,6 +164,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div class="lg:col-span-2 w-full flex flex-col gap-4">
                 <div class="video-container rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
+                    
                     <div id="paywall">
                         <div id="paywall-valores" class="flex flex-col items-center w-full max-w-md">
                             <h2 class="text-3xl font-black text-yellow-500 mb-2 uppercase italic">🔒 Sinal Bloqueado</h2>
@@ -210,7 +195,6 @@
                             </div>
                         </div>
 
-                        <!-- TELA PIX ESTÁTICO R$2 -->
                         <div id="paywall-assistir" class="hidden flex-col items-center w-full max-w-md bg-zinc-900 p-4 rounded-xl border-2 border-blue-500">
                             <p class="text-blue-300 text-xs font-black uppercase mb-1">📺 PIX para Assistir — R$ 2,00</p>
                             <p class="text-zinc-400 text-[10px] text-center mb-3">Escaneie o QR Code ou copie a chave PIX abaixo e pague R$ 2,00. Após o pagamento, aguarde a liberação manual.</p>
@@ -240,7 +224,7 @@
                             <button onclick="retornarTelaValores()" class="mt-3 text-zinc-500 text-xs underline">← Voltar e escolher outro valor</button>
                         </div>
                     </div>
-
+                    
                     <div id="wrapper-player" class="w-full h-full">
                         <div id="twitch-inline-player" class="w-full h-full"></div>
                     </div>
@@ -288,27 +272,20 @@
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         CHAT FLUTUANTE — canto inferior direito
-    ═══════════════════════════════════════════════════════════════ -->
     <div id="chat-wrapper">
-        <!-- Caixa do chat -->
-        <div id="chat-box">
-            <!-- Header -->
+        <div id="chat-box" class="hidden-chat">
             <div style="background:#18181b;padding:10px 14px;border-bottom:1px solid #27272a;display:flex;align-items:center;justify-content:space-between;">
                 <div style="display:flex;align-items:center;gap:8px;">
                     <span style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s infinite;"></span>
                     <span style="font-size:12px;font-weight:900;color:#a1a1aa;text-transform:uppercase;letter-spacing:0.06em;">Chat da Live</span>
                 </div>
-                <button onclick="fecharChat()" style="background:none;border:none;color:#52525b;cursor:pointer;font-size:18px;line-height:1;padding:0 2px;" title="Fechar chat">✕</button>
+                <button onclick="fecharChat()" style="background:none;border:none;color:#52525b;cursor:pointer;font-size:18px;line-height:1;padding:0 2px;">✕</button>
             </div>
 
-            <!-- Mensagens -->
             <div id="chat-messages" style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-height:200px;max-height:260px;scrollbar-width:thin;scrollbar-color:#27272a transparent;">
                 <div style="color:#52525b;font-style:italic;font-size:11px;">Conectando ao chat...</div>
             </div>
 
-            <!-- Figurinhas picker -->
             <div id="sticker-picker">
                 <button class="sticker-btn" onclick="enviarFigurinha('⚽ GOOOL!')">⚽ GOOOL!</button>
                 <button class="sticker-btn" onclick="enviarFigurinha('🔥 QUE JOGADA!')">🔥 QUE JOGADA!</button>
@@ -318,40 +295,27 @@
                 <button class="sticker-btn" onclick="enviarFigurinha('😂 HAHAHA!')">😂 HAHAHA!</button>
                 <button class="sticker-btn" onclick="enviarFigurinha('😤 JUIZ LADRÃO!')">😤 JUIZ LADRÃO!</button>
                 <button class="sticker-btn" onclick="enviarFigurinha('💸 PIX FEITO!')">💸 PIX FEITO!</button>
-                <button class="sticker-btn" onclick="enviarFigurinha('🎯 NA TRAVE!')">🎯 NA TRAVE!</button>
-                <button class="sticker-btn" onclick="enviarFigurinha('🥅 DEFENDEU!')">🥅 DEFENDEU!</button>
-                <button class="sticker-btn" onclick="enviarFigurinha('📺 SINAL TOP!')">📺 SINAL TOP!</button>
-                <button class="sticker-btn" onclick="enviarFigurinha('🚩 PÊNALTI!')">🚩 PÊNALTI!</button>
             </div>
 
-            <!-- Emoji picker -->
-            <div id="emoji-picker">
-                ⚽🔥🏆👏😂😤😱🎯💸🥅🚀❤️😍🤩🔴🟡🟢⬆️👍👎🤣😭🥳🎉💪🦁🐯🏅🎁🤑
-                <span style="display:none">placeholder</span>
-            </div>
+            <div id="emoji-picker"></div>
 
-            <!-- Input área -->
             <div id="chat-input-area" style="padding:8px 10px;background:#18181b;border-top:1px solid #27272a;display:flex;flex-direction:column;gap:6px;">
                 <div style="display:flex;gap:6px;align-items:center;">
-                    <button onclick="toggleEmoji()" title="Emojis" style="background:#27272a;border:none;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:16px;transition:background 0.15s;" onmouseover="this.style.background='#3f3f46'" onmouseout="this.style.background='#27272a'">😊</button>
-                    <button onclick="toggleStickers()" title="Figurinhas" style="background:#27272a;border:none;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:13px;font-weight:900;color:#d4d4d8;transition:background 0.15s;" onmouseover="this.style.background='#3f3f46'" onmouseout="this.style.background='#27272a'">🏷️</button>
-                    <input type="text" id="chat-input" placeholder="Mensagem..." maxlength="200"
-                        style="flex:1;background:#09090b;border:1px solid #27272a;border-radius:8px;padding:6px 10px;color:white;font-size:12px;outline:none;"
-                        onfocus="this.style.borderColor='#22c55e'" onblur="this.style.borderColor='#27272a'">
-                    <button onclick="enviarMsgChat()" style="background:#16a34a;border:none;border-radius:8px;padding:6px 12px;color:white;font-size:12px;font-weight:900;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">▶</button>
+                    <button onclick="toggleEmoji()" style="background:#27272a;border:none;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:16px;">😊</button>
+                    <button onclick="toggleStickers()" style="background:#27272a;border:none;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:13px;font-weight:900;color:#d4d4d8;">🏷️</button>
+                    <input type="text" id="chat-input" placeholder="Mensagem..." maxlength="200" style="flex:1;background:#09090b;border:1px solid #27272a;border-radius:8px;padding:6px 10px;color:white;font-size:12px;outline:none;">
+                    <button onclick="enviarMsgChat()" style="background:#16a34a;border:none;border-radius:8px;padding:6px 12px;color:white;font-size:12px;font-weight:900;cursor:pointer;">▶</button>
                 </div>
                 <div style="font-size:10px;color:#52525b;text-align:center;">
                     Enviando como: <span id="chat-nome-display" style="color:#86efac;font-weight:700;">Visitante</span>
                 </div>
             </div>
 
-            <!-- Mensagem de chat bloqueado (para quem não pagou e tempo acabou) -->
             <div id="chat-locked-msg" style="display:none;">
-                🔒 Apenas apoiadores podem enviar mensagens. <a onclick="document.getElementById('paywall').style.display='flex'" href="#" style="color:#4ade80;font-weight:700;">Apoiar agora</a>
+                🔒 Apenas apoiadores podem enviar mensagens. <a onclick="retornarTelaValores(); document.getElementById('paywall').style.display='flex'" href="#" style="color:#4ade80;font-weight:700;">Apoiar agora</a>
             </div>
         </div>
 
-        <!-- Botão flutuante para abrir/fechar -->
         <div style="position:relative;align-self:flex-end;">
             <button id="chat-toggle-btn" onclick="abrirChat()">
                 💬 <span id="chat-btn-label">Chat ao Vivo</span>
@@ -366,19 +330,32 @@
         let twitchPlayer = null;
         let idPartidaAtual = "";
         let premioAnterior = 0;
-        let epochAtual = 0;
+        const URL_DO_SEU_WORKER = "/";
 
-        // ─── Nome do usuário no chat ────────────────────────────────
-        // Tenta pegar o nome do localStorage (definido após pagar)
-        function getNomeChat() {
-            return localStorage.getItem('chat_nome') || 'Visitante';
+        // ─── Fingerprint Único Antifraude do Dispositivo ───
+        async function gerarFingerprintDispositivo() {
+            const dadosMatriz = [
+                navigator.userAgent,
+                screen.width + 'x' + screen.height,
+                navigator.language,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 2
+            ].join('||');
+            
+            // Transforma os dados em um hash SHA-256 rápido
+            const encoder = new TextEncoder();
+            const data = encoder.encode(dadosMatriz);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 32);
         }
+
+        function getNomeChat() { return localStorage.getItem('chat_nome') || 'Visitante'; }
         function setNomeChat(nome) {
             localStorage.setItem('chat_nome', nome);
             document.getElementById('chat-nome-display').innerText = nome;
         }
 
-        // ─── Chat: estado ───────────────────────────────────────────
         let chatAberto = false;
         let ultimoIdChat = 0;
         let unreadCount = 0;
@@ -407,6 +384,7 @@
             }
         }
 
+         Kakao = {};
         function toggleEmoji() {
             const ep = document.getElementById('emoji-picker');
             const sp = document.getElementById('sticker-picker');
@@ -424,10 +402,8 @@
 
         function gerarBotoesEmoji() {
             const ep = document.getElementById('emoji-picker');
-            const emojis = ['⚽','🔥','🏆','👏','😂','😤','😱','🎯','💸','🥅','🚀','❤️','😍','🤩','🔴','🟡','🟢','⬆️','👍','👎','🤣','😭','🥳','🎉','💪','🦁','🐯','🏅','🎁','🤑','😎','🫶','✅','⚡','🌟','💥','🏋️','🤝','🫡','😏'];
-            ep.innerHTML = emojis.map(e =>
-                `<button class="emoji-btn" onclick="inserirEmoji('${e}')">${e}</button>`
-            ).join('');
+            const emojis = ['⚽','🔥','🏆','👏','😂','😤','😱','🎯','💸','🥅','🚀','❤️','😍','🤩','🔴','🟡','🟢','⬆️','👍','👎','🤣','😭','🥳','🎉','💪','🦁','🐯','🏅','🎁','🤑','😎','🫶','✅','⚡','🌟','💥','🫡'];
+            ep.innerHTML = emojis.map(e => `<button class="emoji-btn" onclick="inserirEmoji('${e}')">${e}</button>`).join('');
         }
 
         function inserirEmoji(emoji) {
@@ -453,10 +429,7 @@
 
         async function postarMensagem(texto, ehFigurinha = false) {
             const isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
-            // Se o timer expirou e não tem nome salvo (não pagou), bloqueia
-            // Se ainda está no tempo grátis, pode mandar
             if (isExpired && !localStorage.getItem('chat_nome')) {
-                // Mostra mensagem de bloqueio
                 mostrarBloqueioChat();
                 return;
             }
@@ -471,7 +444,6 @@
                 }
             }
 
-            // Adiciona localmente já (otimista)
             adicionarMsgLocal({ nome, mensagem: texto, tipo: 'voce', id: Date.now(), ts: Date.now() });
 
             try {
@@ -490,7 +462,6 @@
 
         function adicionarMsgLocal(msg) {
             const box = document.getElementById('chat-messages');
-            // Remove placeholder inicial
             const placeholder = box.querySelector('[data-placeholder]');
             if (placeholder) placeholder.remove();
 
@@ -501,6 +472,7 @@
             let nomeColor = '#4ade80';
             if (msg.tipo === 'admin') nomeColor = '#facc15';
             if (msg.tipo === 'voce') nomeColor = '#60a5fa';
+            
             if (msg.tipo === 'sistema') {
                 div.innerHTML = `<span style="color:#71717a;font-style:italic;font-size:11px;">${msg.mensagem}</span>`;
             } else {
@@ -510,7 +482,6 @@
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
 
-            // Mantém no máximo 80 mensagens no DOM
             const msgs = box.querySelectorAll('.chat-msg');
             if (msgs.length > 80) msgs[0].remove();
         }
@@ -523,42 +494,29 @@
             try {
                 const res = await fetch('/api/chat');
                 const msgs = await res.json();
-
-                // Só processa mensagens novas
                 const novas = msgs.filter(m => m.id > ultimoIdChat);
                 if (novas.length === 0) return;
 
                 novas.forEach(msg => {
-                    // Evita duplicar as que o próprio usuário já adicionou localmente
                     const jaExiste = document.querySelector(`[data-id="${msg.id}"]`);
                     if (jaExiste) { jaExiste.dataset.id = msg.id; return; }
-
-                    // Remove placeholder
-                    const box = document.getElementById('chat-messages');
-                    const placeholder = box.querySelector('[data-placeholder]');
-                    if (placeholder) placeholder.remove();
-
                     adicionarMsgLocal(msg);
 
-                    // Conta não lidas se chat fechado
                     if (!chatAberto) {
                         unreadCount++;
                         atualizarBadge();
                     }
                 });
-
                 ultimoIdChat = msgs[msgs.length - 1]?.id || ultimoIdChat;
-            } catch(e) { /* silencioso */ }
+            } catch(e) {}
         }
 
-        // ─── Atualiza os valores na tela com animação ───────────────
         function atualizarDisplay(data) {
             const novoPremioBruto = data.acumulado || 0;
-            const novoPremioBRL = novoPremioBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             const elPremio = document.getElementById('display-premio');
 
             if (novoPremioBruto !== premioAnterior) {
-                elPremio.innerText = novoPremioBRL;
+                elPremio.innerText = novoPremioBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 elPremio.classList.remove('anim-count');
                 void elPremio.offsetWidth;
                 elPremio.classList.add('anim-count');
@@ -573,21 +531,20 @@
             const elMeta = document.getElementById('meta-porcentagem');
             if (elMeta) elMeta.innerText = porcentagem + '%';
 
-            // ── Detecta reset de leilão (epoch mudou) ──
-            // Quando admin zera o leilão, o epoch aumenta → reseta timer dos usuários
+            // Reset Inteligente por Epoch
             if (data.epoch) {
-    const epochSalvo = localStorage.getItem('soccer_epoch') || '0';
-    if (epochSalvo !== String(data.epoch)) {
-        localStorage.setItem('soccer_epoch', String(data.epoch));
-        // Só reseta se o timer já tinha expirado (não incomoda quem ainda tem tempo)
-        if (localStorage.getItem('soccer_timer_expired') === 'true') {
-            localStorage.removeItem('soccer_timer_expired');
-            localStorage.removeItem('soccer_timer');
-            alert('🔄 Nova rodada iniciada! Seu acesso grátis de 5 minutos foi renovado!');
-            window.location.reload();
+                const epochSalvo = localStorage.getItem('soccer_epoch') || '0';
+                if (epochSalvo !== String(data.epoch)) {
+                    localStorage.setItem('soccer_epoch', String(data.epoch));
+                    if (localStorage.getItem('soccer_timer_expired') === 'true') {
+                        localStorage.removeItem('soccer_timer_expired');
+                        localStorage.removeItem('soccer_timer');
+                        alert('🔄 Nova rodada iniciada! Seu acesso grátis foi renovado!');
+                        window.location.reload();
+                    }
+                }
+            }
         }
-    }
-}
 
         async function carregarDados() {
             try {
@@ -631,9 +588,8 @@
             } catch (e) { console.error("Erro sincronização", e); }
         }
 
-        // ─── Valor livre ────────────────────────────────────────────
         function abrirValorLivre() {
-            let valorDigito = prompt(`Digite o valor do seu lance (mínimo R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}):`)
+            let valorDigito = prompt(`Digite o valor do seu lance (mínimo R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}):`);
             if (!valorDigito) return;
             valorDigito = valorDigito.replace(',', '.').replace('R$', '').trim();
             const valorFinal = parseFloat(valorDigito);
@@ -648,7 +604,6 @@
             const nomeDoador = prompt("Digite seu nome completo para aparecer no Ranking:");
             if (!nomeDoador || !nomeDoador.trim()) return alert("Você precisa digitar seu nome para participar!");
 
-            // Salva o nome para o chat
             setNomeChat(nomeDoador.trim().substring(0, 25));
 
             document.getElementById('paywall-valores').classList.add('hidden');
@@ -662,12 +617,10 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ valor: valorEscolhido, nome: nomeDoador.trim() })
                 });
-
                 const data = await response.json();
 
                 if (data.success) {
-                    document.getElementById('container-img-qrcode').innerHTML =
-                        `<img src="data:image/png;base64,${data.encodedImage}" class="w-full h-full object-contain" />`;
+                    document.getElementById('container-img-qrcode').innerHTML = `<img src="data:image/png;base64,${data.encodedImage}" class="w-full h-full object-contain" />`;
                     document.getElementById('input-copia-cola').value = data.payload;
                     escutarPagamentoAsaas(data.paymentId);
                 } else {
@@ -675,7 +628,7 @@
                     retornarTelaValores();
                 }
             } catch (err) {
-                alert("Erro ao conectar com o servidor. Tente novamente.");
+                alert("Erro ao conectar com o servidor.");
                 retornarTelaValores();
             }
         }
@@ -711,12 +664,10 @@
 
         function retornarTelaValores() {
             document.getElementById('paywall-valores').classList.remove('hidden');
-            const qrcodeDiv = document.getElementById('paywall-qrcode');
-            qrcodeDiv.classList.add('hidden');
-            qrcodeDiv.classList.remove('flex');
-            const assistirDiv = document.getElementById('paywall-assistir');
-            assistirDiv.classList.add('hidden');
-            assistirDiv.classList.remove('flex');
+            document.getElementById('paywall-qrcode').classList.add('hidden');
+            document.getElementById('paywall-qrcode').classList.remove('flex');
+            document.getElementById('paywall-assistir').classList.add('hidden');
+            document.getElementById('paywall-assistir').classList.remove('flex');
         }
 
         function escutarPagamentoAsaas(paymentId) {
@@ -728,6 +679,11 @@
                         clearInterval(checagem);
                         localStorage.removeItem('soccer_timer_expired');
                         localStorage.removeItem('soccer_timer');
+                        
+                        // Vincula a liberação permanente ao Fingerprint do Dispositivo no LocalStorage
+                        const finger = await gerarFingerprintDispositivo();
+                        localStorage.setItem('soccer_token_device', finger);
+                        
                         alert("✅ Pagamento confirmado! Obrigado pelo apoio. Bom jogo!");
                         window.location.reload();
                     }
@@ -735,7 +691,6 @@
             }, 3000);
         }
 
-        // ─── Mural de apoiadores ────────────────────────────────────
         const mockFotos = [
             "<div class='text-center p-2'><span class='text-green-400 font-bold'>🏆 Arnaldo V.</span><br><span class='text-[10px] text-zinc-400'>Apoiou com R$ 100,00</span></div>",
             "<div class='text-center p-2'><span class='text-blue-400 font-bold'>🔥 Wilson Silva</span><br><span class='text-[10px] text-zinc-400'>Mandou o Pix de R$ 50,00</span></div>",
@@ -747,13 +702,24 @@
             if (el) { el.innerHTML = mockFotos[fotoIdx]; fotoIdx = (fotoIdx + 1) % mockFotos.length; }
         }
 
-        // ─── Timer / Paywall ────────────────────────────────────────
         const duration = 5 * 60;
         const timerDisplay = document.getElementById('timer');
         const paywall = document.getElementById('paywall');
         const videoWrapper = document.getElementById('wrapper-player');
 
-        function startTimer() {
+        async function startTimer() {
+            // --- NOVA VALIDAÇÃO ANTIFRAUDE: CHECAGEM POR DEVICE FINGERPRINT ---
+            const tokenDevice = localStorage.getItem('soccer_token_device');
+            const currentFinger = await gerarFingerprintDispositivo();
+            
+            // Se o token salvo bater com o hardware atual, o usuário burlou ou já pagou legitimamente.
+            if (tokenDevice === currentFinger) {
+                localStorage.removeItem('soccer_timer_expired');
+                localStorage.setItem('soccer_timer', duration);
+                carregarDados();
+                return; // Ignora o bloqueio e mantém o sinal aberto
+            }
+
             if (localStorage.getItem('soccer_timer_expired') === 'true') { bloquearAcesso(); return; }
             let timeLeft = localStorage.getItem('soccer_timer');
             timeLeft = (timeLeft === null) ? duration : parseInt(timeLeft);
@@ -775,26 +741,30 @@
             paywall.style.display = 'flex';
             videoWrapper.innerHTML = '';
             if (twitchPlayer) { try { twitchPlayer.pause(); } catch(e){} }
-            // Bloqueia input do chat para não-pagantes
             if (!localStorage.getItem('chat_nome')) mostrarBloqueioChat();
         }
 
-        window.onload = () => {
+        window.onload = async () => {
+            // --- UPGRADE: VALIDADOR DINÂMICO VIA URL E RE-AUTENTICAÇÃO POR FINGERPRINT ---
             const params = new URLSearchParams(window.location.search);
             if (params.get('liberar')) {
                 localStorage.removeItem('soccer_timer_expired');
                 localStorage.removeItem('soccer_timer');
+                
+                // Gera o token atrelado ao hardware para evitar compartilhamento de link externo
+                const finger = await gerarFingerprintDispositivo();
+                localStorage.setItem('soccer_token_device', finger);
+                
                 window.history.replaceState({}, '', '/');
-                alert('✅ Acesso liberado! Bom jogo!');
+                alert('✅ Acesso validado e vinculado a este dispositivo! Bom jogo!');
             }
 
-            // Define nome no display
             document.getElementById('chat-nome-display').innerText = getNomeChat();
 
             carregarDados();
-            startTimer();
+            await startTimer();
             setInterval(carregarDados, 5000);
-            setInterval(buscarMensagensChat, 2500); // polling do chat a cada 2,5s
+            setInterval(buscarMensagensChat, 2500);
             rodarMural();
             setInterval(rodarMural, 3000);
 
@@ -802,10 +772,7 @@
                 if (e.key === 'Enter') enviarMsgChat();
             });
 
-            // Inicia chat fechado — abre ao clicar no botão
             fecharChat();
-
-
         };
     </script>
 </body>
