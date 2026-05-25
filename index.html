@@ -10,9 +10,10 @@
         body { background-color: #050505; color: white; overflow-x: hidden; }
         .video-container { aspect-ratio: 16/9; background: #000; position: relative; }
         #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.97); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 2px solid #10b981; }
-        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 13px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; text-decoration: none; display: block; }
+        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-size: 13px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; text-decoration: none; cursor: pointer; }
         .btn-valor:hover { background: #059669; transform: scale(1.05); }
         .destaque-times { font-size: 1.75rem; line-height: 1; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
+        .copia-cola-input { width: 100%; padding: 8px; background: #18181b; border: 1px solid #3f3f46; color: #34d399; border-radius: 6px; text-align: center; font-size: 12px; font-family: monospace; }
     </style>
 </head>
 <body class="p-2 sm:p-4 font-sans">
@@ -38,10 +39,28 @@
                 <div class="video-container rounded-xl overflow-hidden shadow-2xl border border-zinc-800">
                     
                     <div id="paywall">
-                        <h2 class="text-2xl font-black text-yellow-500 mb-1 uppercase italic">Sinal Bloqueado</h2>
-                        <p class="mb-4 text-zinc-400 text-sm text-center">Doação mínima de R$ 5,00 para liberar o acesso HD</p>
-                        <div id="grid-links" class="grid grid-cols-3 gap-2 w-full max-w-md">
+                        <div id="paywall-valores" class="flex flex-col items-center w-full max-w-md">
+                            <h2 class="text-2xl font-black text-yellow-500 mb-1 uppercase italic">Sinal Bloqueado</h2>
+                            <p class="mb-4 text-zinc-400 text-sm text-center">Faça um apoio via PIX profissional. O maior lance leva o prêmio no final!</p>
+                            <div class="grid grid-cols-3 gap-2 w-full mb-4">
+                                <button onclick="gerarPixAsaas(5)" class="btn-valor">R$ 5,00</button>
+                                <button onclick="gerarPixAsaas(10)" class="btn-valor">R$ 10,00</button>
+                                <button onclick="gerarPixAsaas(20)" class="btn-valor">R$ 20,00</button>
+                                <button onclick="gerarPixAsaas(50)" class="btn-valor">R$ 50,00</button>
+                                <button onclick="gerarPixAsaas(100)" class="btn-valor">R$ 100,00</button>
+                                <button onclick="gerarPixAsaas(200)" class="btn-valor">R$ 200,00</button>
                             </div>
+                        </div>
+
+                        <div id="paywall-qrcode" class="hidden flex flex-col items-center w-full max-w-md bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+                            <p class="text-xs font-bold text-yellow-500 uppercase mb-2">Escaneie o código abaixo para pagar:</p>
+                            <div id="container-img-qrcode" class="bg-white p-2 rounded-lg w-44 h-44 flex items-center justify-content0 shadow-xl mb-3">
+                                <span class="text-black text-xs">Gerando PIX...</span>
+                            </div>
+                            <p class="text-[10px] text-zinc-400 uppercase mb-1">Ou use o PIX Copia e Cola:</p>
+                            <input type="text" id="input-copia-cola" class="copia-cola-input mb-3" readonly value="Carregando...">
+                            <p class="text-xs text-green-500 animate-pulse font-bold uppercase text-center">Aguardando pagamento... O jogo abrirá sozinho!</p>
+                        </div>
                     </div>
                     
                     <div id="wrapper-player" class="w-full h-full">
@@ -52,7 +71,7 @@
                 <div class="mt-4 bg-yellow-500/10 border-2 border-yellow-500/30 p-4 rounded-xl flex items-center gap-4">
                     <div class="text-2xl">💡</div>
                     <p class="text-sm font-bold text-yellow-200 uppercase italic leading-tight tracking-tight">
-                        O maior somatório de doações <span class="text-yellow-500 underline">vinculadas ao mesmo e-mail</span> leva o prêmio no final do jogo!
+                        O maior lance individual via PIX leva o prêmio acumulado no final do jogo! O ranking atualiza na hora.
                     </p>
                 </div>
 
@@ -67,7 +86,7 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="text-[10px] text-zinc-500 uppercase font-black mb-1">Prêmio Acumulado (60%)</p>
+                        <p class="text-[10px] text-zinc-500 uppercase font-black mb-1">Prêmio Acumulado</p>
                         <p class="text-3xl font-black text-green-500 italic leading-none tracking-tighter">R$ <span id="display-premio">...</span></p>
                     </div>
                 </div>
@@ -84,7 +103,7 @@
                             <p class="text-2xl font-black text-green-500 leading-none">R$ <span id="display-lider-valor">0,00</span></p>
                         </div>
                     </div>
-                    <p class="text-[9px] text-zinc-600 text-center uppercase font-bold">Faça mais doações para subir no ranking!</p>
+                    <p class="text-[9px] text-zinc-600 text-center uppercase font-bold">Faça uma doação maior para virar o Líder!</p>
                 </div>
             </div>
         </div>
@@ -93,28 +112,38 @@
     <script>
         let urlVideoAtual = ""; 
         let twitchPlayer = null;
+        // MUDANÇA: Coloque aqui o link real do seu Worker da Cloudflare (ex: https://seu-worker.subdominio.workers.dev)
+        const URL_DO_SEU_WORKER = "/"; 
 
         async function carregarDados() {
             try {
-                const res = await fetch('/api/data');
+                // Ajustado para buscar os dados de leilão unificados do seu Worker
+                const res = await fetch(`${URL_DO_SEU_WORKER}api/status-leilao`);
                 const data = await res.json();
                 
-                if (data.titulo) {
-                    document.getElementById('display-titulo').innerText = data.titulo;
-                    document.getElementById('display-premio').innerText = data.premio;
-                    document.getElementById('fill-bar').style.width = data.meta + '%';
-                    document.getElementById('meta-porcentagem').innerText = data.meta + '%';
-                    document.getElementById('display-lider-nome').innerText = data.liderNome || "AGUARDANDO...";
-                    document.getElementById('display-lider-valor').innerText = data.liderValor || "0,00";
+                // Puxa as informações da partida do seu endpoint padrão do Supabase
+                const resSupabase = await fetch('/api/data');
+                const dataSupa = await resSupabase.json();
+                
+                if (dataSupa.titulo) {
+                    document.getElementById('display-titulo').innerText = dataSupa.titulo;
+                    
+                    // Atualiza o painel do leilão em tempo real baseado no banco de dados KV/Supabase
+                    document.getElementById('display-premio').innerText = data.acumulado.toFixed(2);
+                    document.getElementById('display-lider-nome').innerText = data.lider.toUpperCase();
+                    document.getElementById('display-lider-valor').innerText = data.maiorLance.toFixed(2);
+                    
+                    // Cálculo da barra de meta dinâmico com base no prêmio
+                    let porcentagemMeta = Math.min(Math.floor((data.acumulado / 500) * 100), 100); // Ex: Meta de R$ 500
+                    document.getElementById('fill-bar').style.width = porcentagemMeta + '%';
+                    document.getElementById('meta-porcentagem').innerText = porcentagemMeta + '%';
                     
                     // LÓGICA DO TWITCH:
-                    // Se o tempo não tiver expirado, mantém o sinal rodando
                     let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
-                    if (!isExpired && data.videoId && data.videoId !== urlVideoAtual) {
-                        urlVideoAtual = data.videoId;
-                        if (data.videoId.includes('twitch.tv')) {
-                            const canal = data.videoId.split('/').pop().trim();
-                            
+                    if (!isExpired && dataSupa.videoId && dataSupa.videoId !== urlVideoAtual) {
+                        urlVideoAtual = dataSupa.videoId;
+                        if (dataSupa.videoId.includes('twitch.tv')) {
+                            const canal = dataSupa.videoId.split('/').pop().trim();
                             document.getElementById('twitch-inline-player').innerHTML = '';
                             
                             twitchPlayer = new Twitch.Player("twitch-inline-player", {
@@ -127,34 +156,83 @@
                             });
                         }
                     }
-
-                    // LINKS DO APORTE (KIWIFY)
-                    const grid = document.getElementById('grid-links');
-                    if(data.links) {
-                        grid.innerHTML = '';
-                        Object.keys(data.links).forEach(valor => {
-                            if (data.links[valor]) {
-                                const a = document.createElement('a');
-                                a.href = data.links[valor];
-                                a.target = "_blank";
-                                a.className = "btn-valor";
-                                a.innerText = `R$ ${valor}`;
-                                grid.appendChild(a);
-                            }
-                        });
-                    }
                 }
             } catch (e) { console.error("Erro sincronização"); }
         }
 
-        // --- TRAVA ANTIFRAUDE ROBUSTA ORIGINAL ---
+        // --- FUNÇÃO PARA GERAR O PIX DINÂMICO VIA ASAAS ---
+        async function gerarPixAsaas(valorEscolhido) {
+            const nomeDoador = prompt("Digite seu nome completo para aparecer no Ranking:");
+            if (!nomeDoador) return alert("Você precisa digitar seu nome para participar do leilão!");
+
+            // Altera o layout do paywall para o modo carregando QR Code
+            document.getElementById('paywall-valores').classList.add('hidden');
+            document.getElementById('paywall-qrcode').classList.remove('hidden');
+
+            try {
+                const response = await fetch(`${URL_DO_SEU_WORKER}api/criar-pix`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        valor: valorEscolhido,
+                        nome: nomeDoador,
+                        telefone: ""
+                    })
+                });
+                
+                const data = await response.json();
+
+                if (data.success) {
+                    // Injeta a imagem QR Code Base64 retornada pelo Asaas
+                    document.getElementById('container-img-qrcode').innerHTML = `<img src="data:image/png;base64,${data.encodedImage}" class="w-full h-full object-contain" />`;
+                    // Injeta a chave copia e cola no input
+                    document.getElementById('input-copia-cola').value = data.payload;
+
+                    // Inicializa a escuta em tempo real do pagamento
+                    escutarPagamentoAsaas(data.paymentId);
+                } else {
+                    alert("Erro do Asaas: " + data.error);
+                    retornarTelaValores();
+                }
+            } catch (err) {
+                alert("Erro ao conectar com a API do Worker.");
+                retornarTelaValores();
+            }
+        }
+
+        function retornarTelaValores() {
+            document.getElementById('paywall-valores').classList.remove('hidden');
+            document.getElementById('paywall-qrcode').classList.add('hidden');
+        }
+
+        // --- MONITORA O PAGAMENTO A CADA 3 SEGUNDOS PARA FAZER A LIBERAÇÃO AUTOMÁTICA ---
+        function escutarPagamentoAsaas(paymentId) {
+            const checagem = setInterval(async () => {
+                try {
+                    const res = await fetch(`${URL_DO_SEU_WORKER}api/verificar-liberacao?id=${paymentId}`);
+                    const data = await res.json();
+
+                    if (data.liberado === true) {
+                        clearInterval(checagem); // Para de consumir a API
+                        
+                        // DESTRUIÇÃO DA TRAVA ANTIFRAUDE (REABRE O JOGO NA HORA!)
+                        localStorage.removeItem('soccer_timer_expired');
+                        localStorage.removeItem('soccer_timer');
+                        
+                        alert("Pagamento confirmado com sucesso! Obrigado pelo apoio. Bom jogo!");
+                        window.location.reload(); // Recarrega a página com o player restaurado
+                    }
+                } catch (e) { console.error("Erro ao checar recebimento."); }
+            }, 3000);
+        }
+
+        // --- TRAVA ANTIFRAUDE ORIGINAL DO SEU ARNALDO ---
         const duration = 5 * 60;
         const timerDisplay = document.getElementById('timer');
         const paywall = document.getElementById('paywall');
         const videoWrapper = document.getElementById('wrapper-player');
 
         function startTimer() {
-            // Verifica se o usuário já gastou todo o tempo anteriormente
             if (localStorage.getItem('soccer_timer_expired') === 'true') {
                 bloquearAcesso();
                 return;
@@ -185,10 +263,10 @@
 
         function bloquearAcesso() {
             localStorage.setItem('soccer_timer', '0');
-            localStorage.setItem('soccer_timer_expired', 'true'); // Trava antifraude gravada no HD do usuário
+            localStorage.setItem('soccer_timer_expired', 'true');
             timerDisplay.innerText = "EXPIRADO";
             paywall.style.display = 'flex';
-            videoWrapper.innerHTML = ''; // Arranca o player do Twitch do código
+            videoWrapper.innerHTML = ''; 
             if (twitchPlayer) {
                 try { twitchPlayer.pause(); } catch(e){}
             }
