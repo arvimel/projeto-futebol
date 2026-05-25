@@ -2,11 +2,10 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // ─── CORS helper ───────────────────────────────────────────────
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Headers": "Content-Type, x-webhook-token",
     };
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders });
@@ -19,7 +18,6 @@ export default {
       });
     }
 
-    // ─── ASAAS config ──────────────────────────────────────────────
     const ASAAS_KEY = env.ASSAS_API_KEY;
     const ASAAS_BASE = "https://api.asaas.com/v3";
     const ASAAS_HEADERS = {
@@ -27,6 +25,7 @@ export default {
       "Content-Type": "application/json",
       "User-Agent": "projeto-futebol/1.0",
     };
+    const VALOR_MINIMO = 5.00;
 
     // ═══════════════════════════════════════════════════════════════
     // POST /api/update  →  salva dados da sessão (admin)
@@ -48,7 +47,7 @@ export default {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // GET /api/status-leilao  →  retorna acumulado, líder e maior lance
+    // GET /api/status-leilao  →  acumulado + líder + maior lance
     // ═══════════════════════════════════════════════════════════════
     if (url.pathname === "/api/status-leilao") {
       const raw = await env.DB.get("LEILAO_STATUS");
@@ -63,17 +62,21 @@ export default {
     // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/criar-pix") {
       try {
-        const { valor, nome, telefone } = await request.json();
+        const { valor, nome } = await request.json();
 
         if (!valor || !nome) {
           return json({ success: false, error: "Valor e nome são obrigatórios." }, 400);
         }
 
-        // Gera CPF fictício único baseado no timestamp para satisfazer o Asaas
+        // Validação do valor mínimo
+        if (parseFloat(valor) < VALOR_MINIMO) {
+          return json({ success: false, error: `O lance mínimo é R$ ${VALOR_MINIMO.toFixed(2)}.` }, 400);
+        }
+
+        // Gera CPF válido único para cada cliente
         function gerarCpfFake() {
           const n = () => Math.floor(Math.random() * 9) + 1;
           const nums = [n(),n(),n(),n(),n(),n(),n(),n(),n()];
-          // Dígitos verificadores simples
           let s1 = 0, s2 = 0;
           for (let i = 0; i < 9; i++) s1 += nums[i] * (10 - i);
           let d1 = (s1 * 10) % 11; if (d1 === 10 || d1 === 11) d1 = 0;
@@ -84,37 +87,31 @@ export default {
           return nums.join('');
         }
 
-        // 1) Cria cliente no Asaas com CPF único
-        let customerId = null;
-        const cpfUnico = gerarCpfFake();
+        // 1) Cria cliente no Asaas
         const createRes = await fetch(`${ASAAS_BASE}/customers`, {
           method: "POST",
           headers: ASAAS_HEADERS,
           body: JSON.stringify({
             name: nome,
-            cpfCnpj: cpfUnico,
+            cpfCnpj: gerarCpfFake(),
             externalReference: "leilao-live",
           }),
         });
         const createData = await createRes.json();
         if (!createData.id) {
-          // Log do erro real do Asaas para debug
           const erroAsaas = createData.errors?.[0]?.description || JSON.stringify(createData);
           return json({ success: false, error: "Asaas cliente: " + erroAsaas }, 500);
         }
-        customerId = createData.id;
 
         // 2) Cria cobrança PIX
         const cobRes = await fetch(`${ASAAS_BASE}/payments`, {
           method: "POST",
           headers: ASAAS_HEADERS,
           body: JSON.stringify({
-            customer: customerId,
+            customer: createData.id,
             billingType: "PIX",
-            value: valor,
-            dueDate: new Date(Date.now() + 30 * 60 * 1000)
-              .toISOString()
-              .split("T")[0],
+            value: parseFloat(valor),
+            dueDate: new Date(Date.now() + 30 * 60 * 1000).toISOString().split("T")[0],
             description: `Lance leilão - ${nome}`,
           }),
         });
@@ -131,11 +128,11 @@ export default {
         );
         const qrData = await qrRes.json();
 
-        // 4) Salva lance pendente no KV para verificação posterior
+        // 4) Salva lance pendente no KV (expira em 2h)
         await env.DB.put(
           `PAGAMENTO_${cobData.id}`,
-          JSON.stringify({ nome, valor, status: "PENDING" }),
-          { expirationTtl: 3600 } // expira em 1 hora
+          JSON.stringify({ nome, valor: parseFloat(valor), status: "PENDING" }),
+          { expirationTtl: 7200 }
         );
 
         return json({
@@ -151,6 +148,7 @@ export default {
 
     // ═══════════════════════════════════════════════════════════════
     // GET /api/verificar-liberacao?id=XXX  →  checa se PIX foi pago
+    // (polling do frontend a cada 3s enquanto aguarda pagamento)
     // ═══════════════════════════════════════════════════════════════
     if (url.pathname === "/api/verificar-liberacao") {
       const paymentId = url.searchParams.get("id");
@@ -165,24 +163,7 @@ export default {
         const pago = data.status === "RECEIVED" || data.status === "CONFIRMED";
 
         if (pago) {
-          // Atualiza o leilão com o novo lance
-          const raw = await env.DB.get("LEILAO_STATUS");
-          const status = raw
-            ? JSON.parse(raw)
-            : { acumulado: 0, lider: "Ninguém ainda", maiorLance: 0 };
-
-          const lanceRaw = await env.DB.get(`PAGAMENTO_${paymentId}`);
-          const lance = lanceRaw ? JSON.parse(lanceRaw) : null;
-
-          if (lance) {
-            status.acumulado = +(status.acumulado + lance.valor).toFixed(2);
-            if (lance.valor > status.maiorLance) {
-              status.maiorLance = lance.valor;
-              status.lider = lance.nome;
-            }
-            await env.DB.put("LEILAO_STATUS", JSON.stringify(status));
-            await env.DB.delete(`PAGAMENTO_${paymentId}`);
-          }
+          await atualizarLeilao(env, paymentId);
         }
 
         return json({ liberado: pago, status: data.status });
@@ -191,7 +172,64 @@ export default {
       }
     }
 
-    // ─── Qualquer outra rota → serve arquivos estáticos ────────────
+    // ═══════════════════════════════════════════════════════════════
+    // POST /api/webhook-asaas  →  Asaas avisa automaticamente quando pago
+    // Configure no painel Asaas: URL = https://projeto-futebol.pages.dev/api/webhook-asaas
+    // Eventos: PAYMENT_RECEIVED e PAYMENT_CONFIRMED
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "POST" && url.pathname === "/api/webhook-asaas") {
+      try {
+        // Valida token do webhook (opcional mas recomendado)
+        const tokenRecebido = request.headers.get("asaas-access-token") || "";
+        const tokenEsperado = env.ASAAS_WEBHOOK_TOKEN || "";
+        if (tokenEsperado && tokenRecebido !== tokenEsperado) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+
+        const body = await request.json();
+        const evento = body.event;
+        const payment = body.payment;
+
+        if (
+          (evento === "PAYMENT_RECEIVED" || evento === "PAYMENT_CONFIRMED") &&
+          payment?.id
+        ) {
+          await atualizarLeilao(env, payment.id);
+        }
+
+        return new Response("OK", { status: 200 });
+      } catch (err) {
+        return new Response("Erro: " + err.message, { status: 500 });
+      }
+    }
+
     return env.ASSETS.fetch(request);
   },
 };
+
+// ─── Função compartilhada: atualiza prêmio acumulado + líder ──────
+async function atualizarLeilao(env, paymentId) {
+  const lanceRaw = await env.DB.get(`PAGAMENTO_${paymentId}`);
+  if (!lanceRaw) return; // já processado ou não existe
+
+  const lance = JSON.parse(lanceRaw);
+  if (lance.status === "PAGO") return; // evita duplicação
+
+  const raw = await env.DB.get("LEILAO_STATUS");
+  const status = raw
+    ? JSON.parse(raw)
+    : { acumulado: 0, lider: "Ninguém ainda", maiorLance: 0 };
+
+  status.acumulado = +(status.acumulado + lance.valor).toFixed(2);
+
+  if (lance.valor > status.maiorLance) {
+    status.maiorLance = lance.valor;
+    status.lider = lance.nome;
+  }
+
+  await env.DB.put("LEILAO_STATUS", JSON.stringify(status));
+
+  // Marca como pago para não processar duas vezes
+  lance.status = "PAGO";
+  await env.DB.put(`PAGAMENTO_${paymentId}`, JSON.stringify(lance), { expirationTtl: 300 });
+}
