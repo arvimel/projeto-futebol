@@ -27,10 +27,31 @@ export default {
     };
     const VALOR_MINIMO = 5.00;
 
+    // ── Proteção global: bloqueia bots e requisições suspeitas ──────
+    const userAgent = request.headers.get("User-Agent") || "";
+    const rotasProtegidas = ["/api/criar-pix", "/api/usar-token", "/api/webhook-asaas"];
+
+    if (rotasProtegidas.includes(url.pathname)) {
+      const botsConhecidos = ["curl", "wget", "python-requests", "go-http", "scrapy", "httpclient"];
+      if (botsConhecidos.some(bot => userAgent.toLowerCase().includes(bot))) {
+        return new Response("Forbidden", { status: 403 });
+      }
+      const origin = request.headers.get("Origin") || "";
+      const referer = request.headers.get("Referer") || "";
+      const dominioPermitido = env.DOMINIO_PERMITIDO || "";
+      if (dominioPermitido && !origin.includes(dominioPermitido) && !referer.includes(dominioPermitido)) {
+        return new Response("Forbidden", { status: 403 });
+      }
+    }
+
     // ═══════════════════════════════════════════════════════════════
     // POST /api/update  →  salva dados da sessão (admin)
     // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/update") {
+      const senhaHeader = request.headers.get("x-admin-senha");
+      if (senhaHeader !== "23100311") {
+        return new Response("Unauthorized", { status: 401 });
+      }
       const data = await request.json();
       await env.DB.put("SESSAO_LIVE", JSON.stringify(data));
       return new Response("OK", { status: 200, headers: corsHeaders });
@@ -75,6 +96,18 @@ export default {
         const { nome, mensagem, tipo } = await request.json();
         if (!nome || !mensagem) return json({ success: false, error: "Campos obrigatórios." }, 400);
 
+        // Rate limit: máx 10 msgs por IP por minuto
+        const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+        const rlChatKey = `RATELIMIT_CHAT_${ip}`;
+        const rlChatRaw = await env.DB.get(rlChatKey);
+        const rlChat = rlChatRaw ? JSON.parse(rlChatRaw) : { count: 0, inicio: Date.now() };
+        if (Date.now() - rlChat.inicio > 60000) { rlChat.count = 0; rlChat.inicio = Date.now(); }
+        rlChat.count++;
+        await env.DB.put(rlChatKey, JSON.stringify(rlChat), { expirationTtl: 120 });
+        if (rlChat.count > 10) {
+          return json({ success: false, error: "Muitas mensagens. Aguarde um momento." }, 429);
+        }
+
         const raw = await env.DB.get("CHAT_MENSAGENS");
         const msgs = raw ? JSON.parse(raw) : [];
 
@@ -86,7 +119,6 @@ export default {
           ts: Date.now(),
         });
 
-        // Mantém apenas as últimas 80 mensagens
         const recentes = msgs.slice(-80);
         await env.DB.put("CHAT_MENSAGENS", JSON.stringify(recentes));
 
@@ -106,6 +138,82 @@ export default {
       }
       await env.DB.put("CHAT_MENSAGENS", JSON.stringify([]));
       return json({ success: true });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // POST /api/gerar-token  →  admin gera token único (100 min)
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "POST" && url.pathname === "/api/gerar-token") {
+      const senhaHeader = request.headers.get("x-admin-senha");
+      if (senhaHeader !== "23100311") {
+        return new Response("Unauthorized", { status: 401 });
+      }
+      const { identificacao } = await request.json();
+
+      // Token criptograficamente seguro
+      const array = new Uint8Array(32);
+      crypto.getRandomValues(array);
+      const token = Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
+
+      await env.DB.put(
+        `TOKEN_ACESSO_${token}`,
+        JSON.stringify({
+          identificacao,
+          fingerprint: null,     // vinculado no primeiro uso
+          criadoEm: Date.now(),
+        }),
+        { expirationTtl: 6000 } // 100 minutos
+      );
+
+      return json({ success: true, token });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // POST /api/usar-token  →  usuário ativa/valida token
+    // Vincula ao fingerprint do dispositivo no primeiro uso
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "POST" && url.pathname === "/api/usar-token") {
+      // Rate limit: máx 5 tentativas por IP por hora
+      const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+      const rlKey = `RATELIMIT_TOKEN_${ip}`;
+      const rlRaw = await env.DB.get(rlKey);
+      const rl = rlRaw ? JSON.parse(rlRaw) : { count: 0, inicio: Date.now() };
+      if (Date.now() - rl.inicio > 3600000) { rl.count = 0; rl.inicio = Date.now(); }
+      rl.count++;
+      await env.DB.put(rlKey, JSON.stringify(rl), { expirationTtl: 3600 });
+      if (rl.count > 5) {
+        return json({ success: false, error: "Muitas tentativas. Tente em 1 hora." }, 429);
+      }
+
+      const { token, fingerprint } = await request.json();
+      if (!token || !fingerprint) {
+        return json({ success: false, error: "Dados inválidos." }, 400);
+      }
+
+      const raw = await env.DB.get(`TOKEN_ACESSO_${token}`);
+      if (!raw) {
+        return json({ success: false, error: "Link inválido ou expirado (100 min)." }, 403);
+      }
+
+      const dados = JSON.parse(raw);
+
+      // Primeiro uso: vincula fingerprint ao token
+      if (!dados.fingerprint) {
+        dados.fingerprint = fingerprint;
+        await env.DB.put(
+          `TOKEN_ACESSO_${token}`,
+          JSON.stringify(dados),
+          { expirationTtl: 6000 } // 100 minutos
+        );
+        return json({ success: true, mensagem: "Acesso liberado!" });
+      }
+
+      // Usos seguintes: valida se é o mesmo dispositivo
+      if (dados.fingerprint !== fingerprint) {
+        return json({ success: false, error: "Este link só funciona no dispositivo que o ativou pela primeira vez." }, 403);
+      }
+
+      return json({ success: true, mensagem: "Acesso confirmado!" });
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -246,7 +354,6 @@ export default {
 
     // ═══════════════════════════════════════════════════════════════
     // POST /api/zerar-leilao  →  zera leilão E reseta timer dos usuários
-    // Grava um "epoch" novo — o index.html compara e limpa o localStorage
     // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/zerar-leilao") {
       const senhaHeader = request.headers.get("x-admin-senha");
@@ -258,7 +365,7 @@ export default {
         acumulado: 0,
         lider: "Ninguém ainda",
         maiorLance: 0,
-        epoch: novoEpoch   // <-- chave para resetar timers no frontend
+        epoch: novoEpoch
       }));
       return json({ success: true, epoch: novoEpoch });
     }
