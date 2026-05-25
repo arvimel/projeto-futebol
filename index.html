@@ -575,18 +575,19 @@
 
             // ── Detecta reset de leilão (epoch mudou) ──
             // Quando admin zera o leilão, o epoch aumenta → reseta timer dos usuários
-            if (data.epoch && data.epoch !== epochAtual) {
-                if (epochAtual !== 0) {
-                    // Leilão foi zerado → libera timer novamente para todos
-                    localStorage.removeItem('soccer_timer_expired');
-                    localStorage.removeItem('soccer_timer');
-                    // Mostra aviso e recarrega
-                    alert('🔄 Nova rodada iniciada! Seu acesso grátis de 5 minutos foi renovado!');
-                    window.location.reload();
-                }
-                epochAtual = data.epoch;
-            }
+            if (data.epoch) {
+    const epochSalvo = localStorage.getItem('soccer_epoch') || '0';
+    if (epochSalvo !== String(data.epoch)) {
+        localStorage.setItem('soccer_epoch', String(data.epoch));
+        // Só reseta se o timer já tinha expirado (não incomoda quem ainda tem tempo)
+        if (localStorage.getItem('soccer_timer_expired') === 'true') {
+            localStorage.removeItem('soccer_timer_expired');
+            localStorage.removeItem('soccer_timer');
+            alert('🔄 Nova rodada iniciada! Seu acesso grátis de 5 minutos foi renovado!');
+            window.location.reload();
         }
+    }
+}
 
         async function carregarDados() {
             try {
@@ -804,10 +805,7 @@
             // Inicia chat fechado — abre ao clicar no botão
             fecharChat();
 
-            // Inicializa epoch
-            fetch('/api/status-leilao').then(r => r.json()).then(d => {
-                if (d.epoch) epochAtual = d.epoch;
-            }).catch(() => {});
+
         };
     </script>
 </body>
