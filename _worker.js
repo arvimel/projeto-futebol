@@ -5,7 +5,7 @@ export default {
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, x-webhook-token",
+      "Access-Control-Allow-Headers": "Content-Type, x-webhook-token, x-admin-senha",
     };
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders });
@@ -58,6 +58,57 @@ export default {
     }
 
     // ═══════════════════════════════════════════════════════════════
+    // GET /api/chat  →  retorna mensagens do chat (últimas 80)
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "GET" && url.pathname === "/api/chat") {
+      const raw = await env.DB.get("CHAT_MENSAGENS");
+      const msgs = raw ? JSON.parse(raw) : [];
+      return json(msgs);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // POST /api/chat  →  envia mensagem no chat
+    // Body: { nome, mensagem, tipo } — tipo: "user" | "admin" | "sistema"
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "POST" && url.pathname === "/api/chat") {
+      try {
+        const { nome, mensagem, tipo } = await request.json();
+        if (!nome || !mensagem) return json({ success: false, error: "Campos obrigatórios." }, 400);
+
+        const raw = await env.DB.get("CHAT_MENSAGENS");
+        const msgs = raw ? JSON.parse(raw) : [];
+
+        msgs.push({
+          id: Date.now(),
+          nome: nome.trim().substring(0, 30),
+          mensagem: mensagem.trim().substring(0, 300),
+          tipo: tipo || "user",
+          ts: Date.now(),
+        });
+
+        // Mantém apenas as últimas 80 mensagens
+        const recentes = msgs.slice(-80);
+        await env.DB.put("CHAT_MENSAGENS", JSON.stringify(recentes));
+
+        return json({ success: true });
+      } catch (err) {
+        return json({ success: false, error: err.message }, 500);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // POST /api/limpar-chat  →  limpa todas as mensagens (admin)
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "POST" && url.pathname === "/api/limpar-chat") {
+      const senhaHeader = request.headers.get("x-admin-senha");
+      if (senhaHeader !== "23100311") {
+        return new Response("Unauthorized", { status: 401 });
+      }
+      await env.DB.put("CHAT_MENSAGENS", JSON.stringify([]));
+      return json({ success: true });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
     // POST /api/criar-pix  →  cria cobrança PIX no Asaas
     // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/criar-pix") {
@@ -68,12 +119,10 @@ export default {
           return json({ success: false, error: "Valor e nome são obrigatórios." }, 400);
         }
 
-        // Validação do valor mínimo
         if (parseFloat(valor) < VALOR_MINIMO) {
           return json({ success: false, error: `O lance mínimo é R$ ${VALOR_MINIMO.toFixed(2)}.` }, 400);
         }
 
-        // Gera CPF válido único para cada cliente
         function gerarCpfFake() {
           const n = () => Math.floor(Math.random() * 9) + 1;
           const nums = [n(),n(),n(),n(),n(),n(),n(),n(),n()];
@@ -87,7 +136,6 @@ export default {
           return nums.join('');
         }
 
-        // 1) Cria cliente no Asaas
         const createRes = await fetch(`${ASAAS_BASE}/customers`, {
           method: "POST",
           headers: ASAAS_HEADERS,
@@ -103,7 +151,6 @@ export default {
           return json({ success: false, error: "Asaas cliente: " + erroAsaas }, 500);
         }
 
-        // 2) Cria cobrança PIX
         const cobRes = await fetch(`${ASAAS_BASE}/payments`, {
           method: "POST",
           headers: ASAAS_HEADERS,
@@ -121,14 +168,12 @@ export default {
           return json({ success: false, error: cobData.errors?.[0]?.description || "Erro ao criar cobrança." }, 500);
         }
 
-        // 3) Busca QR Code PIX
         const qrRes = await fetch(
           `${ASAAS_BASE}/payments/${cobData.id}/pixQrCode`,
           { headers: ASAAS_HEADERS }
         );
         const qrData = await qrRes.json();
 
-        // 4) Salva lance pendente no KV (expira em 2h)
         await env.DB.put(
           `PAGAMENTO_${cobData.id}`,
           JSON.stringify({ nome, valor: parseFloat(valor), status: "PENDING" }),
@@ -147,8 +192,7 @@ export default {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // GET /api/verificar-liberacao?id=XXX  →  checa se PIX foi pago
-    // (polling do frontend a cada 3s enquanto aguarda pagamento)
+    // GET /api/verificar-liberacao?id=XXX
     // ═══════════════════════════════════════════════════════════════
     if (url.pathname === "/api/verificar-liberacao") {
       const paymentId = url.searchParams.get("id");
@@ -173,13 +217,10 @@ export default {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // POST /api/webhook-asaas  →  Asaas avisa automaticamente quando pago
-    // Configure no painel Asaas: URL = https://projeto-futebol.pages.dev/api/webhook-asaas
-    // Eventos: PAYMENT_RECEIVED e PAYMENT_CONFIRMED
+    // POST /api/webhook-asaas
     // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/webhook-asaas") {
       try {
-        // Valida token do webhook (opcional mas recomendado)
         const tokenRecebido = request.headers.get("asaas-access-token") || "";
         const tokenEsperado = env.ASAAS_WEBHOOK_TOKEN || "";
         if (tokenEsperado && tokenRecebido !== tokenEsperado) {
@@ -204,15 +245,22 @@ export default {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // POST /api/zerar-leilao  →  zera acumulado e líder (admin)
+    // POST /api/zerar-leilao  →  zera leilão E reseta timer dos usuários
+    // Grava um "epoch" novo — o index.html compara e limpa o localStorage
     // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/zerar-leilao") {
       const senhaHeader = request.headers.get("x-admin-senha");
       if (senhaHeader !== "23100311") {
         return new Response("Unauthorized", { status: 401 });
       }
-      await env.DB.put("LEILAO_STATUS", JSON.stringify({ acumulado: 0, lider: "Ninguém ainda", maiorLance: 0 }));
-      return json({ success: true });
+      const novoEpoch = Date.now();
+      await env.DB.put("LEILAO_STATUS", JSON.stringify({
+        acumulado: 0,
+        lider: "Ninguém ainda",
+        maiorLance: 0,
+        epoch: novoEpoch   // <-- chave para resetar timers no frontend
+      }));
+      return json({ success: true, epoch: novoEpoch });
     }
 
     return env.ASSETS.fetch(request);
@@ -222,10 +270,10 @@ export default {
 // ─── Função compartilhada: atualiza prêmio acumulado + líder ──────
 async function atualizarLeilao(env, paymentId) {
   const lanceRaw = await env.DB.get(`PAGAMENTO_${paymentId}`);
-  if (!lanceRaw) return; // já processado ou não existe
+  if (!lanceRaw) return;
 
   const lance = JSON.parse(lanceRaw);
-  if (lance.status === "PAGO") return; // evita duplicação
+  if (lance.status === "PAGO") return;
 
   const raw = await env.DB.get("LEILAO_STATUS");
   const status = raw
@@ -241,7 +289,6 @@ async function atualizarLeilao(env, paymentId) {
 
   await env.DB.put("LEILAO_STATUS", JSON.stringify(status));
 
-  // Marca como pago para não processar duas vezes
   lance.status = "PAGO";
   await env.DB.put(`PAGAMENTO_${paymentId}`, JSON.stringify(lance), { expirationTtl: 300 });
 }
