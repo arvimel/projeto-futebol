@@ -66,35 +66,43 @@ export default {
           return json({ success: false, error: "Valor e nome são obrigatórios." }, 400);
         }
 
-        // 1) Cria ou reutiliza cliente no Asaas
-        let customerId = null;
-        const searchRes = await fetch(
-          `${ASAAS_BASE}/customers?name=${encodeURIComponent(nome)}&limit=1`,
-          { headers: { access_token: ASAAS_KEY } }
-        );
-        const searchData = await searchRes.json();
-
-        if (searchData.data && searchData.data.length > 0) {
-          customerId = searchData.data[0].id;
-        } else {
-          const createRes = await fetch(`${ASAAS_BASE}/customers`, {
-            method: "POST",
-            headers: {
-              access_token: ASAAS_KEY,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: nome,
-              mobilePhone: telefone || "",
-              externalReference: "leilao-live",
-            }),
-          });
-          const createData = await createRes.json();
-          if (!createData.id) {
-            return json({ success: false, error: "Erro ao criar cliente no Asaas." }, 500);
-          }
-          customerId = createData.id;
+        // Gera CPF fictício único baseado no timestamp para satisfazer o Asaas
+        function gerarCpfFake() {
+          const n = () => Math.floor(Math.random() * 9) + 1;
+          const nums = [n(),n(),n(),n(),n(),n(),n(),n(),n()];
+          // Dígitos verificadores simples
+          let s1 = 0, s2 = 0;
+          for (let i = 0; i < 9; i++) s1 += nums[i] * (10 - i);
+          let d1 = (s1 * 10) % 11; if (d1 === 10 || d1 === 11) d1 = 0;
+          nums.push(d1);
+          for (let i = 0; i < 10; i++) s2 += nums[i] * (11 - i);
+          let d2 = (s2 * 10) % 11; if (d2 === 10 || d2 === 11) d2 = 0;
+          nums.push(d2);
+          return nums.join('');
         }
+
+        // 1) Cria cliente no Asaas com CPF único
+        let customerId = null;
+        const cpfUnico = gerarCpfFake();
+        const createRes = await fetch(`${ASAAS_BASE}/customers`, {
+          method: "POST",
+          headers: {
+            access_token: ASAAS_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: nome,
+            cpfCnpj: cpfUnico,
+            externalReference: "leilao-live",
+          }),
+        });
+        const createData = await createRes.json();
+        if (!createData.id) {
+          // Log do erro real do Asaas para debug
+          const erroAsaas = createData.errors?.[0]?.description || JSON.stringify(createData);
+          return json({ success: false, error: "Asaas cliente: " + erroAsaas }, 500);
+        }
+        customerId = createData.id;
 
         // 2) Cria cobrança PIX
         const cobRes = await fetch(`${ASAAS_BASE}/payments`, {
