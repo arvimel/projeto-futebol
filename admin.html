@@ -4,14 +4,27 @@
     <meta charset="UTF-8">
     <title>ADMIN | Canal Sport Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #admin-chat-messages { scrollbar-width: thin; scrollbar-color: #27272a transparent; }
+        #admin-chat-messages::-webkit-scrollbar { width: 4px; }
+        #admin-chat-messages::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        .chat-msg-admin { font-size: 12px; line-height: 1.5; padding: 3px 0; word-break: break-word; }
+        .sticker-admin-btn {
+            background: #27272a; border: 1px solid #3f3f46; border-radius: 6px;
+            padding: 3px 7px; cursor: pointer; font-size: 11px; font-weight: 700;
+            color: #d4d4d8; transition: background 0.15s;
+        }
+        .sticker-admin-btn:hover { background: #3f3f46; }
+    </style>
 </head>
 <body class="bg-zinc-950 text-white p-4">
-    <div class="max-w-3xl mx-auto space-y-6">
+    <div class="max-w-4xl mx-auto space-y-6">
 
         <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 shadow-2xl">
             <h1 class="text-xl font-bold mb-6 text-green-500 underline uppercase text-center italic font-mono">⚙️ Painel de Comando</h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Coluna esquerda: controles -->
                 <div class="space-y-4">
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-500">Controle da Live</h3>
                     <div>
@@ -42,20 +55,18 @@
                             <span id="info-lance" class="text-yellow-400 font-bold">R$ 0,00</span>
                         </div>
                         <button onclick="zerarLeilao()" class="w-full mt-2 bg-red-900 hover:bg-red-700 text-red-300 text-[10px] font-black uppercase py-1 rounded transition">🗑️ Zerar Leilão (nova rodada)</button>
+                        <p class="text-[9px] text-zinc-600 text-center mt-1">Ao zerar, os 5 minutos grátis são renovados para todos os usuários.</p>
                     </div>
 
                     <div class="pt-2 border-t border-zinc-800">
                         <label class="block text-[10px] uppercase font-black text-red-500 mb-1">Senha Master</label>
                         <input id="senha" type="password" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-red-500">
                     </div>
-                </div>
 
-                <div class="space-y-3">
-                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-blue-400">📺 Liberar Acesso Manual (R$ 2,00)</h3>
-                    <p class="text-zinc-500 text-[10px]">Para quem pagou R$ 2,00 via PIX estático. Cole o ID do pagamento do Asaas ou use token temporário.</p>
-
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-2 text-blue-400">📺 Liberar Acesso Manual (R$ 2,00)</h3>
+                    <p class="text-zinc-500 text-[10px]">Para quem pagou via PIX estático. Cole o token ou nome do usuário.</p>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Token de Liberação (qualquer texto)</label>
+                        <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Token de Liberação</label>
                         <input id="token-liberacao" type="text" placeholder="Ex: assistir-joao-silva" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-blue-500">
                     </div>
                     <button onclick="liberarManual()" class="w-full bg-blue-700 hover:bg-blue-600 py-2 rounded font-black uppercase text-sm transition active:scale-95">
@@ -73,6 +84,53 @@
                     <input id="link50" type="text" placeholder="Link R$ 50,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
                     <input id="link100" type="text" placeholder="Link R$ 100,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
                 </div>
+
+                <!-- Coluna direita: CHAT ADMIN -->
+                <div class="space-y-3 flex flex-col">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-400">💬 Chat da Live (responda como admin)</h3>
+
+                    <!-- Contagem de msgs -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] text-zinc-500 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping inline-block"></span> Ao Vivo
+                        </span>
+                        <button onclick="limparChat()" class="text-[10px] text-red-500 hover:text-red-400 font-black uppercase">🗑 Limpar chat</button>
+                    </div>
+
+                    <!-- Mensagens -->
+                    <div id="admin-chat-messages" class="flex-1 bg-black border border-zinc-800 rounded-lg p-3 overflow-y-auto space-y-1" style="min-height:280px;max-height:340px;">
+                        <div class="text-zinc-600 italic text-[11px]">Nenhuma mensagem ainda...</div>
+                    </div>
+
+                    <!-- Figurinhas admin -->
+                    <div id="admin-sticker-picker" class="hidden flex-wrap gap-2 bg-zinc-900 border border-zinc-800 rounded-lg p-2">
+                        <button class="sticker-admin-btn" onclick="enviarComoAdmin('⚽ GOOOL!')">⚽ GOOOL!</button>
+                        <button class="sticker-admin-btn" onclick="enviarComoAdmin('🔥 QUE LANCE!')">🔥 QUE LANCE!</button>
+                        <button class="sticker-admin-btn" onclick="enviarComoAdmin('🏆 LÍDER DO LEILÃO!')">🏆 LÍDER!</button>
+                        <button class="sticker-admin-btn" onclick="enviarComoAdmin('⚠️ Apoie a live para garantir seu sinal!')">⚠️ Apoie a live</button>
+                        <button class="sticker-admin-btn" onclick="enviarComoAdmin('💸 Participe do leilão e ganhe o prêmio!')">💸 Leilão</button>
+                        <button class="sticker-admin-btn" onclick="enviarComoAdmin('📺 Sinal liberado! Bom jogo a todos!')">📺 Sinal ok</button>
+                        <button class="sticker-admin-btn" onclick="enviarComoAdmin('🎉 Parabéns ao novo líder do leilão!')">🎉 Parabéns</button>
+                        <button class="sticker-admin-btn" onclick="enviarComoAdmin('🚩 PÊNALTI marcado!')">🚩 PÊNALTI!</button>
+                    </div>
+
+                    <!-- Input admin -->
+                    <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-3 space-y-2">
+                        <div class="flex gap-2 items-center">
+                            <button onclick="toggleAdminStickers()" class="bg-zinc-800 hover:bg-zinc-700 text-[11px] font-black text-yellow-400 px-2 py-1 rounded uppercase transition">🏷️ Figurinhas</button>
+                            <span class="text-[10px] text-zinc-500">Respondendo como:</span>
+                            <span class="text-[10px] font-black text-yellow-400">⭐ Canal Sport Pro</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="admin-chat-input" placeholder="Digite sua mensagem como admin..." maxlength="200"
+                                class="flex-1 bg-black border border-zinc-700 px-3 py-2 rounded text-sm text-white outline-none focus:border-yellow-500">
+                            <button onclick="enviarComoAdminInput()" class="bg-yellow-600 hover:bg-yellow-500 text-black font-black text-sm px-4 py-2 rounded transition active:scale-95">
+                                Enviar
+                            </button>
+                        </div>
+                        <p class="text-[9px] text-zinc-600">Suas mensagens aparecem em amarelo no chat dos usuários.</p>
+                    </div>
+                </div>
             </div>
 
             <button onclick="salvar()" class="w-full mt-6 bg-green-600 hover:bg-green-700 py-4 rounded font-black uppercase transition active:scale-95 shadow-lg shadow-green-900/40 text-lg">
@@ -84,8 +142,9 @@
 
     <script>
         const SENHA_MASTER = '23100311';
+        let ultimoIdChat = 0;
 
-        // Carrega status do leilão ao abrir
+        // ─── Status do leilão ────────────────────────────────────────
         async function carregarStatus() {
             try {
                 const res = await fetch('/api/status-leilao');
@@ -97,23 +156,20 @@
         }
 
         async function zerarLeilao() {
-            if (document.getElementById('senha').value !== SENHA_MASTER) {
-                return alert('Senha incorreta!');
+            if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Senha incorreta!');
+            if (!confirm('Zerar o leilão?\n\nIsso vai:\n- Apagar acumulado, líder e maior lance\n- Renovar os 5 minutos grátis de TODOS os usuários\n\nConfirma?')) return;
+            const res = await fetch('/api/zerar-leilao', { method: 'POST', headers: { 'x-admin-senha': SENHA_MASTER } });
+            const data = await res.json();
+            if (data.success) {
+                await carregarStatus();
+                alert('✅ Leilão zerado! Os 5 minutos grátis foram renovados para todos os usuários.');
             }
-            if (!confirm('Zerar o leilão? Isso apaga acumulado, líder e maior lance.')) return;
-            await fetch('/api/zerar-leilao', { method: 'POST', headers: { 'x-admin-senha': SENHA_MASTER } });
-            await carregarStatus();
-            alert('Leilão zerado!');
         }
 
         function liberarManual() {
-            if (document.getElementById('senha').value !== SENHA_MASTER) {
-                return alert('Digite a senha master primeiro!');
-            }
+            if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
             const token = document.getElementById('token-liberacao').value.trim();
             if (!token) return alert('Digite um token de identificação.');
-
-            // Gera um link especial que libera o acesso quando aberto
             const link = `${window.location.origin}/?liberar=${encodeURIComponent(token)}&ts=${Date.now()}`;
             document.getElementById('link-liberacao').classList.remove('hidden');
             document.getElementById('link-liberacao-valor').value = link;
@@ -163,8 +219,96 @@
             }
         }
 
+        // ─── Chat admin ──────────────────────────────────────────────
+        function escapeHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function toggleAdminStickers() {
+            const sp = document.getElementById('admin-sticker-picker');
+            sp.classList.toggle('hidden');
+            sp.classList.toggle('flex');
+        }
+
+        async function enviarComoAdminInput() {
+            const input = document.getElementById('admin-chat-input');
+            const texto = input.value.trim();
+            if (!texto) return;
+            input.value = '';
+            await enviarComoAdmin(texto);
+        }
+
+        async function enviarComoAdmin(texto) {
+            document.getElementById('admin-sticker-picker').classList.add('hidden');
+            document.getElementById('admin-sticker-picker').classList.remove('flex');
+            try {
+                await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome: 'Canal Sport Pro', mensagem: texto, tipo: 'admin' })
+                });
+            } catch(e) { console.error('Erro ao enviar msg admin', e); }
+        }
+
+        async function limparChat() {
+            if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Senha incorreta!');
+            if (!confirm('Limpar todas as mensagens do chat?')) return;
+            await fetch('/api/limpar-chat', { method: 'POST', headers: { 'x-admin-senha': SENHA_MASTER } });
+            document.getElementById('admin-chat-messages').innerHTML = '<div class="text-zinc-600 italic text-[11px]">Chat limpo.</div>';
+            ultimoIdChat = 0;
+        }
+
+        async function buscarMensagensChat() {
+            try {
+                const res = await fetch('/api/chat');
+                const msgs = await res.json();
+
+                const novas = msgs.filter(m => m.id > ultimoIdChat);
+                if (novas.length === 0) return;
+
+                const box = document.getElementById('admin-chat-messages');
+
+                // Remove placeholder
+                const placeholder = box.querySelector('.text-zinc-600');
+                if (placeholder && msgs.length > 0) placeholder.remove();
+
+                novas.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = 'chat-msg-admin';
+
+                    let nomeColor = '#4ade80';   // usuário = verde
+                    if (msg.tipo === 'admin') nomeColor = '#facc15'; // admin = amarelo
+                    if (msg.tipo === 'sistema') nomeColor = '#71717a';
+
+                    const hora = new Date(msg.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                    if (msg.tipo === 'sistema') {
+                        div.innerHTML = `<span style="color:#52525b;font-style:italic;font-size:10px;">[${hora}] ${escapeHtml(msg.mensagem)}</span>`;
+                    } else {
+                        div.innerHTML = `<span style="color:#52525b;font-size:10px;">[${hora}]</span> <span style="font-weight:900;color:${nomeColor};">${escapeHtml(msg.nome)}:</span> <span style="color:#d4d4d8;">${escapeHtml(msg.mensagem)}</span>`;
+                    }
+
+                    box.appendChild(div);
+                });
+
+                box.scrollTop = box.scrollHeight;
+                if (msgs.length > 0) ultimoIdChat = msgs[msgs.length - 1].id;
+
+                // Mantém máx 80 no DOM
+                const allMsgs = box.querySelectorAll('.chat-msg-admin');
+                if (allMsgs.length > 80) allMsgs[0].remove();
+
+            } catch(e) { /* silencioso */ }
+        }
+
+        document.getElementById('admin-chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') enviarComoAdminInput();
+        });
+
         carregarStatus();
+        buscarMensagensChat();
         setInterval(carregarStatus, 10000);
+        setInterval(buscarMensagensChat, 2500);
     </script>
 </body>
 </html>
