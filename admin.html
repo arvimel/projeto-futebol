@@ -301,12 +301,22 @@
 
         async function zerarLeilao() {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Senha incorreta!');
-            if (!confirm('Zerar o leilão?\n\nIsso vai:\n- Apagar acumulado, líder e maior lance\n- Renovar os 5 minutos grátis de TODOS os usuários\n\nConfirma?')) return;
+            if (!confirm('Zerar o leilão?\n\nIsso vai:\n- Apagar acumulado, líder e maior lance\n- Renovar os 5 minutos grátis de TODOS os usuários\n- DESCONECTAR todos os usuários (pagos e gratuitos)\n\nConfirma?')) return;
+            
+            // 1. Muda o ID da Partida para forçar o logout de todos
+            const novoId = 'partida-' + Date.now();
+            document.getElementById('idPartida').value = novoId;
+            
+            // 2. Salva as novas configurações (incluindo o novo ID da partida)
+            await salvar();
+
+            // 3. Chama a API para zerar o leilão no servidor
             const res = await fetch('/api/zerar-leilao', { method: 'POST', headers: { 'x-admin-senha': SENHA_MASTER } });
             const data = await res.json();
+            
             if (data.success) {
                 await carregarStatus();
-                alert('✅ Leilão zerado! Os 5 minutos grátis foram renovados para todos os usuários.');
+                alert('✅ Leilão zerado e usuários desconectados com sucesso!');
             }
         }
 
