@@ -570,12 +570,14 @@
                     document.getElementById('display-titulo').innerText = dataSupa.titulo;
                 }
 
-                if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual) {
+                if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual && idPartidaAtual !== "") {
                     idPartidaAtual = dataSupa.idPartida;
                     localStorage.removeItem('soccer_timer_expired');
                     localStorage.removeItem('soccer_timer');
                     window.location.reload();
                     return;
+                } else if (dataSupa.idPartida) {
+                    idPartidaAtual = dataSupa.idPartida;
                 }
 
                 let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
@@ -728,7 +730,6 @@
                 timerDisplay.innerText = "AO VIVO";
                 timerDisplay.style.color = "#22c55e";
                 timerDisplay.style.fontSize = "1rem";
-                carregarDados();
                 return;
             }
 
