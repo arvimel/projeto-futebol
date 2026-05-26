@@ -222,7 +222,7 @@
             try {
                 const res = await fetch('/api/update', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
                     body: JSON.stringify(dados)
                 });
                 if (res.ok) {
