@@ -739,8 +739,12 @@
 
                 if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual && idPartidaAtual !== "") {
                     idPartidaAtual = dataSupa.idPartida;
+                    // Limpa TODOS os tokens de acesso (grátis e pagos)
                     localStorage.removeItem('soccer_timer_expired');
                     localStorage.removeItem('soccer_timer');
+                    localStorage.removeItem('soccer_token_device');
+                    localStorage.removeItem('acesso_token');
+                    localStorage.removeItem('acesso_fp');
                     window.location.reload();
                     return;
                 } else if (dataSupa.idPartida) {
