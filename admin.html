@@ -96,7 +96,7 @@
                         <button onclick="copiarLinkLiberacao()" class="mt-2 w-full bg-blue-900 hover:bg-blue-800 text-blue-300 text-[10px] font-black uppercase py-1 rounded">📋 Copiar Link</button>
                     </div>
 
-                    <!-- CONTATOS QUE QUEREM ASSISTIR -->
+                    <!-- CONTATOS RECEBIDOS -->
                     <div class="bg-black border border-blue-900/50 rounded-lg p-3 mt-2">
                         <div class="flex items-center justify-between mb-2">
                             <p class="text-[10px] text-blue-400 font-black uppercase">📲 Contatos para Liberar (R$ 2,00)</p>
@@ -399,24 +399,19 @@
         setInterval(buscarMensagensChat, 2500);
         setInterval(carregarContatos, 15000);
 
-        // ─── Contatos de quem quer assistir ─────────────────────────
         async function carregarContatos() {
             try {
                 const res = await fetch('/api/contatos-assistir');
                 const data = await res.json();
                 const lista = document.getElementById('lista-contatos');
                 const badge = document.getElementById('badge-contatos');
-
                 if (!data.contatos || data.contatos.length === 0) {
                     lista.innerHTML = '<p class="text-zinc-700 text-[10px] italic">Nenhum contato recebido ainda...</p>';
-                    badge.classList.add('hidden');
-                    return;
+                    badge.classList.add('hidden'); return;
                 }
-
                 badge.innerText = data.contatos.length;
                 badge.classList.remove('hidden');
-
-                lista.innerHTML = data.contatos.map((c, i) => `
+                lista.innerHTML = data.contatos.map(c => `
                     <div style="background:#09090b;border:1px solid #1e3a5f;border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
                         <div>
                             <p style="font-size:11px;font-weight:700;color:#93c5fd;">${escapeHtml(c.contato)}</p>
@@ -431,28 +426,25 @@
         }
 
         async function gerarLinkParaContato(contatoEncoded) {
-            const senha = document.getElementById('senha').value;
-            if (senha !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
+            if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
             const identificacao = decodeURIComponent(contatoEncoded);
             try {
                 const res = await fetch('/api/gerar-token', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
-                    body: JSON.stringify({ identificacao })
+                    method:'POST', headers:{'Content-Type':'application/json','x-admin-senha':SENHA_MASTER},
+                    body:JSON.stringify({identificacao})
                 });
                 const data = await res.json();
                 if (!data.success) return alert('Erro: ' + data.error);
                 const link = `${window.location.origin}/?token=${data.token}`;
                 await navigator.clipboard.writeText(link);
-                alert(`✅ Link copiado para ${identificacao}!\n\nCole no WhatsApp ou e-mail:\n${link}`);
+                alert(`✅ Link copiado para ${identificacao}!\n\n${link}`);
             } catch(e) { alert('Erro ao gerar link.'); }
         }
 
         async function limparContatos() {
-            const senha = document.getElementById('senha').value;
-            if (senha !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
+            if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
             if (!confirm('Limpar todos os contatos?')) return;
-            await fetch('/api/limpar-contatos', { method: 'POST', headers: { 'x-admin-senha': SENHA_MASTER } });
+            await fetch('/api/limpar-contatos', { method:'POST', headers:{'x-admin-senha':SENHA_MASTER} });
             await carregarContatos();
         }
     </script>
