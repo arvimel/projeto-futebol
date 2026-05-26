@@ -12,15 +12,12 @@
             background: #000;
             position: relative;
             width: 100%;
-            /* Desktop: ocupa toda altura da tela menos o header (~120px) */
             height: calc(100vh - 120px);
             min-height: 360px;
         }
-        /* Mobile: volta ao aspect-ratio para não cortar */
         @media (max-width: 1024px) {
             .video-container { height: auto; aspect-ratio: 16/9; min-height: 220px; }
         }
-        /* Garante que o iframe do Twitch preencha o container */
         #twitch-inline-player, #twitch-inline-player iframe {
             width: 100% !important;
             height: 100% !important;
@@ -157,6 +154,83 @@
         }
         #unread-badge.show { display: flex; }
         #chat-locked-msg { padding: 8px 12px; background: #18181b; border-top: 1px solid #27272a; font-size: 11px; color: #a1a1aa; text-align: center; }
+
+        /* Ganhador e Links */
+        .ganhador-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
+        }
+        .ganhador-header {
+            background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+            padding: 12px 16px;
+            text-align: center;
+        }
+        .ganhador-content {
+            padding: 20px 16px;
+            text-align: center;
+        }
+        .ganhador-comprovante {
+            margin: 16px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #fbbf24;
+            box-shadow: 0 8px 24px rgba(251, 191, 36, 0.15);
+        }
+        .ganhador-comprovante img {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-height: 300px;
+            object-fit: contain;
+        }
+
+        .links-divulgacao {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+        }
+        .links-header {
+            text-align: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .link-btn {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 14px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .link-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+            border-color: #60a5fa;
+        }
+        .link-icon {
+            font-size: 24px;
+        }
     </style>
 </head>
 <body class="p-1 sm:p-4 font-sans">
@@ -266,17 +340,19 @@
             <div class="space-y-4 w-full flex flex-col">
 
                 <!-- Ganhador + Comprovante -->
-                <div id="ganhador-box" style="display:none;" class="bg-zinc-900/30 rounded-xl border-2 border-yellow-500 shadow-2xl overflow-hidden">
-                    <div class="bg-yellow-500/10 px-4 py-2 border-b border-yellow-500/30 text-center">
-                        <p class="text-yellow-400 font-black text-xs uppercase tracking-widest">🏆 Ganhador da Rodada</p>
+                <div id="ganhador-box" style="display:none;" class="ganhador-card">
+                    <div class="ganhador-header">
+                        <p class="text-black font-black text-sm uppercase tracking-widest">🏆 Ganhador da Rodada</p>
                     </div>
-                    <div class="p-4 text-center">
-                        <p id="ganhador-nome-display" class="text-2xl font-black text-white uppercase italic tracking-tighter leading-none mb-1">—</p>
-                        <p class="text-[10px] text-zinc-400 uppercase font-bold mb-1">Lance Vencedor</p>
-                        <p id="ganhador-valor-display" class="text-3xl font-black text-yellow-400 italic leading-none mb-3">—</p>
+                    <div class="ganhador-content">
+                        <p id="ganhador-nome-display" class="text-2xl font-black text-white uppercase italic tracking-tighter leading-none mb-2">—</p>
+                        <p class="text-[11px] text-zinc-400 uppercase font-bold mb-2">Lance Vencedor</p>
+                        <p id="ganhador-valor-display" class="text-3xl font-black text-yellow-400 italic leading-none mb-4">—</p>
                         <div id="ganhador-comprovante-img" class="hidden">
-                            <p class="text-[10px] text-zinc-500 uppercase font-bold mb-2">📄 Comprovante PIX</p>
-                            <img id="ganhador-img" src="" class="max-w-full rounded-lg border border-yellow-500/30 shadow-lg mx-auto" style="max-height:220px;" />
+                            <p class="text-[10px] text-zinc-300 uppercase font-bold mb-3">📄 Comprovante PIX</p>
+                            <div class="ganhador-comprovante">
+                                <img id="ganhador-img" src="" alt="Comprovante PIX" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -290,6 +366,16 @@
                         <div class="inline-block bg-black px-3 py-0.5 rounded-full border border-green-500/30">
                             <p class="text-xl font-black text-green-500 leading-none">R$ <span id="display-lider-valor">0,00</span></p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Links de Divulgação -->
+                <div id="links-box" style="display:none;" class="links-divulgacao">
+                    <div class="links-header">
+                        <p class="text-blue-300 font-black text-sm uppercase tracking-widest">🔗 Nos Acompanhe</p>
+                    </div>
+                    <div id="links-container" class="links-grid">
+                        <!-- Links serão inseridos aqui via JavaScript -->
                     </div>
                 </div>
 
@@ -376,7 +462,6 @@
                 navigator.hardwareConcurrency || 2
             ].join('||');
             
-            // Transforma os dados em um hash SHA-256 rápido
             const encoder = new TextEncoder();
             const data = encoder.encode(dadosMatriz);
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -418,7 +503,7 @@
             }
         }
 
-         Kakao = {};
+        Kakao = {};
         function toggleEmoji() {
             const ep = document.getElementById('emoji-picker');
             const sp = document.getElementById('sticker-picker');
@@ -466,7 +551,6 @@
         }
 
         async function postarMensagem(texto, ehFigurinha = false) {
-            // So usuarios que pagaram podem usar o chat
             if (!temAcessoPago()) {
                 mostrarBloqueioChat();
                 return;
@@ -474,10 +558,8 @@
 
             let nome = getNomeChat();
             if (nome === 'Visitante' && !localStorage.getItem('chat_nome_perguntado')) {
-                // Pede nome antes — depois que confirmar, envia
                 abrirModalNome((nomeFinal) => {
                     nome = nomeFinal;
-                    // So manda pro servidor; o polling traz de volta sem duplicar
                     fetch('/api/chat', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -487,7 +569,6 @@
                 return;
             }
 
-            // So manda pro servidor; o polling traz de volta sem duplicar
             try {
                 await fetch('/api/chat', {
                     method: 'POST',
@@ -573,7 +654,6 @@
             const elMeta = document.getElementById('meta-porcentagem');
             if (elMeta) elMeta.innerText = porcentagem + '%';
 
-            // Reset Inteligente por Epoch
             if (data.epoch) {
                 const epochSalvo = localStorage.getItem('soccer_epoch') || '0';
                 if (epochSalvo !== String(data.epoch)) {
@@ -618,6 +698,28 @@
                     ganhadorBox.style.display = 'block';
                 } else {
                     ganhadorBox.style.display = 'none';
+                }
+
+                // Links de Divulgação
+                const linksBox = document.getElementById('links-box');
+                const linksContainer = document.getElementById('links-container');
+                if (dataSupa.links && (dataSupa.links.link1?.url || dataSupa.links.link2?.url || dataSupa.links.link3?.url)) {
+                    linksContainer.innerHTML = '';
+                    if (dataSupa.links.link1?.url) {
+                        const titulo = dataSupa.links.link1.titulo || 'Link 1';
+                        linksContainer.innerHTML += `<a href="${dataSupa.links.link1.url}" target="_blank" class="link-btn"><span class="link-icon">🔗</span>${titulo}</a>`;
+                    }
+                    if (dataSupa.links.link2?.url) {
+                        const titulo = dataSupa.links.link2.titulo || 'Link 2';
+                        linksContainer.innerHTML += `<a href="${dataSupa.links.link2.url}" target="_blank" class="link-btn"><span class="link-icon">🔗</span>${titulo}</a>`;
+                    }
+                    if (dataSupa.links.link3?.url) {
+                        const titulo = dataSupa.links.link3.titulo || 'Link 3';
+                        linksContainer.innerHTML += `<a href="${dataSupa.links.link3.url}" target="_blank" class="link-btn"><span class="link-icon">🔗</span>${titulo}</a>`;
+                    }
+                    linksBox.style.display = 'block';
+                } else {
+                    linksBox.style.display = 'none';
                 }
 
                 if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual && idPartidaAtual !== "") {
@@ -742,7 +844,6 @@
                         localStorage.removeItem('soccer_timer_expired');
                         localStorage.removeItem('soccer_timer');
                         
-                        // Vincula a liberação permanente ao Fingerprint do Dispositivo no LocalStorage
                         const finger = await gerarFingerprintDispositivo();
                         localStorage.setItem('soccer_token_device', finger);
                         
@@ -770,14 +871,12 @@
         const videoWrapper = document.getElementById('wrapper-player');
 
         async function startTimer() {
-            // Verifica acesso pago por fingerprint ou token
             const tokenDevice = localStorage.getItem('soccer_token_device');
             const currentFinger = await gerarFingerprintDispositivo();
             const temAcessoToken = localStorage.getItem('acesso_token') && localStorage.getItem('acesso_fp') === currentFinger;
             const temAcessoDevice = tokenDevice && tokenDevice === currentFinger;
 
             if (temAcessoDevice || temAcessoToken) {
-                // Usuário pagou — mostra "AO VIVO" no lugar do timer e não bloqueia
                 timerDisplay.innerText = "AO VIVO";
                 timerDisplay.style.color = "#22c55e";
                 timerDisplay.style.fontSize = "1rem";
@@ -794,7 +893,8 @@
                 let sec = timeLeft % 60;
                 timerDisplay.innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
                 if (timeLeft <= 0) { clearInterval(countdown); bloquearAcesso(); }
-                else { timeLeft--; localStorage.setItem('soccer_timer', timeLeft); }
+                timeLeft--;
+                localStorage.setItem('soccer_timer', timeLeft);
             }, 1000);
         }
 
@@ -808,9 +908,7 @@
             if (!localStorage.getItem('chat_nome')) mostrarBloqueioChat();
         }
 
-        // ─── Modal de nome do chat ──────────────────────────────────────
         function abrirModalNome(callback) {
-            // Remove modal anterior se existir
             const antigo = document.getElementById('modal-nome-chat');
             if (antigo) antigo.remove();
 
@@ -866,7 +964,7 @@
         window.onload = async () => {
             const params = new URLSearchParams(window.location.search);
             const tokenParam = params.get('token');
-            const liberarParam = params.get('liberar'); // compatibilidade links antigos
+            const liberarParam = params.get('liberar');
 
             if (tokenParam) {
                 window.history.replaceState({}, '', '/');
@@ -879,7 +977,6 @@
                     });
                     const data = await res.json();
                     if (data.success) {
-                        // Vincula acesso ao dispositivo
                         localStorage.setItem('acesso_token', tokenParam);
                         localStorage.setItem('acesso_fp', fp);
                         localStorage.setItem('soccer_token_device', fp);
@@ -893,7 +990,6 @@
                     alert('Erro ao validar acesso. Tente novamente.');
                 }
             } else if (liberarParam) {
-                // Compatibilidade com links antigos
                 const finger = await gerarFingerprintDispositivo();
                 localStorage.setItem('soccer_token_device', finger);
                 localStorage.removeItem('soccer_timer_expired');
@@ -902,7 +998,6 @@
                 alert('✅ Acesso liberado! Bom jogo!');
             }
 
-            // Revalida acesso salvo silenciosamente
             const tokenSalvo = localStorage.getItem('acesso_token');
             const fpSalvo = localStorage.getItem('acesso_fp');
             if (tokenSalvo && fpSalvo) {
@@ -918,7 +1013,6 @@
                 }).catch(() => {});
             }
 
-            // Pede nome do chat se ainda não foi definido (e tem acesso liberado)
             const temAcesso = localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token');
             const nomePerguntado = localStorage.getItem('chat_nome_perguntado');
             if (temAcesso && !nomePerguntado) {
@@ -940,7 +1034,6 @@
 
             fecharChat();
 
-            // Bloqueia input do chat imediatamente se nao pagou
             if (!temAcessoPago()) {
                 mostrarBloqueioChat();
             }
