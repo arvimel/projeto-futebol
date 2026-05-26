@@ -81,7 +81,6 @@
             letter-spacing: 0.05em;
         }
         #chat-toggle-btn:hover { background: #15803d; transform: scale(1.04); }
-
         #chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -90,14 +89,12 @@
             flex-direction: column;
             gap: 4px;
         }
-
         .chat-msg { font-size: 12px; line-height: 1.5; word-break: break-word; padding: 2px 0; }
         .chat-msg .chat-nome { font-weight: 900; }
         .chat-msg.tipo-admin .chat-nome { color: #facc15; }
         .chat-msg.tipo-user .chat-nome { color: #4ade80; }
         .chat-msg.tipo-sistema { color: #71717a; font-style: italic; font-size: 11px; }
         .chat-msg.tipo-voce .chat-nome { color: #60a5fa; }
-
         #emoji-picker {
             background: #18181b;
             border: 1px solid #27272a;
@@ -111,7 +108,6 @@
         #emoji-picker.open { display: flex; }
         .emoji-btn { background: none; border: none; cursor: pointer; font-size: 20px; padding: 2px; border-radius: 6px; transition: background 0.15s; }
         .emoji-btn:hover { background: #27272a; }
-
         #sticker-picker {
             background: #18181b;
             border: 1px solid #27272a;
@@ -136,7 +132,6 @@
             white-space: nowrap;
         }
         .sticker-btn:hover { background: #3f3f46; transform: scale(1.05); }
-
         #unread-badge {
             background: #ef4444;
             color: white;
@@ -168,10 +163,7 @@
             padding: 12px 16px;
             text-align: center;
         }
-        .ganhador-content {
-            padding: 20px 16px;
-            text-align: center;
-        }
+        .ganhador-content { padding: 20px 16px; text-align: center; }
         .ganhador-comprovante {
             margin: 16px 0;
             border-radius: 12px;
@@ -179,13 +171,7 @@
             border: 1px solid #fbbf24;
             box-shadow: 0 8px 24px rgba(251, 191, 36, 0.15);
         }
-        .ganhador-comprovante img {
-            width: 100%;
-            height: auto;
-            display: block;
-            max-height: 300px;
-            object-fit: contain;
-        }
+        .ganhador-comprovante img { width: 100%; height: auto; display: block; max-height: 300px; object-fit: contain; }
 
         .links-divulgacao {
             background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
@@ -194,17 +180,8 @@
             padding: 16px;
             box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
         }
-        .links-header {
-            text-align: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #3b82f6;
-        }
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-        }
+        .links-header { text-align: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #3b82f6; }
+        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
         .link-btn {
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             border: 1px solid #3b82f6;
@@ -222,15 +199,21 @@
             font-weight: 700;
             font-size: 13px;
         }
-        .link-btn:hover {
-            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
-            border-color: #60a5fa;
+        .link-btn:hover { background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%); transform: translateY(-2px); box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3); border-color: #60a5fa; }
+        .link-icon { font-size: 24px; }
+
+        /* Modal Cast */
+        #modal-cast {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
         }
-        .link-icon {
-            font-size: 24px;
-        }
+        #modal-cast.aberto { display: flex; }
     </style>
 </head>
 <body class="p-1 sm:p-4 font-sans">
@@ -243,9 +226,9 @@
                 </div>
             </div>
             <div class="flex items-center justify-between w-full md:w-auto gap-4 bg-zinc-900 p-3 rounded-xl border border-zinc-800">
-                <button id="cast-btn" onclick="espelharTV()" class="hidden bg-zinc-800 hover:bg-zinc-700 text-white p-2 rounded-lg flex flex-col items-center justify-center transition-all border border-zinc-700">
+                <button id="cast-btn" onclick="abrirModalCast()" class="hidden bg-zinc-800 hover:bg-zinc-700 text-white p-2 rounded-lg flex flex-col items-center justify-center transition-all border border-zinc-700">
                     <span class="text-lg">📺</span>
-                    <span class="text-[8px] font-black uppercase">Espelhar</span>
+                    <span class="text-[8px] font-black uppercase">Espelhar TV</span>
                 </button>
                 <div class="text-right">
                     <p class="text-[9px] text-zinc-500 uppercase font-black leading-none">Tempo Restante</p>
@@ -258,11 +241,9 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div class="lg:col-span-3 w-full flex flex-col gap-4">
                 <div class="video-container overflow-hidden shadow-2xl">
-                    
                     <div id="paywall">
                         <div id="paywall-valores" class="flex flex-col items-center w-full max-w-md">
                             <h2 class="text-3xl font-black text-yellow-500 mb-2 uppercase italic">🔒 Sinal Bloqueado</h2>
-
                             <div class="w-full mb-4 p-3 rounded-xl border-2 border-blue-500 bg-blue-950/40 text-center">
                                 <p class="text-blue-300 text-sm font-black uppercase tracking-wider mb-1">👁️ Só quero assistir ao jogo</p>
                                 <p class="text-zinc-400 text-xs mb-2">Faça um PIX de <span class="text-white font-bold">R$ 2,00</span> para liberar o sinal.<br>Não participa do leilão. Liberação manual.</p>
@@ -270,13 +251,11 @@
                                     📺 Pagar R$ 2,00 e Assistir
                                 </button>
                             </div>
-
                             <div class="w-full flex items-center gap-2 mb-3">
                                 <div class="flex-1 h-px bg-zinc-700"></div>
                                 <span class="text-zinc-400 text-xs font-black uppercase">ou participe do leilão</span>
                                 <div class="flex-1 h-px bg-zinc-700"></div>
                             </div>
-
                             <p class="mb-1 text-zinc-300 text-base text-center">Maior lance leva o <span class="text-green-400 font-bold">prêmio acumulado!</span></p>
                             <p class="mb-3 text-green-400 text-sm font-bold text-center">Lance mínimo: <span class="text-white font-bold">R$ 5,00</span></p>
                             <div class="grid grid-cols-3 gap-2 w-full mb-4">
@@ -288,7 +267,6 @@
                                 <button onclick="abrirValorLivre()" class="btn-valor bg-blue-600 border-blue-500 hover:bg-blue-500">Outro Valor</button>
                             </div>
                         </div>
-
                         <div id="paywall-assistir" class="hidden flex-col items-center w-full max-w-md bg-zinc-900 p-4 rounded-xl border-2 border-blue-500">
                             <p class="text-blue-300 text-xs font-black uppercase mb-1">📺 PIX para Assistir — R$ 2,00</p>
                             <p class="text-zinc-400 text-[10px] text-center mb-3">Escaneie o QR Code ou copie a chave PIX abaixo e pague R$ 2,00. Após o pagamento, aguarde a liberação manual.</p>
@@ -303,7 +281,6 @@
                             <p class="text-[10px] text-yellow-400 animate-pulse font-bold uppercase text-center">⏳ Após pagar, aguarde a liberação manual pelo admin.</p>
                             <button onclick="retornarTelaValores()" class="mt-3 text-zinc-500 text-xs underline">← Voltar</button>
                         </div>
-
                         <div id="paywall-qrcode" class="hidden flex-col items-center w-full max-w-md bg-zinc-900 p-4 rounded-xl border border-zinc-800">
                             <p class="text-xs font-bold text-yellow-500 uppercase mb-2">Escaneie o código abaixo para pagar:</p>
                             <div id="container-img-qrcode" class="bg-white p-2 rounded-lg w-44 h-44 flex items-center justify-center shadow-xl mb-3 pulse-green">
@@ -318,7 +295,6 @@
                             <button onclick="retornarTelaValores()" class="mt-3 text-zinc-500 text-xs underline">← Voltar e escolher outro valor</button>
                         </div>
                     </div>
-                    
                     <div id="wrapper-player" style="width:100%;height:100%;position:absolute;inset:0;">
                         <div id="twitch-inline-player" style="width:100%;height:100%;"></div>
                     </div>
@@ -342,7 +318,6 @@
             </div>
 
             <div class="space-y-4 w-full flex flex-col">
-
                 <!-- Ganhador + Comprovante -->
                 <div id="ganhador-box" style="display:none;" class="ganhador-card">
                     <div class="ganhador-header">
@@ -378,9 +353,7 @@
                     <div class="links-header">
                         <p class="text-blue-300 font-black text-sm uppercase tracking-widest">🔗 Nos Acompanhe</p>
                     </div>
-                    <div id="links-container" class="links-grid">
-                        <!-- Links serão inseridos aqui via JavaScript -->
-                    </div>
+                    <div id="links-container" class="links-grid"></div>
                 </div>
 
                 <div class="bg-zinc-900/30 p-3 rounded-xl border border-zinc-800 shadow-xl text-center">
@@ -395,6 +368,46 @@
         </div>
     </div>
 
+    <!-- Modal Cast/Espelhar -->
+    <div id="modal-cast">
+        <div style="background:#18181b;border:1px solid #3b82f6;border-radius:16px;padding:24px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px;">
+            <div style="text-align:center;">
+                <div style="font-size:36px;margin-bottom:6px;">📺</div>
+                <p style="font-size:15px;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.05em;">Assistir na TV</p>
+                <p style="font-size:11px;color:#71717a;margin-top:4px;">Siga os passos abaixo para transmitir para sua TV</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="background:#09090b;border:1px solid #27272a;border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
+                    <span style="background:#2563eb;color:white;font-weight:900;font-size:11px;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
+                    <div>
+                        <p style="font-size:12px;font-weight:900;color:white;margin-bottom:2px;">Abra o menu do Chrome</p>
+                        <p style="font-size:11px;color:#71717a;">Clique nos <strong style="color:#a1a1aa;">três pontinhos ⋮</strong> no canto superior direito do navegador</p>
+                    </div>
+                </div>
+                <div style="background:#09090b;border:1px solid #27272a;border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
+                    <span style="background:#2563eb;color:white;font-weight:900;font-size:11px;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
+                    <div>
+                        <p style="font-size:12px;font-weight:900;color:white;margin-bottom:2px;">Clique em "Transmitir..."</p>
+                        <p style="font-size:11px;color:#71717a;">Procure a opção <strong style="color:#a1a1aa;">Transmitir...</strong> ou <strong style="color:#a1a1aa;">Cast...</strong> no menu</p>
+                    </div>
+                </div>
+                <div style="background:#09090b;border:1px solid #27272a;border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
+                    <span style="background:#2563eb;color:white;font-weight:900;font-size:11px;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
+                    <div>
+                        <p style="font-size:12px;font-weight:900;color:white;margin-bottom:2px;">Selecione sua TV</p>
+                        <p style="font-size:11px;color:#71717a;">Escolha sua <strong style="color:#a1a1aa;">Smart TV ou Chromecast</strong> na lista. Celular e TV precisam estar na <strong style="color:#a1a1aa;">mesma rede Wi-Fi</strong></p>
+                    </div>
+                </div>
+                <div style="background:#064e3b;border:1px solid #10b981;border-radius:10px;padding:10px;text-align:center;">
+                    <p style="font-size:11px;color:#6ee7b7;">💡 No <strong>iPhone</strong>: use o AirPlay tocando em <strong>🔲 Espelhar Tela</strong> na Central de Controle</p>
+                </div>
+            </div>
+            <button onclick="fecharModalCast()" style="background:#16a34a;border:none;border-radius:10px;padding:12px;color:white;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;">
+                ✅ Entendi
+            </button>
+        </div>
+    </div>
+
     <div id="chat-wrapper">
         <div id="chat-box" class="hidden-chat">
             <div style="background:#18181b;padding:10px 14px;border-bottom:1px solid #27272a;display:flex;align-items:center;justify-content:space-between;">
@@ -404,11 +417,9 @@
                 </div>
                 <button onclick="fecharChat()" style="background:none;border:none;color:#52525b;cursor:pointer;font-size:18px;line-height:1;padding:0 2px;">✕</button>
             </div>
-
             <div id="chat-messages" style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-height:200px;max-height:260px;scrollbar-width:thin;scrollbar-color:#27272a transparent;">
                 <div style="color:#52525b;font-style:italic;font-size:11px;">Conectando ao chat...</div>
             </div>
-
             <div id="sticker-picker">
                 <button class="sticker-btn" onclick="enviarFigurinha('⚽ GOOOL!')">⚽ GOOOL!</button>
                 <button class="sticker-btn" onclick="enviarFigurinha('🔥 QUE JOGADA!')">🔥 QUE JOGADA!</button>
@@ -419,9 +430,7 @@
                 <button class="sticker-btn" onclick="enviarFigurinha('😤 JUIZ LADRÃO!')">😤 JUIZ LADRÃO!</button>
                 <button class="sticker-btn" onclick="enviarFigurinha('💸 PIX FEITO!')">💸 PIX FEITO!</button>
             </div>
-
             <div id="emoji-picker"></div>
-
             <div id="chat-input-area" style="padding:8px 10px;background:#18181b;border-top:1px solid #27272a;display:flex;flex-direction:column;gap:6px;">
                 <div style="display:flex;gap:6px;align-items:center;">
                     <button onclick="toggleEmoji()" style="background:#27272a;border:none;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:16px;">😊</button>
@@ -434,12 +443,10 @@
                     <button onclick="abrirModalNome()" style="background:none;border:none;color:#52525b;cursor:pointer;font-size:10px;text-decoration:underline;margin-left:6px;padding:0;">✏️ trocar</button>
                 </div>
             </div>
-
             <div id="chat-locked-msg" style="display:none;">
                 🔒 Apenas apoiadores podem enviar mensagens. <a onclick="retornarTelaValores(); document.getElementById('paywall').style.display='flex'" href="#" style="color:#4ade80;font-weight:700;">Apoiar agora</a>
             </div>
         </div>
-
         <div style="position:relative;align-self:flex-end;">
             <button id="chat-toggle-btn" onclick="abrirChat()">
                 💬 <span id="chat-btn-label">Chat ao Vivo</span>
@@ -454,9 +461,12 @@
         let twitchPlayer = null;
         let idPartidaAtual = "";
         let premioAnterior = 0;
-        const URL_DO_SEU_WORKER = "/";
 
-        // ─── Fingerprint Único Antifraude do Dispositivo ───
+        // ─── Modal Cast ───────────────────────────────────────────────
+        function abrirModalCast() { document.getElementById('modal-cast').classList.add('aberto'); }
+        function fecharModalCast() { document.getElementById('modal-cast').classList.remove('aberto'); }
+
+        // ─── Fingerprint ──────────────────────────────────────────────
         async function gerarFingerprintDispositivo() {
             const dadosMatriz = [
                 navigator.userAgent,
@@ -465,7 +475,6 @@
                 new Date().getTimezoneOffset(),
                 navigator.hardwareConcurrency || 2
             ].join('||');
-            
             const encoder = new TextEncoder();
             const data = encoder.encode(dadosMatriz);
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -490,21 +499,17 @@
             unreadCount = 0;
             atualizarBadge();
         }
-
         function fecharChat() {
             chatAberto = false;
             document.getElementById('chat-box').classList.add('hidden-chat');
             document.getElementById('chat-toggle-btn').style.display = 'flex';
         }
-
         function atualizarBadge() {
             const badge = document.getElementById('unread-badge');
             if (unreadCount > 0 && !chatAberto) {
                 badge.innerText = unreadCount > 9 ? '9+' : unreadCount;
                 badge.classList.add('show');
-            } else {
-                badge.classList.remove('show');
-            }
+            } else { badge.classList.remove('show'); }
         }
 
         Kakao = {};
@@ -515,31 +520,26 @@
             ep.classList.toggle('open');
             if (ep.classList.contains('open')) gerarBotoesEmoji();
         }
-
         function toggleStickers() {
             const ep = document.getElementById('emoji-picker');
             const sp = document.getElementById('sticker-picker');
             ep.classList.remove('open');
             sp.classList.toggle('open');
         }
-
         function gerarBotoesEmoji() {
             const ep = document.getElementById('emoji-picker');
             const emojis = ['⚽','🔥','🏆','👏','😂','😤','😱','🎯','💸','🥅','🚀','❤️','😍','🤩','🔴','🟡','🟢','⬆️','👍','👎','🤣','😭','🥳','🎉','💪','🦁','🐯','🏅','🎁','🤑','😎','🫶','✅','⚡','🌟','💥','🫡'];
             ep.innerHTML = emojis.map(e => `<button class="emoji-btn" onclick="inserirEmoji('${e}')">${e}</button>`).join('');
         }
-
         function inserirEmoji(emoji) {
             const input = document.getElementById('chat-input');
             input.value += emoji;
             input.focus();
         }
-
         async function enviarFigurinha(texto) {
             document.getElementById('sticker-picker').classList.remove('open');
             await postarMensagem(texto, true);
         }
-
         async function enviarMsgChat() {
             const input = document.getElementById('chat-input');
             const texto = input.value.trim();
@@ -555,11 +555,7 @@
         }
 
         async function postarMensagem(texto, ehFigurinha = false) {
-            if (!temAcessoPago()) {
-                mostrarBloqueioChat();
-                return;
-            }
-
+            if (!temAcessoPago()) { mostrarBloqueioChat(); return; }
             let nome = getNomeChat();
             if (nome === 'Visitante' && !localStorage.getItem('chat_nome_perguntado')) {
                 abrirModalNome((nomeFinal) => {
@@ -572,7 +568,6 @@
                 });
                 return;
             }
-
             try {
                 await fetch('/api/chat', {
                     method: 'POST',
@@ -591,24 +586,19 @@
             const box = document.getElementById('chat-messages');
             const placeholder = box.querySelector('[data-placeholder]');
             if (placeholder) placeholder.remove();
-
             const div = document.createElement('div');
             div.className = 'chat-msg tipo-' + (msg.tipo || 'user');
             div.dataset.id = msg.id;
-
             let nomeColor = '#4ade80';
             if (msg.tipo === 'admin') nomeColor = '#facc15';
             if (msg.tipo === 'voce') nomeColor = '#60a5fa';
-            
             if (msg.tipo === 'sistema') {
                 div.innerHTML = `<span style="color:#71717a;font-style:italic;font-size:11px;">${msg.mensagem}</span>`;
             } else {
                 div.innerHTML = `<span style="font-weight:900;color:${nomeColor};">${escapeHtml(msg.nome)}:</span> <span style="color:#e4e4e7;">${escapeHtml(msg.mensagem)}</span>`;
             }
-
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
-
             const msgs = box.querySelectorAll('.chat-msg');
             if (msgs.length > 80) msgs[0].remove();
         }
@@ -623,16 +613,11 @@
                 const msgs = await res.json();
                 const novas = msgs.filter(m => m.id > ultimoIdChat);
                 if (novas.length === 0) return;
-
                 novas.forEach(msg => {
                     const jaExiste = document.querySelector(`[data-id="${msg.id}"]`);
                     if (jaExiste) { jaExiste.dataset.id = msg.id; return; }
                     adicionarMsgLocal(msg);
-
-                    if (!chatAberto) {
-                        unreadCount++;
-                        atualizarBadge();
-                    }
+                    if (!chatAberto) { unreadCount++; atualizarBadge(); }
                 });
                 ultimoIdChat = msgs[msgs.length - 1]?.id || ultimoIdChat;
             } catch(e) {}
@@ -641,7 +626,6 @@
         function atualizarDisplay(data) {
             const novoPremioBruto = data.acumulado || 0;
             const elPremio = document.getElementById('display-premio');
-
             if (novoPremioBruto !== premioAnterior) {
                 elPremio.innerText = novoPremioBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 elPremio.classList.remove('anim-count');
@@ -649,15 +633,12 @@
                 elPremio.classList.add('anim-count');
                 premioAnterior = novoPremioBruto;
             }
-
             document.getElementById('display-lider-nome').innerText = (data.lider || 'AGUARDANDO...').toUpperCase();
             document.getElementById('display-lider-valor').innerText = (data.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-
             const porcentagem = Math.min(Math.floor((novoPremioBruto / 500) * 100), 100);
             document.getElementById('fill-bar').style.width = porcentagem + '%';
             const elMeta = document.getElementById('meta-porcentagem');
             if (elMeta) elMeta.innerText = porcentagem + '%';
-
             if (data.epoch) {
                 const epochSalvo = localStorage.getItem('soccer_epoch') || '0';
                 if (epochSalvo !== String(data.epoch)) {
@@ -683,33 +664,18 @@
 
                 atualizarDisplay(dataStatus);
 
-                if (dataSupa.titulo) {
-                    document.getElementById('display-titulo').innerText = dataSupa.titulo;
-                }
+                if (dataSupa.titulo) document.getElementById('display-titulo').innerText = dataSupa.titulo;
 
                 // Ganhador + Comprovante
                 const ganhadorBox = document.getElementById('ganhador-box');
-                
-                // Prioriza o ganhador manual definido no admin, senão tenta pegar o líder atual do status
-                let nomeGanhador = "";
-                let valorGanhador = "";
-                let comprovanteGanhador = dataSupa.comprovante || "";
-
-                if (dataSupa.ganhador && (dataSupa.ganhador.nome || dataSupa.ganhador.valor)) {
-                    nomeGanhador = dataSupa.ganhador.nome;
-                    valorGanhador = dataSupa.ganhador.valor;
-                } else if (dataStatus.lider && dataStatus.lider !== "—") {
-                    nomeGanhador = dataStatus.lider;
-                    valorGanhador = "R$ " + (dataStatus.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-                }
-
-                // Exibição do card de ganhador/comprovante
-                if (nomeGanhador || comprovanteGanhador) {
-                    document.getElementById('ganhador-nome-display').innerText = (nomeGanhador || "AGUARDANDO...").toUpperCase();
-                    document.getElementById('ganhador-valor-display').innerText = valorGanhador || "—";
-                    
-                    if (comprovanteGanhador) {
-                        document.getElementById('ganhador-img').src = comprovanteGanhador;
+                const nomeG = dataSupa.ganhador?.nome || '';
+                const valorG = dataSupa.ganhador?.valor || '';
+                const comprovanteG = dataSupa.comprovante || '';
+                if (nomeG || comprovanteG) {
+                    document.getElementById('ganhador-nome-display').innerText = (nomeG || 'AGUARDANDO...').toUpperCase();
+                    document.getElementById('ganhador-valor-display').innerText = valorG || '—';
+                    if (comprovanteG) {
+                        document.getElementById('ganhador-img').src = comprovanteG;
                         document.getElementById('ganhador-comprovante-img').classList.remove('hidden');
                     } else {
                         document.getElementById('ganhador-comprovante-img').classList.add('hidden');
@@ -722,28 +688,22 @@
                 // Links de Divulgação
                 const linksBox = document.getElementById('links-box');
                 const linksContainer = document.getElementById('links-container');
-                if (dataSupa.links && (dataSupa.links.link1?.url || dataSupa.links.link2?.url || dataSupa.links.link3?.url)) {
+                const l = dataSupa.links || {};
+                const temLinks = l.link1?.url || l.link2?.url || l.link3?.url;
+                if (temLinks) {
                     linksContainer.innerHTML = '';
-                    if (dataSupa.links.link1?.url) {
-                        const titulo = dataSupa.links.link1.titulo || 'Link 1';
-                        linksContainer.innerHTML += `<a href="${dataSupa.links.link1.url}" target="_blank" class="link-btn"><span class="link-icon">🔗</span>${titulo}</a>`;
-                    }
-                    if (dataSupa.links.link2?.url) {
-                        const titulo = dataSupa.links.link2.titulo || 'Link 2';
-                        linksContainer.innerHTML += `<a href="${dataSupa.links.link2.url}" target="_blank" class="link-btn"><span class="link-icon">🔗</span>${titulo}</a>`;
-                    }
-                    if (dataSupa.links.link3?.url) {
-                        const titulo = dataSupa.links.link3.titulo || 'Link 3';
-                        linksContainer.innerHTML += `<a href="${dataSupa.links.link3.url}" target="_blank" class="link-btn"><span class="link-icon">🔗</span>${titulo}</a>`;
-                    }
+                    [l.link1, l.link2, l.link3].forEach(link => {
+                        if (link?.url) {
+                            linksContainer.innerHTML += `<a href="${link.url}" target="_blank" class="link-btn"><span class="link-icon">🔗</span>${link.titulo || 'Link'}</a>`;
+                        }
+                    });
                     linksBox.style.display = 'block';
                 } else {
                     linksBox.style.display = 'none';
                 }
 
-                if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual && idPartidaAtual !== "") {
+                if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual && idPartidaAtual !== '') {
                     idPartidaAtual = dataSupa.idPartida;
-                    // Limpa TODOS os tokens de acesso (grátis e pagos)
                     localStorage.removeItem('soccer_timer_expired');
                     localStorage.removeItem('soccer_timer');
                     localStorage.removeItem('soccer_token_device');
@@ -755,7 +715,7 @@
                     idPartidaAtual = dataSupa.idPartida;
                 }
 
-                let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
+                const isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
                 const temAcesso = temAcessoPago();
                 if ((!isExpired || temAcesso) && dataSupa.videoId && dataSupa.videoId !== urlVideoAtual) {
                     urlVideoAtual = dataSupa.videoId;
@@ -776,28 +736,24 @@
         }
 
         function abrirValorLivre() {
-            let valorDigito = prompt(`Digite o valor do seu lance (mínimo R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}):`);
-            if (!valorDigito) return;
-            valorDigito = valorDigito.replace(',', '.').replace('R$', '').trim();
-            const valorFinal = parseFloat(valorDigito);
-            if (isNaN(valorFinal) || valorFinal <= 0) return alert("Insira um valor numérico válido.");
-            if (valorFinal < VALOR_MINIMO) return alert(`Lance mínimo: R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}.`);
-            gerarPixAsaas(valorFinal);
+            let v = prompt(`Digite o valor do seu lance (mínimo R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}):`);
+            if (!v) return;
+            v = v.replace(',', '.').replace('R$', '').trim();
+            const vf = parseFloat(v);
+            if (isNaN(vf) || vf <= 0) return alert("Insira um valor numérico válido.");
+            if (vf < VALOR_MINIMO) return alert(`Lance mínimo: R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}.`);
+            gerarPixAsaas(vf);
         }
 
         async function gerarPixAsaas(valorEscolhido) {
             if (valorEscolhido < VALOR_MINIMO) return alert(`Lance mínimo: R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}.`);
-
             const nomeDoador = prompt("Digite seu nome completo para aparecer no Ranking:");
             if (!nomeDoador || !nomeDoador.trim()) return alert("Você precisa digitar seu nome para participar!");
-
             setNomeChat(nomeDoador.trim().substring(0, 25));
-
             document.getElementById('paywall-valores').classList.add('hidden');
             const qrcodeDiv = document.getElementById('paywall-qrcode');
             qrcodeDiv.classList.remove('hidden');
             qrcodeDiv.classList.add('flex');
-
             try {
                 const response = await fetch('/api/criar-pix', {
                     method: 'POST',
@@ -805,19 +761,12 @@
                     body: JSON.stringify({ valor: valorEscolhido, nome: nomeDoador.trim() })
                 });
                 const data = await response.json();
-
                 if (data.success) {
                     document.getElementById('container-img-qrcode').innerHTML = `<img src="data:image/png;base64,${data.encodedImage}" class="w-full h-full object-contain" />`;
                     document.getElementById('input-copia-cola').value = data.payload;
                     escutarPagamentoAsaas(data.paymentId);
-                } else {
-                    alert("Erro: " + data.error);
-                    retornarTelaValores();
-                }
-            } catch (err) {
-                alert("Erro ao conectar com o servidor.");
-                retornarTelaValores();
-            }
+                } else { alert("Erro: " + data.error); retornarTelaValores(); }
+            } catch (err) { alert("Erro ao conectar com o servidor."); retornarTelaValores(); }
         }
 
         function mostrarPixAssistir() {
@@ -826,29 +775,20 @@
             div.classList.remove('hidden');
             div.classList.add('flex');
         }
-
         function copiarChaveAssistir() {
             const chave = '6dad5bac-5b64-4eff-a658-8cc4d1f22bb2';
-            navigator.clipboard.writeText(chave).then(() => {
-                alert('Chave PIX copiada! Pague R$ 2,00 e aguarde a liberação.');
-            }).catch(() => {
+            navigator.clipboard.writeText(chave).then(() => alert('Chave PIX copiada! Pague R$ 2,00 e aguarde a liberação.')).catch(() => {
                 document.getElementById('chave-pix-assistir').select();
                 document.execCommand('copy');
                 alert('Chave PIX copiada!');
             });
         }
-
         function copiarPix() {
             const input = document.getElementById('input-copia-cola');
-            navigator.clipboard.writeText(input.value).then(() => {
-                alert("Código PIX copiado! Cole no seu banco para pagar.");
-            }).catch(() => {
-                input.select();
-                document.execCommand('copy');
-                alert("Código PIX copiado!");
+            navigator.clipboard.writeText(input.value).then(() => alert("Código PIX copiado! Cole no seu banco para pagar.")).catch(() => {
+                input.select(); document.execCommand('copy'); alert("Código PIX copiado!");
             });
         }
-
         function retornarTelaValores() {
             document.getElementById('paywall-valores').classList.remove('hidden');
             document.getElementById('paywall-qrcode').classList.add('hidden');
@@ -856,7 +796,6 @@
             document.getElementById('paywall-assistir').classList.add('hidden');
             document.getElementById('paywall-assistir').classList.remove('flex');
         }
-
         function escutarPagamentoAsaas(paymentId) {
             const checagem = setInterval(async () => {
                 try {
@@ -866,10 +805,8 @@
                         clearInterval(checagem);
                         localStorage.removeItem('soccer_timer_expired');
                         localStorage.removeItem('soccer_timer');
-                        
                         const finger = await gerarFingerprintDispositivo();
                         localStorage.setItem('soccer_token_device', finger);
-                        
                         alert("✅ Pagamento confirmado! Obrigado pelo apoio. Bom jogo!");
                         window.location.reload();
                     }
@@ -898,22 +835,17 @@
             const currentFinger = await gerarFingerprintDispositivo();
             const temAcessoToken = localStorage.getItem('acesso_token') && localStorage.getItem('acesso_fp') === currentFinger;
             const temAcessoDevice = tokenDevice && tokenDevice === currentFinger;
-
             if (temAcessoDevice || temAcessoToken) {
                 timerDisplay.innerText = "AO VIVO";
                 timerDisplay.style.color = "#22c55e";
                 timerDisplay.style.fontSize = "1rem";
-                
-                // Mostra o botão de espelhamento apenas se tiver acesso
                 document.getElementById('cast-btn').classList.remove('hidden');
                 return;
             }
-
             if (localStorage.getItem('soccer_timer_expired') === 'true') { bloquearAcesso(); return; }
             let timeLeft = localStorage.getItem('soccer_timer');
             timeLeft = (timeLeft === null) ? duration : parseInt(timeLeft);
             if (timeLeft <= 0) { bloquearAcesso(); return; }
-
             const countdown = setInterval(() => {
                 let min = Math.floor(timeLeft / 60);
                 let sec = timeLeft % 60;
@@ -935,35 +867,11 @@
             if (!localStorage.getItem('chat_nome')) mostrarBloqueioChat();
         }
 
-        function espelharTV() {
-            // Verifica se o navegador suporta a Remote Playback API (comum em dispositivos móveis/Safari/Chrome)
-            const iframe = document.querySelector('#wrapper-player iframe');
-            if (!iframe) return alert('O vídeo precisa estar carregado para espelhar.');
-
-            // Tenta usar o método nativo de apresentação do navegador
-            if (iframe.requestPointerLock) { // Truque para verificar interação
-                 alert('Para espelhar na TV:\n\n1. Clique no ícone de "Cast" ou "AirPlay" que aparece dentro do player de vídeo.\n2. Se não aparecer, use a função "Transmitir" do seu navegador (Chrome/Edge).');
-            }
-            
-            // Caso o usuário esteja no Chrome, podemos tentar abrir o menu de transmissão do sistema
-            if (window.chrome && window.chrome.cast) {
-                // Lógica específica de Chrome Cast poderia ser injetada aqui, 
-                // mas para iframes de terceiros (Twitch/YT), o melhor é instruir o usuário
-                // a usar o ícone nativo que o próprio player injeta quando detecta suporte.
-            }
-        }
-
         function abrirModalNome(callback) {
             const antigo = document.getElementById('modal-nome-chat');
             if (antigo) antigo.remove();
-
-            const nomes = ['Torcedor' + Math.floor(Math.random()*900+100),
-                           'Craque' + Math.floor(Math.random()*900+100),
-                           'Fiel' + Math.floor(Math.random()*900+100),
-                           'Fanático' + Math.floor(Math.random()*900+100),
-                           'Boleiro' + Math.floor(Math.random()*900+100)];
+            const nomes = ['Torcedor','Craque','Fiel','Fanático','Boleiro'].map(n => n + Math.floor(Math.random()*900+100));
             const nomeAleatorio = nomes[Math.floor(Math.random()*nomes.length)];
-
             const modal = document.createElement('div');
             modal.id = 'modal-nome-chat';
             modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;';
@@ -974,25 +882,16 @@
                         <p style="font-size:14px;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.05em;">Como quer aparecer no chat?</p>
                         <p style="font-size:11px;color:#71717a;margin-top:4px;">Escolha um nome ou deixe em branco para usar um nome aleatório.</p>
                     </div>
-                    <input id="modal-nome-input" type="text" maxlength="25"
-                        placeholder="Seu nome no chat..."
-                        style="background:#09090b;border:1px solid #3f3f46;border-radius:8px;padding:10px 12px;color:white;font-size:13px;outline:none;width:100%;box-sizing:border-box;"
-                        value="">
+                    <input id="modal-nome-input" type="text" maxlength="25" placeholder="Seu nome no chat..."
+                        style="background:#09090b;border:1px solid #3f3f46;border-radius:8px;padding:10px 12px;color:white;font-size:13px;outline:none;width:100%;box-sizing:border-box;" value="">
                     <p style="font-size:10px;color:#52525b;text-align:center;margin:-8px 0;">
                         Deixar vazio = usar <strong style="color:#86efac;">${nomeAleatorio}</strong>
                     </p>
-                    <div style="display:flex;gap:8px;">
-                        <button id="modal-nome-confirmar"
-                            style="flex:1;background:#16a34a;border:none;border-radius:8px;padding:10px;color:white;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;">
-                            ✅ Confirmar
-                        </button>
-                    </div>
+                    <button id="modal-nome-confirmar" style="flex:1;background:#16a34a;border:none;border-radius:8px;padding:10px;color:white;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;">✅ Confirmar</button>
                 </div>`;
             document.body.appendChild(modal);
-
             const input = document.getElementById('modal-nome-input');
             input.focus();
-
             function confirmar() {
                 const digitado = input.value.trim().substring(0, 25);
                 const nomeFinal = digitado || nomeAleatorio;
@@ -1001,7 +900,6 @@
                 modal.remove();
                 if (callback) callback(nomeFinal);
             }
-
             document.getElementById('modal-nome-confirmar').addEventListener('click', confirmar);
             input.addEventListener('keypress', (e) => { if (e.key === 'Enter') confirmar(); });
         }
@@ -1028,12 +926,8 @@
                         localStorage.removeItem('soccer_timer_expired');
                         localStorage.removeItem('soccer_timer');
                         alert('✅ Acesso liberado! Bom jogo!');
-                    } else {
-                        alert('❌ ' + data.error);
-                    }
-                } catch(e) {
-                    alert('Erro ao validar acesso. Tente novamente.');
-                }
+                    } else { alert('❌ ' + data.error); }
+                } catch(e) { alert('Erro ao validar acesso. Tente novamente.'); }
             } else if (liberarParam) {
                 const finger = await gerarFingerprintDispositivo();
                 localStorage.setItem('soccer_token_device', finger);
@@ -1060,28 +954,18 @@
 
             const temAcesso = localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token');
             const nomePerguntado = localStorage.getItem('chat_nome_perguntado');
-            if (temAcesso && !nomePerguntado) {
-                setTimeout(() => abrirModalNome(), 800);
-            }
+            if (temAcesso && !nomePerguntado) setTimeout(() => abrirModalNome(), 800);
 
             document.getElementById('chat-nome-display').innerText = getNomeChat();
-
             carregarDados();
             await startTimer();
             setInterval(carregarDados, 5000);
             setInterval(buscarMensagensChat, 2500);
             rodarMural();
             setInterval(rodarMural, 3000);
-
-            document.getElementById('chat-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') enviarMsgChat();
-            });
-
+            document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMsgChat(); });
             fecharChat();
-
-            if (!temAcessoPago()) {
-                mostrarBloqueioChat();
-            }
+            if (!temAcessoPago()) mostrarBloqueioChat();
         };
     </script>
 </body>
