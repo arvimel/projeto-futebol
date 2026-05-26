@@ -15,12 +15,6 @@
             color: #d4d4d8; transition: background 0.15s;
         }
         .sticker-admin-btn:hover { background: #3f3f46; }
-        #drop-area {
-            border: 2px dashed #3f3f46; border-radius: 12px; padding: 20px;
-            text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
-        }
-        #drop-area:hover, #drop-area.dragover { border-color: #facc15; background: #1c1a00; }
-        #preview-comprovante { max-width: 100%; max-height: 180px; border-radius: 8px; display: none; margin: 8px auto 0; border: 1px solid #3f3f46; }
     </style>
 </head>
 <body class="bg-zinc-950 text-white p-4">
@@ -102,46 +96,24 @@
                         <button onclick="copiarLinkLiberacao()" class="mt-2 w-full bg-blue-900 hover:bg-blue-800 text-blue-300 text-[10px] font-black uppercase py-1 rounded">📋 Copiar Link</button>
                     </div>
 
-                    <!-- ══════════════════════════════════════════════════════ -->
-                    <!-- COMPROVANTE PIX DO CAMPEÃO                           -->
-                    <!-- ══════════════════════════════════════════════════════ -->
-                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Comprovante PIX do Campeão</h3>
-                    <p class="text-zinc-500 text-[10px]">Faça upload do JPEG do comprovante. Aparece no site para todos verem após salvar.</p>
-
-                    <div id="drop-area" onclick="document.getElementById('input-comprovante').click()">
-                        <input type="file" id="input-comprovante" accept="image/jpeg,image/jpg,image/png" style="display:none;">
-                        <p class="text-zinc-500 text-xs">📁 Clique aqui ou arraste o comprovante</p>
-                        <p class="text-zinc-700 text-[10px] mt-1">JPEG, JPG ou PNG</p>
-                        <img id="preview-comprovante" src="" alt="Preview">
-                        <p id="comprovante-nome-arquivo" class="text-green-400 text-[10px] mt-2 font-bold hidden"></p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="limparComprovante()" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-black uppercase py-1.5 rounded transition">🗑 Remover imagem</button>
+                    <!-- CONTATOS QUE QUEREM ASSISTIR -->
+                    <div class="bg-black border border-blue-900/50 rounded-lg p-3 mt-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-[10px] text-blue-400 font-black uppercase">📲 Contatos para Liberar (R$ 2,00)</p>
+                            <div class="flex items-center gap-2">
+                                <span id="badge-contatos" class="bg-blue-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full hidden">0</span>
+                                <button onclick="limparContatos()" class="text-[9px] text-zinc-600 hover:text-red-400 uppercase font-black">Limpar</button>
+                            </div>
+                        </div>
+                        <div id="lista-contatos" class="space-y-1 max-h-40 overflow-y-auto">
+                            <p class="text-zinc-700 text-[10px] italic">Nenhum contato recebido ainda...</p>
+                        </div>
                     </div>
 
-                    <!-- ══════════════════════════════════════════════════════ -->
-                    <!-- LINKS PARA DIVULGAÇÃO                                 -->
-                    <!-- ══════════════════════════════════════════════════════ -->
-                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-purple-400">🔗 Links para Divulgação</h3>
-                    <p class="text-zinc-500 text-[10px]">Estes links aparecem no site como botões clicáveis para os usuários.</p>
-                    <div class="space-y-2">
-                        <div class="flex gap-2 items-center">
-                            <input id="link-div-label-1" type="text" placeholder="Nome do link (ex: Grupo VIP)" class="w-2/5 bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-purple-500">
-                            <input id="link-div-url-1" type="text" placeholder="https://..." class="flex-1 bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-purple-500">
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <input id="link-div-label-2" type="text" placeholder="Nome do link (ex: Canal Telegram)" class="w-2/5 bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-purple-500">
-                            <input id="link-div-url-2" type="text" placeholder="https://..." class="flex-1 bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-purple-500">
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <input id="link-div-label-3" type="text" placeholder="Nome do link (ex: WhatsApp)" class="w-2/5 bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-purple-500">
-                            <input id="link-div-url-3" type="text" placeholder="https://..." class="flex-1 bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-purple-500">
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <input id="link-div-label-4" type="text" placeholder="Nome do link (ex: Instagram)" class="w-2/5 bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-purple-500">
-                            <input id="link-div-url-4" type="text" placeholder="https://..." class="flex-1 bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-purple-500">
-                        </div>
-                    </div>
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Comprovante PIX do Ganhador</h3>
+                    <p class="text-zinc-500 text-[10px]">Cole aqui o link da imagem do comprovante ou um link externo. Aparece no site para todos verem.</p>
+                    <textarea id="comprovante" rows="3" placeholder="Ex: https://i.imgur.com/abc.jpg  ou  https://drive.google.com/..." class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-yellow-500 text-zinc-300 resize-none"></textarea>
+                    <button onclick="limparComprovante()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-black uppercase py-1 rounded transition">🗑 Limpar comprovante do site</button>
 
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-zinc-400">Checkouts Kiwify (opcional)</h3>
                     <input id="link5" type="text" placeholder="Link R$ 5,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
@@ -153,15 +125,21 @@
                 <!-- Coluna direita: CHAT ADMIN -->
                 <div class="space-y-3 flex flex-col">
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-400">💬 Chat da Live (responda como admin)</h3>
+
+                    <!-- Contagem de msgs -->
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] text-zinc-500 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping inline-block"></span> Ao Vivo
                         </span>
                         <button onclick="limparChat()" class="text-[10px] text-red-500 hover:text-red-400 font-black uppercase">🗑 Limpar chat</button>
                     </div>
+
+                    <!-- Mensagens -->
                     <div id="admin-chat-messages" class="flex-1 bg-black border border-zinc-800 rounded-lg p-3 overflow-y-auto space-y-1" style="min-height:280px;max-height:340px;">
                         <div class="text-zinc-600 italic text-[11px]">Nenhuma mensagem ainda...</div>
                     </div>
+
+                    <!-- Figurinhas admin -->
                     <div id="admin-sticker-picker" class="hidden flex-wrap gap-2 bg-zinc-900 border border-zinc-800 rounded-lg p-2">
                         <button class="sticker-admin-btn" onclick="enviarComoAdmin('⚽ GOOOL!')">⚽ GOOOL!</button>
                         <button class="sticker-admin-btn" onclick="enviarComoAdmin('🔥 QUE LANCE!')">🔥 QUE LANCE!</button>
@@ -172,6 +150,8 @@
                         <button class="sticker-admin-btn" onclick="enviarComoAdmin('🎉 Parabéns ao novo líder do leilão!')">🎉 Parabéns</button>
                         <button class="sticker-admin-btn" onclick="enviarComoAdmin('🚩 PÊNALTI marcado!')">🚩 PÊNALTI!</button>
                     </div>
+
+                    <!-- Input admin -->
                     <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-3 space-y-2">
                         <div class="flex gap-2 items-center">
                             <button onclick="toggleAdminStickers()" class="bg-zinc-800 hover:bg-zinc-700 text-[11px] font-black text-yellow-400 px-2 py-1 rounded uppercase transition">🏷️ Figurinhas</button>
@@ -200,80 +180,45 @@
     <script>
         const SENHA_MASTER = '23100311';
         let ultimoIdChat = 0;
-        let comprovanteBase64 = ''; // imagem em base64 para salvar
 
-        // ─── Upload de comprovante ────────────────────────────────────
-        const inputComp = document.getElementById('input-comprovante');
-        const dropArea = document.getElementById('drop-area');
-        const preview = document.getElementById('preview-comprovante');
-        const nomeArquivo = document.getElementById('comprovante-nome-arquivo');
-
-        function processarArquivo(file) {
-            if (!file || !file.type.startsWith('image/')) return alert('Selecione uma imagem válida (JPEG ou PNG).');
-            if (file.size > 1.5 * 1024 * 1024) return alert('Imagem muito grande. Use uma imagem menor que 1.5 MB.');
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                comprovanteBase64 = e.target.result; // data:image/jpeg;base64,...
-                preview.src = comprovanteBase64;
-                preview.style.display = 'block';
-                nomeArquivo.innerText = '✅ ' + file.name;
-                nomeArquivo.classList.remove('hidden');
+        // ─── Comprovante ─────────────────────────────────────────────
+        async function limparComprovante() {
+            if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
+            document.getElementById('comprovante').value = '';
+            const dados = {
+                titulo: document.getElementById('titulo').value,
+                videoId: document.getElementById('videoId').value,
+                idPartida: document.getElementById('idPartida').value,
+                comprovante: '',
+                links: {
+                    "5,00": document.getElementById('link5').value,
+                    "10,00": document.getElementById('link10').value,
+                    "50,00": document.getElementById('link50').value,
+                    "100,00": document.getElementById('link100').value,
+                }
             };
-            reader.readAsDataURL(file);
-        }
-
-        inputComp.addEventListener('change', () => { if (inputComp.files[0]) processarArquivo(inputComp.files[0]); });
-        dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.classList.add('dragover'); });
-        dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
-        dropArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropArea.classList.remove('dragover');
-            if (e.dataTransfer.files[0]) processarArquivo(e.dataTransfer.files[0]);
-        });
-
-        function limparComprovante() {
-            comprovanteBase64 = '';
-            preview.src = '';
-            preview.style.display = 'none';
-            nomeArquivo.classList.add('hidden');
-            nomeArquivo.innerText = '';
-            inputComp.value = '';
+            await fetch('/api/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
+                body: JSON.stringify(dados)
+            });
+            alert('✅ Comprovante removido do site!');
         }
 
         // ─── Status do leilão ────────────────────────────────────────
         async function carregarStatus() {
             try {
+                // Carrega dados da sessão para preencher campos
                 const [resStatus, resSessao] = await Promise.all([
                     fetch('/api/status-leilao'),
                     fetch('/api/data')
                 ]);
                 const data = await resStatus.json();
                 const sessao = await resSessao.json();
-
                 if (sessao.titulo) document.getElementById('titulo').value = sessao.titulo;
                 if (sessao.videoId) document.getElementById('videoId').value = sessao.videoId;
                 if (sessao.idPartida) document.getElementById('idPartida').value = sessao.idPartida;
-
-                // Carrega links de divulgação
-                if (sessao.linksDivulgacao) {
-                    sessao.linksDivulgacao.forEach((l, i) => {
-                        const n = i + 1;
-                        if (document.getElementById(`link-div-label-${n}`)) {
-                            document.getElementById(`link-div-label-${n}`).value = l.label || '';
-                            document.getElementById(`link-div-url-${n}`).value = l.url || '';
-                        }
-                    });
-                }
-
-                // Restaura preview do comprovante se já existia
-                if (sessao.comprovanteBase64 && !comprovanteBase64) {
-                    comprovanteBase64 = sessao.comprovanteBase64;
-                    preview.src = comprovanteBase64;
-                    preview.style.display = 'block';
-                    nomeArquivo.innerText = '✅ Comprovante salvo';
-                    nomeArquivo.classList.remove('hidden');
-                }
-
+                if (sessao.comprovante !== undefined) document.getElementById('comprovante').value = sessao.comprovante;
                 document.getElementById('info-acumulado').innerText = 'R$ ' + (data.acumulado || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 document.getElementById('info-lider').innerText = data.lider || '—';
                 document.getElementById('info-lance').innerText = 'R$ ' + (data.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
@@ -283,31 +228,37 @@
         async function zerarLeilao() {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Senha incorreta!');
             if (!confirm('Zerar o leilão?\n\nIsso vai:\n- Apagar acumulado, líder e maior lance\n- Renovar os 5 minutos grátis de TODOS os usuários\n\nConfirma?')) return;
-            const res = await fetch('/api/zerar-leilao', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
-                body: JSON.stringify({ qual: 1 })
-            });
+            const res = await fetch('/api/zerar-leilao', { method: 'POST', headers: { 'x-admin-senha': SENHA_MASTER } });
             const data = await res.json();
-            if (data.success) { await carregarStatus(); alert('✅ Leilão zerado!'); }
+            if (data.success) {
+                await carregarStatus();
+                alert('✅ Leilão zerado! Os 5 minutos grátis foram renovados para todos os usuários.');
+            }
         }
 
         async function liberarManual() {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
             const identificacao = document.getElementById('token-liberacao').value.trim();
             if (!identificacao) return alert('Digite um identificador (ex: nome do usuário).');
+
             try {
                 const res = await fetch('/api/gerar-token', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-admin-senha': SENHA_MASTER
+                    },
                     body: JSON.stringify({ identificacao })
                 });
                 const data = await res.json();
                 if (!data.success) return alert('Erro ao gerar token: ' + (data.error || 'desconhecido'));
+
                 const link = `${window.location.origin}/?token=${data.token}`;
                 document.getElementById('link-liberacao').classList.remove('hidden');
                 document.getElementById('link-liberacao-valor').value = link;
-            } catch(e) { alert('Erro de rede ao gerar token. Tente novamente.'); }
+            } catch(e) {
+                alert('Erro de rede ao gerar token. Tente novamente.');
+            }
         }
 
         function copiarLinkLiberacao() {
@@ -323,20 +274,11 @@
                 return;
             }
 
-            // Monta links de divulgação
-            const linksDivulgacao = [];
-            for (let i = 1; i <= 4; i++) {
-                const label = document.getElementById(`link-div-label-${i}`).value.trim();
-                const url = document.getElementById(`link-div-url-${i}`).value.trim();
-                if (label || url) linksDivulgacao.push({ label, url });
-            }
-
             const dados = {
                 titulo: document.getElementById('titulo').value,
                 videoId: document.getElementById('videoId').value,
                 idPartida: document.getElementById('idPartida').value,
-                comprovanteBase64: comprovanteBase64 || '',
-                linksDivulgacao,
+                comprovante: document.getElementById('comprovante').value,
                 links: {
                     "5,00": document.getElementById('link5').value,
                     "10,00": document.getElementById('link10').value,
@@ -357,9 +299,6 @@
                 if (res.ok) {
                     status.innerText = "✅ SUCESSO! DADOS ATUALIZADOS NA LIVE.";
                     status.className = "text-center text-xs font-mono mt-3 text-green-500 font-bold";
-                } else {
-                    status.innerText = "❌ ERRO " + res.status;
-                    status.className = "text-center text-xs font-mono mt-3 text-red-500";
                 }
             } catch (err) {
                 status.innerText = "❌ ERRO DE REDE!";
@@ -371,11 +310,13 @@
         function escapeHtml(str) {
             return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
+
         function toggleAdminStickers() {
             const sp = document.getElementById('admin-sticker-picker');
             sp.classList.toggle('hidden');
             sp.classList.toggle('flex');
         }
+
         async function enviarComoAdminInput() {
             const input = document.getElementById('admin-chat-input');
             const texto = input.value.trim();
@@ -383,6 +324,7 @@
             input.value = '';
             await enviarComoAdmin(texto);
         }
+
         async function enviarComoAdmin(texto) {
             document.getElementById('admin-sticker-picker').classList.add('hidden');
             document.getElementById('admin-sticker-picker').classList.remove('flex');
@@ -394,6 +336,7 @@
                 });
             } catch(e) { console.error('Erro ao enviar msg admin', e); }
         }
+
         async function limparChat() {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Senha incorreta!');
             if (!confirm('Limpar todas as mensagens do chat?')) return;
@@ -401,34 +344,48 @@
             document.getElementById('admin-chat-messages').innerHTML = '<div class="text-zinc-600 italic text-[11px]">Chat limpo.</div>';
             ultimoIdChat = 0;
         }
+
         async function buscarMensagensChat() {
             try {
                 const res = await fetch('/api/chat');
                 const msgs = await res.json();
+
                 const novas = msgs.filter(m => m.id > ultimoIdChat);
                 if (novas.length === 0) return;
+
                 const box = document.getElementById('admin-chat-messages');
+
+                // Remove placeholder
                 const placeholder = box.querySelector('.text-zinc-600');
                 if (placeholder && msgs.length > 0) placeholder.remove();
+
                 novas.forEach(msg => {
                     const div = document.createElement('div');
                     div.className = 'chat-msg-admin';
-                    let nomeColor = '#4ade80';
-                    if (msg.tipo === 'admin') nomeColor = '#facc15';
+
+                    let nomeColor = '#4ade80';   // usuário = verde
+                    if (msg.tipo === 'admin') nomeColor = '#facc15'; // admin = amarelo
                     if (msg.tipo === 'sistema') nomeColor = '#71717a';
+
                     const hora = new Date(msg.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
                     if (msg.tipo === 'sistema') {
                         div.innerHTML = `<span style="color:#52525b;font-style:italic;font-size:10px;">[${hora}] ${escapeHtml(msg.mensagem)}</span>`;
                     } else {
                         div.innerHTML = `<span style="color:#52525b;font-size:10px;">[${hora}]</span> <span style="font-weight:900;color:${nomeColor};">${escapeHtml(msg.nome)}:</span> <span style="color:#d4d4d8;">${escapeHtml(msg.mensagem)}</span>`;
                     }
+
                     box.appendChild(div);
                 });
+
                 box.scrollTop = box.scrollHeight;
                 if (msgs.length > 0) ultimoIdChat = msgs[msgs.length - 1].id;
+
+                // Mantém máx 80 no DOM
                 const allMsgs = box.querySelectorAll('.chat-msg-admin');
                 if (allMsgs.length > 80) allMsgs[0].remove();
-            } catch(e) {}
+
+            } catch(e) { /* silencioso */ }
         }
 
         document.getElementById('admin-chat-input').addEventListener('keypress', (e) => {
@@ -437,12 +394,72 @@
 
         carregarStatus();
         buscarMensagensChat();
+        carregarContatos();
         setInterval(carregarStatus, 10000);
         setInterval(buscarMensagensChat, 2500);
+        setInterval(carregarContatos, 15000);
+
+        // ─── Contatos de quem quer assistir ─────────────────────────
+        async function carregarContatos() {
+            try {
+                const res = await fetch('/api/contatos-assistir');
+                const data = await res.json();
+                const lista = document.getElementById('lista-contatos');
+                const badge = document.getElementById('badge-contatos');
+
+                if (!data.contatos || data.contatos.length === 0) {
+                    lista.innerHTML = '<p class="text-zinc-700 text-[10px] italic">Nenhum contato recebido ainda...</p>';
+                    badge.classList.add('hidden');
+                    return;
+                }
+
+                badge.innerText = data.contatos.length;
+                badge.classList.remove('hidden');
+
+                lista.innerHTML = data.contatos.map((c, i) => `
+                    <div style="background:#09090b;border:1px solid #1e3a5f;border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                        <div>
+                            <p style="font-size:11px;font-weight:700;color:#93c5fd;">${escapeHtml(c.contato)}</p>
+                            <p style="font-size:9px;color:#52525b;">${new Date(c.ts).toLocaleString('pt-BR')}</p>
+                        </div>
+                        <button onclick="gerarLinkParaContato('${encodeURIComponent(c.contato)}')"
+                            style="background:#1e40af;border:none;border-radius:6px;padding:4px 8px;color:white;font-size:9px;font-weight:900;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+                            🔗 Gerar Link
+                        </button>
+                    </div>`).join('');
+            } catch(e) {}
+        }
+
+        async function gerarLinkParaContato(contatoEncoded) {
+            const senha = document.getElementById('senha').value;
+            if (senha !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
+            const identificacao = decodeURIComponent(contatoEncoded);
+            try {
+                const res = await fetch('/api/gerar-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
+                    body: JSON.stringify({ identificacao })
+                });
+                const data = await res.json();
+                if (!data.success) return alert('Erro: ' + data.error);
+                const link = `${window.location.origin}/?token=${data.token}`;
+                await navigator.clipboard.writeText(link);
+                alert(`✅ Link copiado para ${identificacao}!\n\nCole no WhatsApp ou e-mail:\n${link}`);
+            } catch(e) { alert('Erro ao gerar link.'); }
+        }
+
+        async function limparContatos() {
+            const senha = document.getElementById('senha').value;
+            if (senha !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
+            if (!confirm('Limpar todos os contatos?')) return;
+            await fetch('/api/limpar-contatos', { method: 'POST', headers: { 'x-admin-senha': SENHA_MASTER } });
+            await carregarContatos();
+        }
     </script>
-    </div>
+    </div> <!-- fecha admin-painel -->
 
     <script>
+        // ─── Login do admin ──────────────────────────────────────────
         (function() {
             const SENHA = '23100311';
             const jaLogado = sessionStorage.getItem('admin_logado');
@@ -450,6 +467,7 @@
                 document.getElementById('admin-login').style.display = 'none';
                 document.getElementById('admin-painel').style.display = 'block';
             }
+
             function tentarLogin() {
                 const val = document.getElementById('login-senha').value;
                 if (val === SENHA) {
@@ -462,6 +480,7 @@
                     document.getElementById('login-senha').focus();
                 }
             }
+
             document.getElementById('login-btn').addEventListener('click', tentarLogin);
             document.getElementById('login-senha').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') tentarLogin();
