@@ -685,12 +685,26 @@
 
                 // Ganhador + Comprovante
                 const ganhadorBox = document.getElementById('ganhador-box');
+                
+                // Prioriza o ganhador manual definido no admin, senão tenta pegar o líder atual do status
+                let nomeGanhador = "";
+                let valorGanhador = "";
+                let comprovanteGanhador = dataSupa.comprovante || ""; // O comprovante agora vem na raiz do dataSupa
+
                 if (dataSupa.ganhador && dataSupa.ganhador.nome) {
-                    const g = dataSupa.ganhador;
-                    document.getElementById('ganhador-nome-display').innerText = g.nome.toUpperCase();
-                    document.getElementById('ganhador-valor-display').innerText = g.valor;
-                    if (g.comprovante) {
-                        document.getElementById('ganhador-img').src = g.comprovante;
+                    nomeGanhador = dataSupa.ganhador.nome;
+                    valorGanhador = dataSupa.ganhador.valor;
+                } else if (dataStatus.lider && dataStatus.lider !== "—") {
+                    nomeGanhador = dataStatus.lider;
+                    valorGanhador = "R$ " + (dataStatus.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                }
+
+                if (nomeGanhador) {
+                    document.getElementById('ganhador-nome-display').innerText = nomeGanhador.toUpperCase();
+                    document.getElementById('ganhador-valor-display').innerText = valorGanhador;
+                    
+                    if (comprovanteGanhador) {
+                        document.getElementById('ganhador-img').src = comprovanteGanhador;
                         document.getElementById('ganhador-comprovante-img').classList.remove('hidden');
                     } else {
                         document.getElementById('ganhador-comprovante-img').classList.add('hidden');
