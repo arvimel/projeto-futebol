@@ -689,9 +689,9 @@
                 // Prioriza o ganhador manual definido no admin, senão tenta pegar o líder atual do status
                 let nomeGanhador = "";
                 let valorGanhador = "";
-                let comprovanteGanhador = dataSupa.comprovante || ""; // O comprovante agora vem na raiz do dataSupa
+                let comprovanteGanhador = dataSupa.comprovante || "";
 
-                if (dataSupa.ganhador && dataSupa.ganhador.nome) {
+                if (dataSupa.ganhador && (dataSupa.ganhador.nome || dataSupa.ganhador.valor)) {
                     nomeGanhador = dataSupa.ganhador.nome;
                     valorGanhador = dataSupa.ganhador.valor;
                 } else if (dataStatus.lider && dataStatus.lider !== "—") {
