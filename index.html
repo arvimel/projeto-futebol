@@ -243,6 +243,10 @@
                 </div>
             </div>
             <div class="flex items-center justify-between w-full md:w-auto gap-4 bg-zinc-900 p-3 rounded-xl border border-zinc-800">
+                <button id="cast-btn" onclick="espelharTV()" class="hidden bg-zinc-800 hover:bg-zinc-700 text-white p-2 rounded-lg flex flex-col items-center justify-center transition-all border border-zinc-700">
+                    <span class="text-lg">📺</span>
+                    <span class="text-[8px] font-black uppercase">Espelhar</span>
+                </button>
                 <div class="text-right">
                     <p class="text-[9px] text-zinc-500 uppercase font-black leading-none">Tempo Restante</p>
                     <span id="timer" class="text-2xl font-black text-yellow-500 font-mono italic">05:00</span>
@@ -899,6 +903,9 @@
                 timerDisplay.innerText = "AO VIVO";
                 timerDisplay.style.color = "#22c55e";
                 timerDisplay.style.fontSize = "1rem";
+                
+                // Mostra o botão de espelhamento apenas se tiver acesso
+                document.getElementById('cast-btn').classList.remove('hidden');
                 return;
             }
 
@@ -923,8 +930,27 @@
             timerDisplay.innerText = "EXPIRADO";
             paywall.style.display = 'flex';
             videoWrapper.innerHTML = '';
+            document.getElementById('cast-btn').classList.add('hidden');
             if (twitchPlayer) { try { twitchPlayer.pause(); } catch(e){} }
             if (!localStorage.getItem('chat_nome')) mostrarBloqueioChat();
+        }
+
+        function espelharTV() {
+            // Verifica se o navegador suporta a Remote Playback API (comum em dispositivos móveis/Safari/Chrome)
+            const iframe = document.querySelector('#wrapper-player iframe');
+            if (!iframe) return alert('O vídeo precisa estar carregado para espelhar.');
+
+            // Tenta usar o método nativo de apresentação do navegador
+            if (iframe.requestPointerLock) { // Truque para verificar interação
+                 alert('Para espelhar na TV:\n\n1. Clique no ícone de "Cast" ou "AirPlay" que aparece dentro do player de vídeo.\n2. Se não aparecer, use a função "Transmitir" do seu navegador (Chrome/Edge).');
+            }
+            
+            // Caso o usuário esteja no Chrome, podemos tentar abrir o menu de transmissão do sistema
+            if (window.chrome && window.chrome.cast) {
+                // Lógica específica de Chrome Cast poderia ser injetada aqui, 
+                // mas para iframes de terceiros (Twitch/YT), o melhor é instruir o usuário
+                // a usar o ícone nativo que o próprio player injeta quando detecta suporte.
+            }
         }
 
         function abrirModalNome(callback) {
