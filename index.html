@@ -831,17 +831,32 @@
         const videoWrapper = document.getElementById('wrapper-player');
 
         async function startTimer() {
-            const tokenDevice = localStorage.getItem('soccer_token_device');
             const currentFinger = await gerarFingerprintDispositivo();
-            const temAcessoToken = localStorage.getItem('acesso_token') && localStorage.getItem('acesso_fp') === currentFinger;
+
+            // Caminho 1: pagou pelo Asaas (fingerprint salvo direto)
+            const tokenDevice = localStorage.getItem('soccer_token_device');
             const temAcessoDevice = tokenDevice && tokenDevice === currentFinger;
-            if (temAcessoDevice || temAcessoToken) {
+
+            // Caminho 2: acesso liberado manualmente pelo admin via token
+            const acessoToken = localStorage.getItem('acesso_token');
+            const acessoFp = localStorage.getItem('acesso_fp');
+            const temAcessoToken = acessoToken && acessoFp === currentFinger;
+
+            // Caminho 3: token foi salvo mas fingerprint ainda não batem —
+            // pode ser que o token tenha sido ativado agora mesmo nesta sessão
+            // Nesse caso o soccer_token_device já foi setado no onload antes do startTimer
+            const temQualquerAcesso = temAcessoDevice || temAcessoToken;
+
+            if (temQualquerAcesso) {
                 timerDisplay.innerText = "AO VIVO";
                 timerDisplay.style.color = "#22c55e";
                 timerDisplay.style.fontSize = "1rem";
                 document.getElementById('cast-btn').classList.remove('hidden');
+                // Garante que o timer nunca bloqueie quem tem acesso
+                localStorage.removeItem('soccer_timer_expired');
                 return;
             }
+
             if (localStorage.getItem('soccer_timer_expired') === 'true') { bloquearAcesso(); return; }
             let timeLeft = localStorage.getItem('soccer_timer');
             timeLeft = (timeLeft === null) ? duration : parseInt(timeLeft);
@@ -920,37 +935,46 @@
                     });
                     const data = await res.json();
                     if (data.success) {
+                        // Salva TODOS os marcadores de acesso antes do startTimer rodar
                         localStorage.setItem('acesso_token', tokenParam);
                         localStorage.setItem('acesso_fp', fp);
                         localStorage.setItem('soccer_token_device', fp);
                         localStorage.removeItem('soccer_timer_expired');
                         localStorage.removeItem('soccer_timer');
                         alert('✅ Acesso liberado! Bom jogo!');
-                    } else { alert('❌ ' + data.error); }
+                    } else {
+                        alert('❌ ' + data.error);
+                    }
                 } catch(e) { alert('Erro ao validar acesso. Tente novamente.'); }
             } else if (liberarParam) {
                 const finger = await gerarFingerprintDispositivo();
                 localStorage.setItem('soccer_token_device', finger);
+                localStorage.setItem('acesso_fp', finger);
                 localStorage.removeItem('soccer_timer_expired');
                 localStorage.removeItem('soccer_timer');
                 window.history.replaceState({}, '', '/');
                 alert('✅ Acesso liberado! Bom jogo!');
             }
 
-            const tokenSalvo = localStorage.getItem('acesso_token');
-            const fpSalvo = localStorage.getItem('acesso_fp');
-            if (tokenSalvo && fpSalvo) {
+            // Revalida token salvo silenciosamente — se expirou no servidor, remove local
+            const tokenSalvoCheck = localStorage.getItem('acesso_token');
+            const fpSalvoCheck = localStorage.getItem('acesso_fp');
+            if (tokenSalvoCheck && fpSalvoCheck && !tokenParam) {
                 fetch('/api/usar-token', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: tokenSalvo, fingerprint: fpSalvo })
+                    body: JSON.stringify({ token: tokenSalvoCheck, fingerprint: fpSalvoCheck })
                 }).then(r => r.json()).then(d => {
                     if (!d.success) {
+                        // Token expirou (100 min) — remove acesso de token mas mantém
+                        // soccer_token_device se foi via pagamento Asaas
                         localStorage.removeItem('acesso_token');
                         localStorage.removeItem('acesso_fp');
                     }
                 }).catch(() => {});
             }
+
+
 
             const temAcesso = localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token');
             const nomePerguntado = localStorage.getItem('chat_nome_perguntado');
