@@ -581,7 +581,8 @@
                 }
 
                 let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
-                if (!isExpired && dataSupa.videoId && dataSupa.videoId !== urlVideoAtual) {
+                const temAcesso = temAcessoPago();
+                if ((!isExpired || temAcesso) && dataSupa.videoId && dataSupa.videoId !== urlVideoAtual) {
                     urlVideoAtual = dataSupa.videoId;
                     if (dataSupa.videoId.includes('twitch.tv')) {
                         const canal = dataSupa.videoId.split('/').pop().trim();
