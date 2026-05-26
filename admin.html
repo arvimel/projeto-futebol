@@ -15,6 +15,7 @@
             color: #d4d4d8; transition: background 0.15s;
         }
         .sticker-admin-btn:hover { background: #3f3f46; }
+        .preview-img { max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid #27272a; }
     </style>
 </head>
 <body class="bg-zinc-950 text-white p-4">
@@ -81,7 +82,38 @@
                         <input id="senha" type="password" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-red-500">
                     </div>
 
-                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-2 text-blue-400">📺 Liberar Acesso Manual (R$ 2,00)</h3>
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Comprovante PIX do Ganhador</h3>
+                    <p class="text-zinc-500 text-[10px]">Faça upload de uma imagem JPEG do comprovante PIX do campeão. Aparecerá no site de forma destacada.</p>
+                    <div class="bg-black border border-zinc-700 rounded-lg p-3">
+                        <input type="file" id="comprovante-upload" accept="image/jpeg,image/jpg" class="w-full text-[10px] text-zinc-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-black file:bg-yellow-600 file:text-white file:cursor-pointer hover:file:bg-yellow-500">
+                        <div id="preview-comprovante" class="mt-2 hidden">
+                            <p class="text-[9px] text-zinc-500 mb-1">Prévia:</p>
+                            <img id="preview-img" src="" class="preview-img">
+                        </div>
+                    </div>
+                    <button onclick="limparComprovante()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-black uppercase py-1 rounded transition">🗑 Limpar comprovante</button>
+
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-blue-400">🔗 Links de Divulgação</h3>
+                    <p class="text-zinc-500 text-[10px] mb-2">Adicione links para aparecer no site (ex: Instagram, YouTube, WhatsApp, etc).</p>
+                    <div class="space-y-2">
+                        <div>
+                            <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Link 1 (Título)</label>
+                            <input id="link1-titulo" type="text" placeholder="Ex: Instagram" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-blue-500 mb-1">
+                            <input id="link1-url" type="text" placeholder="Ex: https://instagram.com/..." class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Link 2 (Título)</label>
+                            <input id="link2-titulo" type="text" placeholder="Ex: YouTube" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-blue-500 mb-1">
+                            <input id="link2-url" type="text" placeholder="Ex: https://youtube.com/..." class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Link 3 (Título)</label>
+                            <input id="link3-titulo" type="text" placeholder="Ex: WhatsApp" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-blue-500 mb-1">
+                            <input id="link3-url" type="text" placeholder="Ex: https://wa.me/..." class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-blue-400">📺 Liberar Acesso Manual (R$ 2,00)</h3>
                     <p class="text-zinc-500 text-[10px]">Para quem pagou via PIX estático. Cole o token ou nome do usuário.</p>
                     <div>
                         <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Token de Liberação</label>
@@ -95,11 +127,6 @@
                         <input type="text" id="link-liberacao-valor" readonly class="w-full bg-zinc-900 text-blue-300 text-[10px] p-2 rounded border border-zinc-700 font-mono">
                         <button onclick="copiarLinkLiberacao()" class="mt-2 w-full bg-blue-900 hover:bg-blue-800 text-blue-300 text-[10px] font-black uppercase py-1 rounded">📋 Copiar Link</button>
                     </div>
-
-                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Comprovante PIX do Ganhador</h3>
-                    <p class="text-zinc-500 text-[10px]">Cole aqui o link da imagem do comprovante ou um link externo. Aparece no site para todos verem.</p>
-                    <textarea id="comprovante" rows="3" placeholder="Ex: https://i.imgur.com/abc.jpg  ou  https://drive.google.com/..." class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-yellow-500 text-zinc-300 resize-none"></textarea>
-                    <button onclick="limparComprovante()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-black uppercase py-1 rounded transition">🗑 Limpar comprovante do site</button>
 
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-zinc-400">Checkouts Kiwify (opcional)</h3>
                     <input id="link5" type="text" placeholder="Link R$ 5,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
@@ -166,35 +193,39 @@
     <script>
         const SENHA_MASTER = '23100311';
         let ultimoIdChat = 0;
+        let imagemBase64 = '';
+
+        // ─── Upload de Imagem ─────────────────────────────────────────
+        document.getElementById('comprovante-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/jpeg')) {
+                alert('Por favor, selecione uma imagem JPEG.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                imagemBase64 = event.target.result;
+                document.getElementById('preview-img').src = imagemBase64;
+                document.getElementById('preview-comprovante').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        });
 
         // ─── Comprovante ─────────────────────────────────────────────
         async function limparComprovante() {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
-            document.getElementById('comprovante').value = '';
-            const dados = {
-                titulo: document.getElementById('titulo').value,
-                videoId: document.getElementById('videoId').value,
-                idPartida: document.getElementById('idPartida').value,
-                comprovante: '',
-                links: {
-                    "5,00": document.getElementById('link5').value,
-                    "10,00": document.getElementById('link10').value,
-                    "50,00": document.getElementById('link50').value,
-                    "100,00": document.getElementById('link100').value,
-                }
-            };
-            await fetch('/api/update', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
-                body: JSON.stringify(dados)
-            });
-            alert('✅ Comprovante removido do site!');
+            imagemBase64 = '';
+            document.getElementById('comprovante-upload').value = '';
+            document.getElementById('preview-comprovante').classList.add('hidden');
+            alert('✅ Comprovante limpo! Será removido do site ao salvar.');
         }
 
         // ─── Status do leilão ────────────────────────────────────────
         async function carregarStatus() {
             try {
-                // Carrega dados da sessão para preencher campos
                 const [resStatus, resSessao] = await Promise.all([
                     fetch('/api/status-leilao'),
                     fetch('/api/data')
@@ -204,7 +235,27 @@
                 if (sessao.titulo) document.getElementById('titulo').value = sessao.titulo;
                 if (sessao.videoId) document.getElementById('videoId').value = sessao.videoId;
                 if (sessao.idPartida) document.getElementById('idPartida').value = sessao.idPartida;
-                if (sessao.comprovante !== undefined) document.getElementById('comprovante').value = sessao.comprovante;
+                if (sessao.comprovante !== undefined) {
+                    imagemBase64 = sessao.comprovante;
+                    if (imagemBase64) {
+                        document.getElementById('preview-img').src = imagemBase64;
+                        document.getElementById('preview-comprovante').classList.remove('hidden');
+                    }
+                }
+                if (sessao.links) {
+                    if (sessao.links.link1) {
+                        document.getElementById('link1-titulo').value = sessao.links.link1.titulo || '';
+                        document.getElementById('link1-url').value = sessao.links.link1.url || '';
+                    }
+                    if (sessao.links.link2) {
+                        document.getElementById('link2-titulo').value = sessao.links.link2.titulo || '';
+                        document.getElementById('link2-url').value = sessao.links.link2.url || '';
+                    }
+                    if (sessao.links.link3) {
+                        document.getElementById('link3-titulo').value = sessao.links.link3.titulo || '';
+                        document.getElementById('link3-url').value = sessao.links.link3.url || '';
+                    }
+                }
                 document.getElementById('info-acumulado').innerText = 'R$ ' + (data.acumulado || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 document.getElementById('info-lider').innerText = data.lider || '—';
                 document.getElementById('info-lance').innerText = 'R$ ' + (data.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
@@ -264,8 +315,20 @@
                 titulo: document.getElementById('titulo').value,
                 videoId: document.getElementById('videoId').value,
                 idPartida: document.getElementById('idPartida').value,
-                comprovante: document.getElementById('comprovante').value,
+                comprovante: imagemBase64,
                 links: {
+                    link1: {
+                        titulo: document.getElementById('link1-titulo').value,
+                        url: document.getElementById('link1-url').value
+                    },
+                    link2: {
+                        titulo: document.getElementById('link2-titulo').value,
+                        url: document.getElementById('link2-url').value
+                    },
+                    link3: {
+                        titulo: document.getElementById('link3-titulo').value,
+                        url: document.getElementById('link3-url').value
+                    },
                     "5,00": document.getElementById('link5').value,
                     "10,00": document.getElementById('link10').value,
                     "50,00": document.getElementById('link50').value,
@@ -341,7 +404,6 @@
 
                 const box = document.getElementById('admin-chat-messages');
 
-                // Remove placeholder
                 const placeholder = box.querySelector('.text-zinc-600');
                 if (placeholder && msgs.length > 0) placeholder.remove();
 
@@ -349,8 +411,8 @@
                     const div = document.createElement('div');
                     div.className = 'chat-msg-admin';
 
-                    let nomeColor = '#4ade80';   // usuário = verde
-                    if (msg.tipo === 'admin') nomeColor = '#facc15'; // admin = amarelo
+                    let nomeColor = '#4ade80';
+                    if (msg.tipo === 'admin') nomeColor = '#facc15';
                     if (msg.tipo === 'sistema') nomeColor = '#71717a';
 
                     const hora = new Date(msg.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -367,11 +429,10 @@
                 box.scrollTop = box.scrollHeight;
                 if (msgs.length > 0) ultimoIdChat = msgs[msgs.length - 1].id;
 
-                // Mantém máx 80 no DOM
                 const allMsgs = box.querySelectorAll('.chat-msg-admin');
                 if (allMsgs.length > 80) allMsgs[0].remove();
 
-            } catch(e) { /* silencioso */ }
+            } catch(e) { }
         }
 
         document.getElementById('admin-chat-input').addEventListener('keypress', (e) => {
@@ -383,7 +444,7 @@
         setInterval(carregarStatus, 10000);
         setInterval(buscarMensagensChat, 2500);
     </script>
-    </div> <!-- fecha admin-painel -->
+    </div>
 
     <script>
         // ─── Login do admin ──────────────────────────────────────────
