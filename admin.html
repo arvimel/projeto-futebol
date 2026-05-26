@@ -96,6 +96,11 @@
                         <button onclick="copiarLinkLiberacao()" class="mt-2 w-full bg-blue-900 hover:bg-blue-800 text-blue-300 text-[10px] font-black uppercase py-1 rounded">📋 Copiar Link</button>
                     </div>
 
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Comprovante PIX do Ganhador</h3>
+                    <p class="text-zinc-500 text-[10px]">Cole aqui o link da imagem do comprovante ou um link externo. Aparece no site para todos verem.</p>
+                    <textarea id="comprovante" rows="3" placeholder="Ex: https://i.imgur.com/abc.jpg  ou  https://drive.google.com/..." class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-yellow-500 text-zinc-300 resize-none"></textarea>
+                    <button onclick="limparComprovante()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-black uppercase py-1 rounded transition">🗑 Limpar comprovante do site</button>
+
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-zinc-400">Checkouts Kiwify (opcional)</h3>
                     <input id="link5" type="text" placeholder="Link R$ 5,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
                     <input id="link10" type="text" placeholder="Link R$ 10,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
@@ -162,11 +167,44 @@
         const SENHA_MASTER = '23100311';
         let ultimoIdChat = 0;
 
+        // ─── Comprovante ─────────────────────────────────────────────
+        async function limparComprovante() {
+            if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
+            document.getElementById('comprovante').value = '';
+            const dados = {
+                titulo: document.getElementById('titulo').value,
+                videoId: document.getElementById('videoId').value,
+                idPartida: document.getElementById('idPartida').value,
+                comprovante: '',
+                links: {
+                    "5,00": document.getElementById('link5').value,
+                    "10,00": document.getElementById('link10').value,
+                    "50,00": document.getElementById('link50').value,
+                    "100,00": document.getElementById('link100').value,
+                }
+            };
+            await fetch('/api/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
+                body: JSON.stringify(dados)
+            });
+            alert('✅ Comprovante removido do site!');
+        }
+
         // ─── Status do leilão ────────────────────────────────────────
         async function carregarStatus() {
             try {
-                const res = await fetch('/api/status-leilao');
-                const data = await res.json();
+                // Carrega dados da sessão para preencher campos
+                const [resStatus, resSessao] = await Promise.all([
+                    fetch('/api/status-leilao'),
+                    fetch('/api/data')
+                ]);
+                const data = await resStatus.json();
+                const sessao = await resSessao.json();
+                if (sessao.titulo) document.getElementById('titulo').value = sessao.titulo;
+                if (sessao.videoId) document.getElementById('videoId').value = sessao.videoId;
+                if (sessao.idPartida) document.getElementById('idPartida').value = sessao.idPartida;
+                if (sessao.comprovante !== undefined) document.getElementById('comprovante').value = sessao.comprovante;
                 document.getElementById('info-acumulado').innerText = 'R$ ' + (data.acumulado || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 document.getElementById('info-lider').innerText = data.lider || '—';
                 document.getElementById('info-lance').innerText = 'R$ ' + (data.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
@@ -226,6 +264,7 @@
                 titulo: document.getElementById('titulo').value,
                 videoId: document.getElementById('videoId').value,
                 idPartida: document.getElementById('idPartida').value,
+                comprovante: document.getElementById('comprovante').value,
                 links: {
                     "5,00": document.getElementById('link5').value,
                     "10,00": document.getElementById('link10').value,
