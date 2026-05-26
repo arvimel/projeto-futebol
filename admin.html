@@ -82,16 +82,21 @@
                         <input id="senha" type="password" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-red-500">
                     </div>
 
-                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Comprovante PIX do Ganhador</h3>
-                    <p class="text-zinc-500 text-[10px]">Faça upload de uma imagem JPEG do comprovante PIX do campeão. Aparecerá no site de forma destacada.</p>
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Ganhador e Comprovante PIX</h3>
+                    <p class="text-zinc-500 text-[10px] mb-2">Defina o campeão e suba a imagem do comprovante.</p>
+                    <div class="space-y-2 mb-3">
+                        <input id="ganhador-nome" type="text" placeholder="Nome do Ganhador" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-yellow-500">
+                        <input id="ganhador-valor" type="text" placeholder="Valor do Lance (Ex: R$ 150,00)" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-yellow-500">
+                    </div>
                     <div class="bg-black border border-zinc-700 rounded-lg p-3">
+                        <label class="block text-[9px] uppercase font-black text-gray-500 mb-1">Foto do Comprovante (JPEG)</label>
                         <input type="file" id="comprovante-upload" accept="image/jpeg,image/jpg" class="w-full text-[10px] text-zinc-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-black file:bg-yellow-600 file:text-white file:cursor-pointer hover:file:bg-yellow-500">
                         <div id="preview-comprovante" class="mt-2 hidden">
                             <p class="text-[9px] text-zinc-500 mb-1">Prévia:</p>
                             <img id="preview-img" src="" class="preview-img">
                         </div>
                     </div>
-                    <button onclick="limparComprovante()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-black uppercase py-1 rounded transition">🗑 Limpar comprovante</button>
+                    <button onclick="limparComprovante()" class="w-full mt-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-black uppercase py-1 rounded transition">🗑 Limpar tudo do Ganhador</button>
 
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-blue-400">🔗 Links de Divulgação</h3>
                     <p class="text-zinc-500 text-[10px] mb-2">Adicione links para aparecer no site (ex: Instagram, YouTube, WhatsApp, etc).</p>
@@ -218,9 +223,11 @@
         async function limparComprovante() {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
             imagemBase64 = '';
+            document.getElementById('ganhador-nome').value = '';
+            document.getElementById('ganhador-valor').value = '';
             document.getElementById('comprovante-upload').value = '';
             document.getElementById('preview-comprovante').classList.add('hidden');
-            alert('✅ Comprovante limpo! Será removido do site ao salvar.');
+            alert('✅ Dados e comprovante limpos! Clique em Salvar para atualizar o site.');
         }
 
         // ─── Status do leilão ────────────────────────────────────────
@@ -235,6 +242,12 @@
                 if (sessao.titulo) document.getElementById('titulo').value = sessao.titulo;
                 if (sessao.videoId) document.getElementById('videoId').value = sessao.videoId;
                 if (sessao.idPartida) document.getElementById('idPartida').value = sessao.idPartida;
+                
+                if (sessao.ganhador) {
+                    document.getElementById('ganhador-nome').value = sessao.ganhador.nome || '';
+                    document.getElementById('ganhador-valor').value = sessao.ganhador.valor || '';
+                }
+
                 if (sessao.comprovante !== undefined) {
                     imagemBase64 = sessao.comprovante;
                     if (imagemBase64) {
@@ -315,7 +328,11 @@
                 titulo: document.getElementById('titulo').value,
                 videoId: document.getElementById('videoId').value,
                 idPartida: document.getElementById('idPartida').value,
-                comprovante: imagemBase64, // Base64 da imagem JPEG
+                ganhador: {
+                    nome: document.getElementById('ganhador-nome').value,
+                    valor: document.getElementById('ganhador-valor').value
+                },
+                comprovante: imagemBase64,
                 links: {
                     link1: {
                         titulo: document.getElementById('link1-titulo').value,
