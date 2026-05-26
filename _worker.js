@@ -370,6 +370,44 @@ export default {
       return json({ success: true, epoch: novoEpoch });
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // POST /api/contato-assistir  →  salva contato de quem quer assistir
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "POST" && url.pathname === "/api/contato-assistir") {
+      try {
+        const { contato } = await request.json();
+        if (!contato) return json({ success: false }, 400);
+        const raw = await env.DB.get("CONTATOS_ASSISTIR");
+        const lista = raw ? JSON.parse(raw) : [];
+        // Evita duplicatas
+        const jaExiste = lista.some(c => c.contato === contato);
+        if (!jaExiste) {
+          lista.push({ contato, ts: Date.now() });
+          await env.DB.put("CONTATOS_ASSISTIR", JSON.stringify(lista.slice(-50)));
+        }
+        return json({ success: true });
+      } catch(e) { return json({ success: false, error: e.message }, 500); }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // GET /api/contatos-assistir  →  lista contatos (admin)
+    // ═══════════════════════════════════════════════════════════════
+    if (url.pathname === "/api/contatos-assistir") {
+      const raw = await env.DB.get("CONTATOS_ASSISTIR");
+      const contatos = raw ? JSON.parse(raw) : [];
+      return json({ contatos });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // POST /api/limpar-contatos  →  apaga lista de contatos (admin)
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "POST" && url.pathname === "/api/limpar-contatos") {
+      const senhaH = request.headers.get("x-admin-senha");
+      if (senhaH !== "23100311") return new Response("Unauthorized", { status: 401 });
+      await env.DB.put("CONTATOS_ASSISTIR", JSON.stringify([]));
+      return json({ success: true });
+    }
+
     return env.ASSETS.fetch(request);
   },
 };
