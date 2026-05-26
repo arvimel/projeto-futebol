@@ -699,9 +699,10 @@
                     valorGanhador = "R$ " + (dataStatus.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 }
 
-                if (nomeGanhador) {
-                    document.getElementById('ganhador-nome-display').innerText = nomeGanhador.toUpperCase();
-                    document.getElementById('ganhador-valor-display').innerText = valorGanhador;
+                // Exibição do card de ganhador/comprovante
+                if (nomeGanhador || comprovanteGanhador) {
+                    document.getElementById('ganhador-nome-display').innerText = (nomeGanhador || "AGUARDANDO...").toUpperCase();
+                    document.getElementById('ganhador-valor-display').innerText = valorGanhador || "—";
                     
                     if (comprovanteGanhador) {
                         document.getElementById('ganhador-img').src = comprovanteGanhador;
