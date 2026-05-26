@@ -833,35 +833,35 @@
         async function startTimer() {
             const currentFinger = await gerarFingerprintDispositivo();
 
-            // Caminho 1: pagou pelo Asaas (fingerprint salvo direto)
+            // Verifica todos os caminhos de acesso pago
             const tokenDevice = localStorage.getItem('soccer_token_device');
             const temAcessoDevice = tokenDevice && tokenDevice === currentFinger;
-
-            // Caminho 2: acesso liberado manualmente pelo admin via token
             const acessoToken = localStorage.getItem('acesso_token');
             const acessoFp = localStorage.getItem('acesso_fp');
             const temAcessoToken = acessoToken && acessoFp === currentFinger;
 
-            // Caminho 3: token foi salvo mas fingerprint ainda não batem —
-            // pode ser que o token tenha sido ativado agora mesmo nesta sessão
-            // Nesse caso o soccer_token_device já foi setado no onload antes do startTimer
-            const temQualquerAcesso = temAcessoDevice || temAcessoToken;
-
-            if (temQualquerAcesso) {
+            if (temAcessoDevice || temAcessoToken) {
+                // Tem acesso pago — limpa qualquer bloqueio anterior e mostra AO VIVO
+                localStorage.removeItem('soccer_timer_expired');
+                localStorage.removeItem('soccer_timer');
                 timerDisplay.innerText = "AO VIVO";
                 timerDisplay.style.color = "#22c55e";
                 timerDisplay.style.fontSize = "1rem";
                 document.getElementById('cast-btn').classList.remove('hidden');
-                // Garante que o timer nunca bloqueie quem tem acesso
-                localStorage.removeItem('soccer_timer_expired');
                 return;
             }
 
+            // Sem acesso pago — roda o timer de 5 min grátis
             if (localStorage.getItem('soccer_timer_expired') === 'true') { bloquearAcesso(); return; }
             let timeLeft = localStorage.getItem('soccer_timer');
             timeLeft = (timeLeft === null) ? duration : parseInt(timeLeft);
             if (timeLeft <= 0) { bloquearAcesso(); return; }
+
             const countdown = setInterval(() => {
+                // Pausa o timer enquanto paywall estiver visível
+                // (usuário aguardando liberação, não está consumindo o sinal)
+                if (document.getElementById('paywall').style.display === 'flex') return;
+
                 let min = Math.floor(timeLeft / 60);
                 let sec = timeLeft % 60;
                 timerDisplay.innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
@@ -935,12 +935,13 @@
                     });
                     const data = await res.json();
                     if (data.success) {
-                        // Salva TODOS os marcadores de acesso antes do startTimer rodar
+                        // Limpa qualquer bloqueio anterior PRIMEIRO
+                        localStorage.removeItem('soccer_timer_expired');
+                        localStorage.removeItem('soccer_timer');
+                        // Depois salva o acesso pago
                         localStorage.setItem('acesso_token', tokenParam);
                         localStorage.setItem('acesso_fp', fp);
                         localStorage.setItem('soccer_token_device', fp);
-                        localStorage.removeItem('soccer_timer_expired');
-                        localStorage.removeItem('soccer_timer');
                         alert('✅ Acesso liberado! Bom jogo!');
                     } else {
                         alert('❌ ' + data.error);
