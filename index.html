@@ -499,6 +499,19 @@
                 navigator.userAgent, screen.width + 'x' + screen.height,
                 navigator.language, new Date().getTimezoneOffset(), navigator.hardwareConcurrency || 2
             ].join('||');
+            
+            // PLANO B: Se estiver rodando sem HTTPS (modo de teste local), usa um gerador simples
+            if (!window.crypto || !window.crypto.subtle) {
+                let hash = 0;
+                for (let i = 0; i < dadosMatriz.length; i++) {
+                    const char = dadosMatriz.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash |= 0;
+                }
+                return 'fp_local_' + Math.abs(hash).toString(16);
+            }
+
+            // MODO DE PRODUÇÃO: Criptografia de alta segurança
             const encoder = new TextEncoder();
             const data = encoder.encode(dadosMatriz);
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
