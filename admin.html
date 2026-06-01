@@ -19,7 +19,6 @@
 </head>
 <body class="bg-zinc-950 text-white p-4">
 
-    <!-- Tela de login do admin -->
     <div id="admin-login" style="position:fixed;inset:0;background:#09090b;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;">
         <div style="background:#18181b;border:1px solid #27272a;border-radius:16px;padding:32px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:16px;align-items:center;">
             <div style="font-size:32px;">⚙️</div>
@@ -42,7 +41,6 @@
             <h1 class="text-xl font-bold mb-6 text-green-500 underline uppercase text-center italic font-mono">⚙️ Painel de Comando</h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Coluna esquerda: controles -->
                 <div class="space-y-4">
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-500">Controle da Live</h3>
                     <div>
@@ -96,7 +94,6 @@
                         <button onclick="copiarLinkLiberacao()" class="mt-2 w-full bg-blue-900 hover:bg-blue-800 text-blue-300 text-[10px] font-black uppercase py-1 rounded">📋 Copiar Link</button>
                     </div>
 
-                    <!-- CONTATOS RECEBIDOS -->
                     <div class="bg-black border border-blue-900/50 rounded-lg p-3 mt-2">
                         <div class="flex items-center justify-between mb-2">
                             <p class="text-[10px] text-blue-400 font-black uppercase">📲 Contatos para Liberar (R$ 2,00)</p>
@@ -111,9 +108,38 @@
                     </div>
 
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Comprovante PIX do Ganhador</h3>
-                    <p class="text-zinc-500 text-[10px]">Cole aqui o link da imagem do comprovante ou um link externo. Aparece no site para todos verem.</p>
-                    <textarea id="comprovante" rows="3" placeholder="Ex: https://i.imgur.com/abc.jpg  ou  https://drive.google.com/..." class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-yellow-500 text-zinc-300 resize-none"></textarea>
-                    <button onclick="limparComprovante()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-black uppercase py-1 rounded transition">🗑 Limpar comprovante do site</button>
+                    <p class="text-zinc-500 text-[10px]">Faça o upload da imagem (JPG, PNG, WEBP) do comprovante.</p>
+                    <div class="flex gap-2 items-center">
+                        <input type="file" id="comprovante-file" accept="image/*" class="w-full bg-black border border-zinc-700 p-2 rounded text-xs outline-none text-zinc-300">
+                        <button onclick="apagarMedia('comprovante')" class="bg-zinc-800 hover:bg-red-900 text-zinc-400 text-[10px] font-black uppercase px-3 py-2 rounded transition">🗑 Limpar</button>
+                    </div>
+
+                    <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-6 text-purple-400">📢 Áreas de Marketing e Publicidade</h3>
+                    <p class="text-zinc-500 text-[10px] mb-2">Preencha apenas o que desejar exibir. Atualize a página e salve para aplicar.</p>
+
+                    <div class="bg-black rounded-lg p-3 border border-zinc-800 space-y-2">
+                        <label class="block text-[10px] uppercase font-black text-purple-300">ESPAÇO 1: Banner de Imagem</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="file" id="banner-file" accept="image/*" class="w-full bg-zinc-900 text-[10px] text-zinc-400 border border-zinc-700 p-2 rounded">
+                            <button onclick="apagarMedia('banner')" class="bg-zinc-800 hover:bg-red-900 text-zinc-400 text-[10px] font-black uppercase px-2 py-2 rounded">🗑</button>
+                        </div>
+                        <input type="text" id="mkt-banner-link" placeholder="Link de destino (opcional). Ex: https://seu-site.com" class="w-full bg-zinc-900 border border-zinc-700 p-2 rounded text-xs outline-none focus:border-purple-500 mt-1">
+                    </div>
+
+                    <div class="bg-black rounded-lg p-3 border border-zinc-800 space-y-2 mt-2">
+                        <label class="block text-[10px] uppercase font-black text-purple-300">ESPAÇO 2: Vídeo Promocional</label>
+                        <p class="text-[9px] text-zinc-500">Recomendado formato curto (MP4, WEBM) - Máximo 5MB.</p>
+                        <div class="flex gap-2 items-center">
+                            <input type="file" id="video-file" accept="video/*" class="w-full bg-zinc-900 text-[10px] text-zinc-400 border border-zinc-700 p-2 rounded">
+                            <button onclick="apagarMedia('video')" class="bg-zinc-800 hover:bg-red-900 text-zinc-400 text-[10px] font-black uppercase px-2 py-2 rounded">🗑</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-black rounded-lg p-3 border border-zinc-800 space-y-2 mt-2">
+                        <label class="block text-[10px] uppercase font-black text-purple-300">ESPAÇO 3: Área Flexível (Textos/Botões)</label>
+                        <p class="text-[9px] text-zinc-500">Aceita formatação HTML para botões e links personalizados.</p>
+                        <textarea id="mkt-flex-html" rows="3" placeholder="Insira texto, avisos ou botões HTML..." class="w-full bg-zinc-900 border border-zinc-700 p-2 rounded text-xs outline-none focus:border-purple-500 text-zinc-300 resize-none"></textarea>
+                    </div>
 
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-zinc-400">Checkouts Kiwify (opcional)</h3>
                     <input id="link5" type="text" placeholder="Link R$ 5,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
@@ -122,11 +148,9 @@
                     <input id="link100" type="text" placeholder="Link R$ 100,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
                 </div>
 
-                <!-- Coluna direita: CHAT ADMIN -->
                 <div class="space-y-3 flex flex-col">
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-400">💬 Chat da Live (responda como admin)</h3>
 
-                    <!-- Contagem de msgs -->
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] text-zinc-500 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping inline-block"></span> Ao Vivo
@@ -134,12 +158,10 @@
                         <button onclick="limparChat()" class="text-[10px] text-red-500 hover:text-red-400 font-black uppercase">🗑 Limpar chat</button>
                     </div>
 
-                    <!-- Mensagens -->
                     <div id="admin-chat-messages" class="flex-1 bg-black border border-zinc-800 rounded-lg p-3 overflow-y-auto space-y-1" style="min-height:280px;max-height:340px;">
                         <div class="text-zinc-600 italic text-[11px]">Nenhuma mensagem ainda...</div>
                     </div>
 
-                    <!-- Figurinhas admin -->
                     <div id="admin-sticker-picker" class="hidden flex-wrap gap-2 bg-zinc-900 border border-zinc-800 rounded-lg p-2">
                         <button class="sticker-admin-btn" onclick="enviarComoAdmin('⚽ GOOOL!')">⚽ GOOOL!</button>
                         <button class="sticker-admin-btn" onclick="enviarComoAdmin('🔥 QUE LANCE!')">🔥 QUE LANCE!</button>
@@ -151,7 +173,6 @@
                         <button class="sticker-admin-btn" onclick="enviarComoAdmin('🚩 PÊNALTI marcado!')">🚩 PÊNALTI!</button>
                     </div>
 
-                    <!-- Input admin -->
                     <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-3 space-y-2">
                         <div class="flex gap-2 items-center">
                             <button onclick="toggleAdminStickers()" class="bg-zinc-800 hover:bg-zinc-700 text-[11px] font-black text-yellow-400 px-2 py-1 rounded uppercase transition">🏷️ Figurinhas</button>
@@ -181,28 +202,50 @@
         const SENHA_MASTER = '23100311';
         let ultimoIdChat = 0;
 
-        // ─── Comprovante ─────────────────────────────────────────────
-        async function limparComprovante() {
+        // ─── Upload de Mídia e Comprovante ───────────────────────────
+        async function apagarMedia(idMedia) {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
-            document.getElementById('comprovante').value = '';
-            const dados = {
-                titulo: document.getElementById('titulo').value,
-                videoId: document.getElementById('videoId').value,
-                idPartida: document.getElementById('idPartida').value,
-                comprovante: '',
-                links: {
-                    "5,00": document.getElementById('link5').value,
-                    "10,00": document.getElementById('link10').value,
-                    "50,00": document.getElementById('link50').value,
-                    "100,00": document.getElementById('link100').value,
-                }
-            };
-            await fetch('/api/update', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
-                body: JSON.stringify(dados)
+            if (!confirm(`Remover permanentemente o arquivo da área '${idMedia}'?`)) return;
+            try {
+                await fetch('/api/media/' + idMedia, { method: 'DELETE', headers: { 'x-admin-senha': SENHA_MASTER } });
+                document.getElementById(idMedia + '-file').value = '';
+                alert(`✅ Mídia '${idMedia}' removida!`);
+            } catch(e) { alert('Erro ao remover mídia.'); }
+        }
+
+        async function processarUploadMedia(fileInputId, mediaId) {
+            const input = document.getElementById(fileInputId);
+            if (!input || input.files.length === 0) return false;
+            const file = input.files[0];
+
+            if (file.size > 5 * 1024 * 1024) {
+                throw new Error(`O arquivo ${file.name} ultrapassa o limite de 5MB.`);
+            }
+
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const result = e.target.result;
+                        const match = result.match(/^data:(.*);base64,(.*)$/);
+                        if (!match) return reject('Formato inválido.');
+                        const mime = match[1];
+                        const base64 = match[2];
+
+                        const res = await fetch('/api/media/' + mediaId, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'x-admin-senha': SENHA_MASTER },
+                            body: JSON.stringify({ mime, base64, ts: Date.now() })
+                        });
+                        if (!res.ok) throw new Error('Falha na API de upload.');
+                        
+                        input.value = ''; // Limpa input após sucesso
+                        resolve(true);
+                    } catch(err) { reject(err); }
+                };
+                reader.onerror = () => reject('Erro ao ler arquivo.');
+                reader.readAsDataURL(file);
             });
-            alert('✅ Comprovante removido do site!');
         }
 
         // ─── Status do leilão ────────────────────────────────────────
@@ -218,7 +261,11 @@
                 if (sessao.titulo) document.getElementById('titulo').value = sessao.titulo;
                 if (sessao.videoId) document.getElementById('videoId').value = sessao.videoId;
                 if (sessao.idPartida) document.getElementById('idPartida').value = sessao.idPartida;
-                if (sessao.comprovante !== undefined) document.getElementById('comprovante').value = sessao.comprovante;
+                
+                // MKT values
+                if (sessao.mktBannerLink !== undefined) document.getElementById('mkt-banner-link').value = sessao.mktBannerLink;
+                if (sessao.mktFlexHtml !== undefined) document.getElementById('mkt-flex-html').value = sessao.mktFlexHtml;
+
                 document.getElementById('info-acumulado').innerText = 'R$ ' + (data.acumulado || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 document.getElementById('info-lider').innerText = data.lider || '—';
                 document.getElementById('info-lance').innerText = 'R$ ' + (data.maiorLance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
@@ -274,11 +321,30 @@
                 return;
             }
 
+            status.innerText = "Enviando dados e arquivos... (Aguarde)";
+            status.className = "text-center text-xs font-mono mt-3 text-yellow-500";
+
+            let atualizouMedia = false;
+            try {
+                // Processa uploads pendentes
+                const r1 = await processarUploadMedia('comprovante-file', 'comprovante');
+                const r2 = await processarUploadMedia('banner-file', 'banner');
+                const r3 = await processarUploadMedia('video-file', 'video');
+                if(r1 || r2 || r3) atualizouMedia = true;
+            } catch(e) {
+                alert("Falha no upload de mídia: " + e.message);
+                status.innerText = "❌ ERRO NO UPLOAD.";
+                status.className = "text-center text-xs font-mono mt-3 text-red-500";
+                return;
+            }
+
             const dados = {
                 titulo: document.getElementById('titulo').value,
                 videoId: document.getElementById('videoId').value,
                 idPartida: document.getElementById('idPartida').value,
-                comprovante: document.getElementById('comprovante').value,
+                mktBannerLink: document.getElementById('mkt-banner-link').value,
+                mktFlexHtml: document.getElementById('mkt-flex-html').value,
+                tsMedia: atualizouMedia ? Date.now() : (window.ultimaTsMedia || Date.now()),
                 links: {
                     "5,00": document.getElementById('link5').value,
                     "10,00": document.getElementById('link10').value,
@@ -286,9 +352,7 @@
                     "100,00": document.getElementById('link100').value,
                 }
             };
-
-            status.innerText = "Enviando dados...";
-            status.className = "text-center text-xs font-mono mt-3 text-zinc-500";
+            window.ultimaTsMedia = dados.tsMedia;
 
             try {
                 const res = await fetch('/api/update', {
@@ -448,9 +512,7 @@
             await carregarContatos();
         }
     </script>
-    </div> <!-- fecha admin-painel -->
-
-    <script>
+    </div> <script>
         // ─── Login do admin ──────────────────────────────────────────
         (function() {
             const SENHA = '23100311';
