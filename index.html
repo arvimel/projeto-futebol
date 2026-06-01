@@ -675,19 +675,30 @@
             document.getElementById('fill-bar').style.width = porcentagem + '%';
             document.getElementById('meta-porcentagem').innerText = porcentagem + '%';
 
+            // ----- INÍCIO DO NOVO BLOCO DE RENOVAÇÃO -----
             if (data.epoch) {
-                const epochSalvo = localStorage.getItem('soccer_epoch') || '0';
-                if (epochSalvo !== String(data.epoch)) {
+                const epochSalvo = localStorage.getItem('soccer_epoch');
+                
+                // Se é o primeiro acesso do usuário, apenas salva o controle
+                if (!epochSalvo) {
                     localStorage.setItem('soccer_epoch', String(data.epoch));
-                    if (localStorage.getItem('soccer_timer_expired') === 'true') {
-                        localStorage.removeItem('soccer_timer_expired');
-                        localStorage.removeItem('soccer_timer');
-                        alert('🔄 Nova rodada iniciada! Seu acesso grátis foi renovado!');
+                } 
+                // Se o identificador mudou, o Admin clicou em Zerar
+                else if (epochSalvo !== String(data.epoch)) {
+                    localStorage.setItem('soccer_epoch', String(data.epoch));
+                    
+                    // Força a limpeza do tempo de TODOS os usuários
+                    localStorage.removeItem('soccer_timer_expired');
+                    localStorage.removeItem('soccer_timer');
+                    
+                    // Só emite o alerta e recarrega a página se o usuário ainda não pagou
+                    if (!temAcessoPago()) {
+                        alert('🔄 Nova rodada iniciada! Seu acesso grátis de 5 minutos foi renovado!');
                         window.location.reload();
                     }
                 }
             }
-        }
+            // ----- FIM DO NOVO BLOCO DE RENOVAÇÃO -----
 
         async function carregarDados() {
             try {
