@@ -61,7 +61,7 @@
         #unread-badge.show { display: flex; }
     </style>
 </head>
-<body class="p-2 sm:p-4 font-sans pb-32">
+<body class="p-2 sm:p-4 font-sans pb-12">
     <div class="max-w-7xl mx-auto">
         
         <!-- Cabeçalho -->
@@ -201,6 +201,14 @@
             <!-- Coluna Direita -->
             <div class="space-y-6 w-full flex flex-col">
 
+                <!-- BOTÃO DE LANCE (Agora no fluxo natural da página, sem sobrepor nada) -->
+                <div class="w-full">
+                    <button onclick="abrirModalLance()"
+                        class="w-full bg-gradient-to-r from-emerald-600 to-emerald-800 hover:from-emerald-500 hover:to-emerald-700 text-white border-2 border-emerald-400/50 rounded-xl py-4 md:py-5 text-base md:text-[17px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(5,150,105,0.4)] transition-transform hover:scale-[1.02] active:scale-95">
+                        💰 Oferte seu Lance Aqui!
+                    </button>
+                </div>
+
                 <!-- ESPAÇO MKT 2: Vídeo Promocional -->
                 <div id="box-mkt-2" style="display:none;" class="w-full rounded-xl overflow-hidden border-2 border-zinc-800 shadow-xl bg-black">
                     <video id="vid-mkt-2" src="/api/media/video" autoplay loop muted playsinline class="w-full object-cover" onerror="this.parentElement.style.display='none'" onloadeddata="this.parentElement.style.display='block'"></video>
@@ -259,14 +267,6 @@
             </div>
         </footer>
 
-    </div>
-
-    <!-- Botão Flutuante (Fixo, Centralizado e Gigante no Mobile) -->
-    <div id="btn-lance-flutuante" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9998] w-[90%] max-w-[400px]">
-        <button onclick="abrirModalLance()"
-            class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white border-2 border-emerald-400/50 rounded-full py-4 text-[17px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(5,150,105,0.7)] transition-transform hover:scale-[1.02] active:scale-95">
-            💰 Oferte seu Lance Aqui!
-        </button>
     </div>
 
     <!-- Modal de Lance -->
@@ -352,7 +352,6 @@
                 <div style="display:flex;gap:8px;align-items:center;">
                     <button onclick="toggleEmoji()" style="background:#27272a;border:none;border-radius:10px;padding:8px 10px;cursor:pointer;font-size:20px;">😊</button>
                     <button onclick="toggleStickers()" style="background:#27272a;border:none;border-radius:10px;padding:8px 10px;cursor:pointer;font-size:16px;font-weight:900;color:#d4d4d8;">🏷️</button>
-                    <!-- font-size 16px obrigatorio no input para o iphone nao dar zoom automatico na tela -->
                     <input type="text" id="chat-input" placeholder="Sua mensagem..." maxlength="200" style="flex:1;background:#09090b;border:1px solid #3f3f46;border-radius:10px;padding:10px 12px;color:white;font-size:16px;outline:none;">
                     <button onclick="enviarMsgChat()" style="background:#16a34a;border:none;border-radius:10px;padding:10px 16px;color:white;font-size:16px;font-weight:900;cursor:pointer;">▶</button>
                 </div>
@@ -385,7 +384,6 @@
         let premioAnterior = 0;
         let tsMediaAtual = 0;
 
-        // Funções do Modal de Lance
         function abrirModalLance() {
             document.getElementById('modal-lance').style.display = 'flex';
             document.getElementById('modal-lance-qr').style.display = 'none';
@@ -440,7 +438,6 @@
             navigator.clipboard.writeText(input.value).then(() => alert("Código PIX copiado com sucesso!"));
         }
 
-        // Sistema Antifraude e Identificação (Seguro)
         async function gerarFingerprintDispositivo() {
             const dadosMatriz = [
                 navigator.userAgent, screen.width + 'x' + screen.height,
@@ -467,7 +464,6 @@
             } catch (err) { return gerarHashSimples(dadosMatriz); }
         }
 
-        // Funções do Chat
         function getNomeChat() { return localStorage.getItem('chat_nome') || 'Visitante'; }
         function setNomeChat(nome) {
             localStorage.setItem('chat_nome', nome);
@@ -588,7 +584,6 @@
             } catch(e) {}
         }
 
-        // ATUALIZAÇÃO DO STATUS DA LIVE (REGRAS DE LEILÃO E RESET DE TEMPO)
         function atualizarDisplay(data) {
             const novoPremioBruto = data.acumulado || 0;
             const elPremio = document.getElementById('display-premio');
@@ -606,7 +601,6 @@
             document.getElementById('fill-bar').style.width = porcentagem + '%';
             document.getElementById('meta-porcentagem').innerText = porcentagem + '%';
 
-            // REGRA DEFINITIVA DE RESET (BOMBA NUCLEAR)
             if (data.epoch) {
                 const epochSalvo = localStorage.getItem('soccer_epoch');
                 
@@ -616,7 +610,6 @@
                 else if (epochSalvo !== String(data.epoch)) {
                     localStorage.setItem('soccer_epoch', String(data.epoch));
                     
-                    // APAGA TUDO: Tempo expirado, contagem atual, e qualquer passe VIP que a pessoa tenha
                     localStorage.removeItem('soccer_timer_expired');
                     localStorage.removeItem('soccer_timer');
                     localStorage.removeItem('soccer_token_device');
@@ -671,7 +664,6 @@
             } catch (e) {}
         }
 
-        // Funções de Pagamento Leilão (Asaas)
         function abrirValorLivre() {
             let valorDigito = prompt(`Digite o valor do seu lance (mínimo R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}):`);
             if (!valorDigito) return;
@@ -703,7 +695,6 @@
             } catch (err) { alert("Erro ao conectar."); retornarTelaValores(); }
         }
 
-        // Funções da Fila de Espera (Acesso R$ 2)
         function mostrarPixAssistir() {
             document.getElementById('paywall-valores').classList.add('hidden');
             const div = document.getElementById('paywall-assistir');
