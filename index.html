@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -7,7 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
     <style>
-        /* Melhorias Visuais Esportivas */
         body { 
             background-color: #050505; 
             background-image: radial-gradient(circle at 50% 0%, #064e3b 0%, #050505 80%);
@@ -178,6 +178,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div class="lg:col-span-2 w-full flex flex-col gap-4">
                 
+                <!-- ESPAÇO MKT 1: Banner de Imagem -->
                 <a id="link-mkt-1" href="#" target="_blank" style="display:none;" class="block w-full transition transform hover:scale-[1.01]">
                     <img id="img-mkt-1" src="/api/media/banner" class="w-full rounded-xl border-2 border-zinc-800 shadow-xl object-cover" style="max-height: 120px;" onerror="this.parentElement.style.display='none'" onload="this.parentElement.style.display='block'">
                 </a>
@@ -189,7 +190,7 @@
 
                             <div class="w-full mb-4 p-3 rounded-xl border-2 border-blue-500 bg-blue-950/40 text-center">
                                 <p class="text-blue-300 text-sm font-black uppercase tracking-wider mb-1">👁️ Só quero assistir ao jogo</p>
-                                <p class="text-zinc-400 text-xs mb-2">Faça um PIX de <span class="text-white font-bold">R$ 2,00</span> para liberar o sinal.<br>Não participa do leilão. Liberação manual.</p>
+                                <p class="text-zinc-400 text-xs mb-2">Faça um PIX de <span class="text-white font-bold">R$ 2,00</span> para liberar o sinal.<br>Não participa do leilão.</p>
                                 <button onclick="mostrarPixAssistir()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-2 px-4 rounded-lg text-sm uppercase tracking-wide transition-all hover:scale-105">
                                     📺 Pagar R$ 2,00 e Assistir
                                 </button>
@@ -213,9 +214,10 @@
                             </div>
                         </div>
 
+                        <!-- FILA DE APROVAÇÃO AUTOMÁTICA -->
                         <div id="paywall-assistir" class="hidden flex-col items-center w-full max-w-md bg-zinc-900 p-4 rounded-xl border-2 border-blue-500">
                             <p class="text-blue-300 text-xs font-black uppercase mb-1">📺 PIX para Assistir — R$ 2,00</p>
-                            <p class="text-zinc-400 text-[10px] text-center mb-3">Escaneie o QR Code ou copie a chave PIX abaixo e pague R$ 2,00. Após o pagamento, aguarde a liberação manual.</p>
+                            <p class="text-zinc-400 text-[10px] text-center mb-3">Escaneie o QR Code ou copie a chave PIX abaixo e pague R$ 2,00.</p>
                             <div id="qr-assistir" class="bg-white p-2 rounded-lg w-44 h-44 flex items-center justify-center shadow-xl mb-3">
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=6dad5bac-5b64-4eff-a658-8cc4d1f22bb2" class="w-full h-full object-contain" />
                             </div>
@@ -225,16 +227,15 @@
                                 <button onclick="copiarChaveAssistir()" class="absolute right-1 top-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black px-2 py-1 rounded">COPIAR</button>
                             </div>
                             <div class="w-full bg-zinc-800/60 rounded-lg p-3 border border-zinc-700 mt-1">
-                                <p class="text-[10px] text-zinc-400 font-bold uppercase mb-2 text-center">📲 Informe seu contato para receber o acesso:</p>
-                                <input type="text" id="contato-assistir" placeholder="WhatsApp ou E-mail"
+                                <p class="text-[10px] text-zinc-400 font-bold uppercase mb-2 text-center">📲 Qual nome você usou no PIX?</p>
+                                <input type="text" id="contato-assistir" placeholder="Digite seu nome para identificação"
                                     class="w-full bg-zinc-950 border border-zinc-700 p-2 rounded text-xs text-white outline-none focus:border-blue-500 mb-2">
-                                <button onclick="enviarContatoAssistir()"
+                                <button onclick="enviarContatoAssistir()" id="btn-enviar-contato"
                                     class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-xs py-2 rounded uppercase transition">
-                                    📨 Enviar meu contato
+                                    ✅ Confirmar Pagamento
                                 </button>
-                                <p id="contato-status" class="text-[10px] text-center mt-1 hidden"></p>
+                                <p id="contato-status" class="text-[10px] text-yellow-400 font-bold text-center mt-2 hidden animate-pulse"></p>
                             </div>
-                            <p class="text-[10px] text-yellow-400 animate-pulse font-bold uppercase text-center mt-2">⏳ Após pagar, aguarde o link no seu contato.</p>
                             <button onclick="retornarTelaValores()" class="mt-3 text-zinc-500 text-xs underline">← Voltar</button>
                         </div>
 
@@ -283,12 +284,14 @@
 
             <div class="space-y-4 w-full flex flex-col">
 
+                <!-- ESPAÇO MKT 2: Vídeo Promocional -->
                 <div id="box-mkt-2" style="display:none;" class="w-full rounded-xl overflow-hidden border-2 border-zinc-800 shadow-xl bg-black">
                     <video id="vid-mkt-2" src="/api/media/video" autoplay loop muted playsinline class="w-full object-cover" onerror="this.parentElement.style.display='none'" onloadeddata="this.parentElement.style.display='block'"></video>
                 </div>
 
+                <!-- Comprovante PIX do ganhador -->
                 <div id="comprovante-box" style="display:none;" class="painel-esportivo p-4 rounded-xl border-yellow-500/50 shadow-xl">
-                    <h3 class="text-[11px] font-black text-yellow-400 uppercase tracking-widest mb-2 border-b border-zinc-800 pb-2 italic text-center">🏆 PIX PAGO AO VENCEDOR!!</h3>
+                    <h3 class="text-[11px] font-black text-yellow-400 uppercase tracking-widest mb-2 border-b border-zinc-800 pb-2 italic text-center">🏆 Comprovante do Ganhador</h3>
                     <div class="text-center">
                         <img src="/api/media/comprovante" id="img-comprovante-render" class="max-w-full rounded-lg mx-auto border border-zinc-700" onerror="document.getElementById('comprovante-box').style.display='none'" onload="document.getElementById('comprovante-box').style.display='block'">
                     </div>
@@ -306,8 +309,9 @@
                     </div>
                 </div>
 
+                <!-- ESPAÇO MKT 3: Flexível HTML -->
                 <div id="box-mkt-3" style="display:none;" class="w-full painel-esportivo p-4 rounded-xl shadow-xl border-purple-500/30 text-center text-sm text-zinc-300">
-                    </div>
+                </div>
 
                 <div class="painel-esportivo p-3 rounded-xl shadow-xl text-center">
                     <h4 class="text-[9px] font-black text-yellow-500 uppercase tracking-wider mb-2 italic">📸 Galeria de Apoiadores</h4>
@@ -321,6 +325,7 @@
         </div>
     </div>
 
+    <!-- Botão flutuante "Oferte seu Lance" -->
     <div id="btn-lance-flutuante" style="display:block;position:fixed;bottom:24px;left:24px;z-index:9998;">
         <button onclick="abrirModalLance()"
             style="background:linear-gradient(135deg,#059669,#047857);color:white;border:2px solid rgba(255,255,255,0.2);border-radius:50px;padding:12px 24px;font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 0 20px rgba(5,150,105,0.7);text-transform:uppercase;letter-spacing:0.05em;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
@@ -435,9 +440,7 @@
         let idPartidaAtual = "";
         let premioAnterior = 0;
         let tsMediaAtual = 0;
-        const URL_DO_SEU_WORKER = "/";
 
-        // Funções de UI do Lance (Garantindo funcionalidade)
         function abrirModalLance() {
             document.getElementById('modal-lance').style.display = 'flex';
             document.getElementById('modal-lance-qr').style.display = 'none';
@@ -450,9 +453,7 @@
             document.getElementById('modal-lance-qr').style.display = 'none';
             document.getElementById('modal-lance-valores').style.display = 'grid';
         }
-        async function selecionarValorLance(valor) {
-            gerarPixLanceModal(valor);
-        }
+        async function selecionarValorLance(valor) { gerarPixLanceModal(valor); }
         async function selecionarValorLancePersonalizado() {
             let val = prompt(`Valor do lance (mínimo R$ ${VALOR_MINIMO}):`);
             if(!val) return;
@@ -493,17 +494,11 @@
             navigator.clipboard.writeText(input.value).then(() => alert("Código PIX copiado!"));
         }
 
-        // ─── Fingerprint Único Antifraude do Dispositivo ───
         async function gerarFingerprintDispositivo() {
             const dadosMatriz = [
-                navigator.userAgent,
-                screen.width + 'x' + screen.height,
-                navigator.language,
-                new Date().getTimezoneOffset(),
-                navigator.hardwareConcurrency || 2
+                navigator.userAgent, screen.width + 'x' + screen.height,
+                navigator.language, new Date().getTimezoneOffset(), navigator.hardwareConcurrency || 2
             ].join('||');
-            
-            // Transforma os dados em um hash SHA-256 rápido
             const encoder = new TextEncoder();
             const data = encoder.encode(dadosMatriz);
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -592,28 +587,19 @@
         }
 
         async function postarMensagem(texto, ehFigurinha = false) {
-            if (!temAcessoPago()) {
-                mostrarBloqueioChat();
-                return;
-            }
+            if (!temAcessoPago()) { mostrarBloqueioChat(); return; }
             let nome = getNomeChat();
             if (nome === 'Visitante' && !localStorage.getItem('chat_nome_perguntado')) {
                 abrirModalNome((nomeFinal) => {
                     nome = nomeFinal;
                     fetch('/api/chat', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' })
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' })
                     }).catch(e => console.error('Erro ao enviar msg', e));
                 });
                 return;
             }
             try {
-                await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' })
-                });
+                await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' }) });
             } catch(e) {}
         }
 
@@ -643,14 +629,11 @@
 
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
-
             const msgs = box.querySelectorAll('.chat-msg');
             if (msgs.length > 80) msgs[0].remove();
         }
 
-        function escapeHtml(str) {
-            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        }
+        function escapeHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
         async function buscarMensagensChat() {
             try {
@@ -690,8 +673,7 @@
 
             const porcentagem = Math.min(Math.floor((novoPremioBruto / 500) * 100), 100);
             document.getElementById('fill-bar').style.width = porcentagem + '%';
-            const elMeta = document.getElementById('meta-porcentagem');
-            if (elMeta) elMeta.innerText = porcentagem + '%';
+            document.getElementById('meta-porcentagem').innerText = porcentagem + '%';
 
             if (data.epoch) {
                 const epochSalvo = localStorage.getItem('soccer_epoch') || '0';
@@ -718,11 +700,8 @@
 
                 atualizarDisplay(dataStatus);
 
-                if (dataSupa.titulo) {
-                    document.getElementById('display-titulo').innerText = dataSupa.titulo;
-                }
+                if (dataSupa.titulo) document.getElementById('display-titulo').innerText = dataSupa.titulo;
 
-                // Atualizar áreas de MKT
                 if (dataSupa.mktBannerLink) document.getElementById('link-mkt-1').href = dataSupa.mktBannerLink;
                 if (dataSupa.mktFlexHtml) {
                     const box3 = document.getElementById('box-mkt-3');
@@ -732,7 +711,6 @@
                     document.getElementById('box-mkt-3').style.display = 'none';
                 }
 
-                // Atualizar cache das mídias se houve upload recente
                 if (dataSupa.tsMedia && dataSupa.tsMedia !== tsMediaAtual) {
                     tsMediaAtual = dataSupa.tsMedia;
                     const suffix = "?t=" + tsMediaAtual;
@@ -759,16 +737,11 @@
                         const canal = dataSupa.videoId.split('/').pop().trim();
                         document.getElementById('twitch-inline-player').innerHTML = '';
                         twitchPlayer = new Twitch.Player("twitch-inline-player", {
-                            channel: canal,
-                            width: "100%",
-                            height: "100%",
-                            parent: [window.location.hostname],
-                            autoplay: true,
-                            muted: false
+                            channel: canal, width: "100%", height: "100%", parent: [window.location.hostname], autoplay: true, muted: false
                         });
                     }
                 }
-            } catch (e) { console.error("Erro sincronização", e); }
+            } catch (e) {}
         }
 
         function abrirValorLivre() {
@@ -783,12 +756,10 @@
 
         async function gerarPixAsaas(valorEscolhido) {
             if (valorEscolhido < VALOR_MINIMO) return alert(`Lance mínimo: R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}.`);
-
             const nomeDoador = prompt("Digite seu nome completo para aparecer no Ranking:");
             if (!nomeDoador || !nomeDoador.trim()) return alert("Você precisa digitar seu nome para participar!");
 
             setNomeChat(nomeDoador.trim().substring(0, 25));
-
             document.getElementById('paywall-valores').classList.add('hidden');
             const qrcodeDiv = document.getElementById('paywall-qrcode');
             qrcodeDiv.classList.remove('hidden');
@@ -796,24 +767,18 @@
 
             try {
                 const response = await fetch('/api/criar-pix', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ valor: valorEscolhido, nome: nomeDoador.trim() })
                 });
                 const data = await response.json();
-
                 if (data.success) {
                     document.getElementById('container-img-qrcode').innerHTML = `<img src="data:image/png;base64,${data.encodedImage}" class="w-full h-full object-contain" />`;
                     document.getElementById('input-copia-cola').value = data.payload;
                     escutarPagamentoAsaas(data.paymentId);
                 } else {
-                    alert("Erro: " + data.error);
-                    retornarTelaValores();
+                    alert("Erro: " + data.error); retornarTelaValores();
                 }
-            } catch (err) {
-                alert("Erro ao conectar com o servidor.");
-                retornarTelaValores();
-            }
+            } catch (err) { alert("Erro ao conectar."); retornarTelaValores(); }
         }
 
         function mostrarPixAssistir() {
@@ -834,14 +799,63 @@
             });
         }
 
+        let pollingAssistir = null;
+
+        async function enviarContatoAssistir() {
+            const input = document.getElementById('contato-assistir');
+            const contato = input.value.trim();
+            if (!contato) return alert('Por favor, informe o nome usado no PIX.');
+
+            const btn = document.getElementById('btn-enviar-contato');
+            btn.innerText = "⏳ Aguardando aprovação...";
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            input.disabled = true;
+
+            const statusTxt = document.getElementById('contato-status');
+            statusTxt.classList.remove('hidden');
+            statusTxt.innerText = "Você está na fila. Assim que o admin confirmar o PIX, a live será liberada automaticamente. Não feche a página.";
+
+            try {
+                await fetch('/api/contato-assistir', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contato })
+                });
+
+                if(pollingAssistir) clearInterval(pollingAssistir);
+                
+                // Looping a cada 3 segundos verificando se o Admin clicou em APROVAR
+                pollingAssistir = setInterval(async () => {
+                    try {
+                        const res = await fetch('/api/status-contato?c=' + encodeURIComponent(contato));
+                        const data = await res.json();
+                        if (data.aprovado && data.token) {
+                            clearInterval(pollingAssistir);
+                            statusTxt.innerText = "✅ PIX confirmado! Entrando na live...";
+                            statusTxt.classList.replace('text-yellow-400', 'text-green-500');
+                            
+                            // Autentica automaticamente
+                            window.location.href = '/?token=' + data.token;
+                        }
+                    } catch(e) {}
+                }, 3000);
+
+            } catch(e) {
+                btn.innerText = "✅ Confirmar Pagamento";
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                input.disabled = false;
+                alert("Erro de conexão.");
+            }
+        }
+
         function copiarPix() {
             const input = document.getElementById('input-copia-cola');
             navigator.clipboard.writeText(input.value).then(() => {
-                alert("Código PIX copiado! Cole no seu banco para pagar.");
-            }).catch(() => {
-                input.select();
-                document.execCommand('copy');
                 alert("Código PIX copiado!");
+            }).catch(() => {
+                input.select(); document.execCommand('copy'); alert("Código PIX copiado!");
             });
         }
 
@@ -862,15 +876,13 @@
                         clearInterval(checagem);
                         localStorage.removeItem('soccer_timer_expired');
                         localStorage.removeItem('soccer_timer');
-                        
                         const finger = await gerarFingerprintDispositivo();
                         localStorage.setItem('soccer_token_device', finger);
-                        
                         alert("✅ Pagamento confirmado! Lance Computado. Obrigado pelo apoio!");
                         if (isModal) fecharModalLance();
                         else window.location.reload();
                     }
-                } catch (e) { console.error("Erro ao checar recebimento."); }
+                } catch (e) {}
             }, 3000);
         }
 
@@ -900,7 +912,7 @@
                 timerDisplay.innerText = "AO VIVO";
                 timerDisplay.style.color = "#22c55e";
                 timerDisplay.style.fontSize = "1rem";
-                document.getElementById('btn-participar-watchers').style.display = 'block'; // Mostra botão de leilão p/ quem liberou o acesso
+                document.getElementById('btn-participar-watchers').style.display = 'block';
                 return;
             }
 
@@ -933,11 +945,7 @@
             const antigo = document.getElementById('modal-nome-chat');
             if (antigo) antigo.remove();
 
-            const nomes = ['Torcedor' + Math.floor(Math.random()*900+100),
-                           'Craque' + Math.floor(Math.random()*900+100),
-                           'Fiel' + Math.floor(Math.random()*900+100),
-                           'Fanático' + Math.floor(Math.random()*900+100),
-                           'Boleiro' + Math.floor(Math.random()*900+100)];
+            const nomes = ['Torcedor' + Math.floor(Math.random()*900+100), 'Craque' + Math.floor(Math.random()*900+100), 'Fiel' + Math.floor(Math.random()*900+100)];
             const nomeAleatorio = nomes[Math.floor(Math.random()*nomes.length)];
 
             const modal = document.createElement('div');
@@ -948,21 +956,9 @@
                     <div style="text-align:center;">
                         <div style="font-size:28px;margin-bottom:4px;">💬</div>
                         <p style="font-size:14px;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.05em;">Como quer aparecer no chat?</p>
-                        <p style="font-size:11px;color:#71717a;margin-top:4px;">Escolha um nome ou deixe em branco para usar um nome aleatório.</p>
                     </div>
-                    <input id="modal-nome-input" type="text" maxlength="25"
-                        placeholder="Seu nome no chat..."
-                        style="background:#09090b;border:1px solid #3f3f46;border-radius:8px;padding:10px 12px;color:white;font-size:13px;outline:none;width:100%;box-sizing:border-box;"
-                        value="">
-                    <p style="font-size:10px;color:#52525b;text-align:center;margin:-8px 0;">
-                        Deixar vazio = usar <strong style="color:#86efac;">${nomeAleatorio}</strong>
-                    </p>
-                    <div style="display:flex;gap:8px;">
-                        <button id="modal-nome-confirmar"
-                            style="flex:1;background:#16a34a;border:none;border-radius:8px;padding:10px;color:white;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;">
-                            ✅ Confirmar
-                        </button>
-                    </div>
+                    <input id="modal-nome-input" type="text" maxlength="25" placeholder="Seu nome no chat..." style="background:#09090b;border:1px solid #3f3f46;border-radius:8px;padding:10px 12px;color:white;font-size:13px;outline:none;width:100%;box-sizing:border-box;">
+                    <button id="modal-nome-confirmar" style="flex:1;background:#16a34a;border:none;border-radius:8px;padding:10px;color:white;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;">✅ Confirmar</button>
                 </div>`;
             document.body.appendChild(modal);
 
@@ -992,53 +988,32 @@
                 try {
                     const fp = await gerarFingerprintDispositivo();
                     const res = await fetch('/api/usar-token', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ token: tokenParam, fingerprint: fp })
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenParam, fingerprint: fp })
                     });
                     const data = await res.json();
                     if (data.success) {
-                        localStorage.setItem('acesso_token', tokenParam);
-                        localStorage.setItem('acesso_fp', fp);
-                        localStorage.setItem('soccer_token_device', fp);
-                        localStorage.removeItem('soccer_timer_expired');
-                        localStorage.removeItem('soccer_timer');
+                        localStorage.setItem('acesso_token', tokenParam); localStorage.setItem('acesso_fp', fp); localStorage.setItem('soccer_token_device', fp); localStorage.removeItem('soccer_timer_expired'); localStorage.removeItem('soccer_timer');
                         alert('✅ Acesso liberado! Bom jogo!');
-                    } else {
-                        alert('❌ ' + data.error);
-                    }
-                } catch(e) {
-                    alert('Erro ao validar acesso. Tente novamente.');
-                }
+                    } else alert('❌ ' + data.error);
+                } catch(e) {}
             } else if (liberarParam) {
                 const finger = await gerarFingerprintDispositivo();
-                localStorage.setItem('soccer_token_device', finger);
-                localStorage.removeItem('soccer_timer_expired');
-                localStorage.removeItem('soccer_timer');
-                window.history.replaceState({}, '', '/');
+                localStorage.setItem('soccer_token_device', finger); localStorage.removeItem('soccer_timer_expired'); localStorage.removeItem('soccer_timer'); window.history.replaceState({}, '', '/');
                 alert('✅ Acesso liberado! Bom jogo!');
             }
 
             const tokenSalvo = localStorage.getItem('acesso_token');
             const fpSalvo = localStorage.getItem('acesso_fp');
             if (tokenSalvo && fpSalvo) {
-                fetch('/api/usar-token', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: tokenSalvo, fingerprint: fpSalvo })
+                fetch('/api/usar-token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenSalvo, fingerprint: fpSalvo })
                 }).then(r => r.json()).then(d => {
-                    if (!d.success) {
-                        localStorage.removeItem('acesso_token');
-                        localStorage.removeItem('acesso_fp');
-                    }
+                    if (!d.success) { localStorage.removeItem('acesso_token'); localStorage.removeItem('acesso_fp'); }
                 }).catch(() => {});
             }
 
             const temAcesso = localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token');
             const nomePerguntado = localStorage.getItem('chat_nome_perguntado');
-            if (temAcesso && !nomePerguntado) {
-                setTimeout(() => abrirModalNome(), 800);
-            }
+            if (temAcesso && !nomePerguntado) { setTimeout(() => abrirModalNome(), 800); }
 
             document.getElementById('chat-nome-display').innerText = getNomeChat();
 
@@ -1046,18 +1021,13 @@
             await startTimer();
             setInterval(carregarDados, 5000);
             setInterval(buscarMensagensChat, 2500);
-            rodarMural();
-            setInterval(rodarMural, 3000);
+            rodarMural(); setInterval(rodarMural, 3000);
 
-            document.getElementById('chat-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') enviarMsgChat();
-            });
+            document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMsgChat(); });
 
             fecharChat();
 
-            if (!temAcessoPago()) {
-                mostrarBloqueioChat();
-            }
+            if (!temAcessoPago()) mostrarBloqueioChat();
         };
     </script>
 </body>
