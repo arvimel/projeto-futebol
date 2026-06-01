@@ -942,18 +942,25 @@
 
             if (localStorage.getItem('soccer_timer_expired') === 'true') { bloquearAcesso(); return; }
             let timeLeft = localStorage.getItem('soccer_timer');
-            timeLeft = (timeLeft === null) ? duration : parseInt(timeLeft);
+            
+            // Proteção contra falha de conversão do cache
+            timeLeft = (timeLeft === null || isNaN(parseInt(timeLeft))) ? duration : parseInt(timeLeft);
             if (timeLeft <= 0) { bloquearAcesso(); return; }
 
             const countdown = setInterval(() => {
                 let min = Math.floor(timeLeft / 60);
                 let sec = timeLeft % 60;
                 timerDisplay.innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-                if (timeLeft <= 0) { clearInterval(countdown); bloquearAcesso(); }
-                else { timeLeft--; localStorage.setItem('soccer_timer', timeLeft); }
+                
+                if (timeLeft <= 0) { 
+                    clearInterval(countdown); 
+                    bloquearAcesso(); 
+                } else { 
+                    timeLeft--; 
+                    localStorage.setItem('soccer_timer', timeLeft); 
+                }
             }, 1000);
         }
-
         function bloquearAcesso() {
             localStorage.setItem('soccer_timer', '0');
             localStorage.setItem('soccer_timer_expired', 'true');
