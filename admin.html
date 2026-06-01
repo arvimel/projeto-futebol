@@ -1,3 +1,4 @@
+<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -19,6 +20,7 @@
 </head>
 <body class="bg-zinc-950 text-white p-4">
 
+    <!-- Tela de login do admin -->
     <div id="admin-login" style="position:fixed;inset:0;background:#09090b;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;">
         <div style="background:#18181b;border:1px solid #27272a;border-radius:16px;padding:32px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:16px;align-items:center;">
             <div style="font-size:32px;">⚙️</div>
@@ -41,6 +43,7 @@
             <h1 class="text-xl font-bold mb-6 text-green-500 underline uppercase text-center italic font-mono">⚙️ Painel de Comando</h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Coluna esquerda: controles -->
                 <div class="space-y-4">
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-500">Controle da Live</h3>
                     <div>
@@ -80,33 +83,35 @@
                     </div>
 
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-2 text-blue-400">📺 Liberar Acesso Manual (R$ 2,00)</h3>
-                    <p class="text-zinc-500 text-[10px]">Para quem pagou via PIX estático. Cole o token ou nome do usuário.</p>
+                    <p class="text-zinc-500 text-[10px]">Apenas para quem você precisa liberar manualmente sem que a pessoa esteja na fila.</p>
                     <div>
                         <label class="block text-[10px] uppercase font-black text-gray-500 mb-1">Token de Liberação</label>
                         <input id="token-liberacao" type="text" placeholder="Ex: assistir-joao-silva" class="w-full bg-black border border-zinc-700 p-2 rounded text-sm outline-none focus:border-blue-500">
                     </div>
                     <button onclick="liberarManual()" class="w-full bg-blue-700 hover:bg-blue-600 py-2 rounded font-black uppercase text-sm transition active:scale-95">
-                        ✅ Gerar Link de Liberação
+                        ✅ Gerar Link de Liberação Manual
                     </button>
-                    <div id="link-liberacao" class="hidden bg-black border border-blue-700 rounded p-3">
+                    <div id="link-liberacao" class="hidden bg-black border border-blue-700 rounded p-3 mt-2">
                         <p class="text-[10px] text-blue-400 uppercase font-black mb-1">Envie este link para o usuário:</p>
                         <input type="text" id="link-liberacao-valor" readonly class="w-full bg-zinc-900 text-blue-300 text-[10px] p-2 rounded border border-zinc-700 font-mono">
                         <button onclick="copiarLinkLiberacao()" class="mt-2 w-full bg-blue-900 hover:bg-blue-800 text-blue-300 text-[10px] font-black uppercase py-1 rounded">📋 Copiar Link</button>
                     </div>
 
+                    <!-- Fila Automática de Aprovação -->
                     <div class="bg-black border border-blue-900/50 rounded-lg p-3 mt-2">
                         <div class="flex items-center justify-between mb-2">
-                            <p class="text-[10px] text-blue-400 font-black uppercase">📲 Contatos para Liberar (R$ 2,00)</p>
+                            <p class="text-[10px] text-blue-400 font-black uppercase">📲 Fila de Aprovação (R$ 2,00)</p>
                             <div class="flex items-center gap-2">
                                 <span id="badge-contatos" class="bg-blue-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full hidden">0</span>
                                 <button onclick="limparContatos()" class="text-[9px] text-zinc-600 hover:text-red-400 uppercase font-black">Limpar</button>
                             </div>
                         </div>
-                        <div id="lista-contatos" class="space-y-1 max-h-40 overflow-y-auto">
-                            <p class="text-zinc-700 text-[10px] italic">Nenhum contato recebido ainda...</p>
+                        <div id="lista-contatos" class="space-y-1 max-h-56 overflow-y-auto pr-1">
+                            <p class="text-zinc-700 text-[10px] italic">Nenhum pagamento recebido ainda...</p>
                         </div>
                     </div>
 
+                    <!-- Upload de Mídia e Comprovante -->
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-4 text-yellow-400">🏆 Comprovante PIX do Ganhador</h3>
                     <p class="text-zinc-500 text-[10px]">Faça o upload da imagem (JPG, PNG, WEBP) do comprovante.</p>
                     <div class="flex gap-2 items-center">
@@ -114,6 +119,7 @@
                         <button onclick="apagarMedia('comprovante')" class="bg-zinc-800 hover:bg-red-900 text-zinc-400 text-[10px] font-black uppercase px-3 py-2 rounded transition">🗑 Limpar</button>
                     </div>
 
+                    <!-- Áreas de Marketing -->
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 mt-6 text-purple-400">📢 Áreas de Marketing e Publicidade</h3>
                     <p class="text-zinc-500 text-[10px] mb-2">Preencha apenas o que desejar exibir. Atualize a página e salve para aplicar.</p>
 
@@ -148,6 +154,7 @@
                     <input id="link100" type="text" placeholder="Link R$ 100,00" class="w-full bg-black border border-zinc-700 p-2 rounded text-[10px] outline-none focus:border-zinc-500">
                 </div>
 
+                <!-- Coluna direita: CHAT ADMIN -->
                 <div class="space-y-3 flex flex-col">
                     <h3 class="text-[10px] font-black uppercase tracking-widest border-b border-zinc-800 pb-1 text-yellow-400">💬 Chat da Live (responda como admin)</h3>
 
@@ -202,7 +209,6 @@
         const SENHA_MASTER = '23100311';
         let ultimoIdChat = 0;
 
-        // ─── Upload de Mídia e Comprovante ───────────────────────────
         async function apagarMedia(idMedia) {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
             if (!confirm(`Remover permanentemente o arquivo da área '${idMedia}'?`)) return;
@@ -248,10 +254,8 @@
             });
         }
 
-        // ─── Status do leilão ────────────────────────────────────────
         async function carregarStatus() {
             try {
-                // Carrega dados da sessão para preencher campos
                 const [resStatus, resSessao] = await Promise.all([
                     fetch('/api/status-leilao'),
                     fetch('/api/data')
@@ -262,7 +266,6 @@
                 if (sessao.videoId) document.getElementById('videoId').value = sessao.videoId;
                 if (sessao.idPartida) document.getElementById('idPartida').value = sessao.idPartida;
                 
-                // MKT values
                 if (sessao.mktBannerLink !== undefined) document.getElementById('mkt-banner-link').value = sessao.mktBannerLink;
                 if (sessao.mktFlexHtml !== undefined) document.getElementById('mkt-flex-html').value = sessao.mktFlexHtml;
 
@@ -326,7 +329,6 @@
 
             let atualizouMedia = false;
             try {
-                // Processa uploads pendentes
                 const r1 = await processarUploadMedia('comprovante-file', 'comprovante');
                 const r2 = await processarUploadMedia('banner-file', 'banner');
                 const r3 = await processarUploadMedia('video-file', 'video');
@@ -370,7 +372,6 @@
             }
         }
 
-        // ─── Chat admin ──────────────────────────────────────────────
         function escapeHtml(str) {
             return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
@@ -419,7 +420,6 @@
 
                 const box = document.getElementById('admin-chat-messages');
 
-                // Remove placeholder
                 const placeholder = box.querySelector('.text-zinc-600');
                 if (placeholder && msgs.length > 0) placeholder.remove();
 
@@ -427,8 +427,8 @@
                     const div = document.createElement('div');
                     div.className = 'chat-msg-admin';
 
-                    let nomeColor = '#4ade80';   // usuário = verde
-                    if (msg.tipo === 'admin') nomeColor = '#facc15'; // admin = amarelo
+                    let nomeColor = '#4ade80';   
+                    if (msg.tipo === 'admin') nomeColor = '#facc15'; 
                     if (msg.tipo === 'sistema') nomeColor = '#71717a';
 
                     const hora = new Date(msg.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -445,11 +445,10 @@
                 box.scrollTop = box.scrollHeight;
                 if (msgs.length > 0) ultimoIdChat = msgs[msgs.length - 1].id;
 
-                // Mantém máx 80 no DOM
                 const allMsgs = box.querySelectorAll('.chat-msg-admin');
                 if (allMsgs.length > 80) allMsgs[0].remove();
 
-            } catch(e) { /* silencioso */ }
+            } catch(e) { }
         }
 
         document.getElementById('admin-chat-input').addEventListener('keypress', (e) => {
@@ -461,7 +460,7 @@
         carregarContatos();
         setInterval(carregarStatus, 10000);
         setInterval(buscarMensagensChat, 2500);
-        setInterval(carregarContatos, 15000);
+        setInterval(carregarContatos, 8000);
 
         async function carregarContatos() {
             try {
@@ -469,51 +468,60 @@
                 const data = await res.json();
                 const lista = document.getElementById('lista-contatos');
                 const badge = document.getElementById('badge-contatos');
+                
+                const pendentes = data.contatos ? data.contatos.filter(c => !c.aprovado).length : 0;
+
                 if (!data.contatos || data.contatos.length === 0) {
-                    lista.innerHTML = '<p class="text-zinc-700 text-[10px] italic">Nenhum contato recebido ainda...</p>';
+                    lista.innerHTML = '<p class="text-zinc-700 text-[10px] italic">Nenhum pagamento recebido ainda...</p>';
                     badge.classList.add('hidden'); return;
                 }
-                badge.innerText = data.contatos.length;
-                badge.classList.remove('hidden');
-                lista.innerHTML = data.contatos.map(c => `
-                    <div style="background:#09090b;border:1px solid #1e3a5f;border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                
+                if (pendentes > 0) {
+                    badge.innerText = pendentes;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+
+                // Inverte para o mais novo ficar no topo
+                lista.innerHTML = [...data.contatos].reverse().map(c => `
+                    <div style="background:#09090b;border:1px solid ${c.aprovado ? '#064e3b' : '#1e3a5f'};border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;opacity:${c.aprovado ? '0.5' : '1'};">
                         <div>
-                            <p style="font-size:11px;font-weight:700;color:#93c5fd;">${escapeHtml(c.contato)}</p>
-                            <p style="font-size:9px;color:#52525b;">${new Date(c.ts).toLocaleString('pt-BR')}</p>
+                            <p style="font-size:11px;font-weight:700;color:${c.aprovado ? '#34d399' : '#93c5fd'};">${escapeHtml(c.contato)}</p>
+                            <p style="font-size:9px;color:#52525b;">${new Date(c.ts).toLocaleTimeString('pt-BR')} ${c.aprovado ? '(Liberado)' : ''}</p>
                         </div>
-                        <button onclick="gerarLinkParaContato('${encodeURIComponent(c.contato)}')"
-                            style="background:#1e40af;border:none;border-radius:6px;padding:4px 8px;color:white;font-size:9px;font-weight:900;cursor:pointer;white-space:nowrap;flex-shrink:0;">
-                            🔗 Gerar Link
+                        <button onclick="aprovarContato('${encodeURIComponent(c.contato)}')"
+                            style="background:${c.aprovado ? '#059669' : '#16a34a'};border:none;border-radius:6px;padding:6px 12px;color:white;font-size:10px;font-weight:900;cursor:${c.aprovado ? 'default' : 'pointer'};white-space:nowrap;flex-shrink:0;" ${c.aprovado ? 'disabled' : ''}>
+                            ${c.aprovado ? '✅ LIBERADO' : '✅ APROVAR'}
                         </button>
                     </div>`).join('');
             } catch(e) {}
         }
 
-        async function gerarLinkParaContato(contatoEncoded) {
+        async function aprovarContato(contatoEncoded) {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
-            const identificacao = decodeURIComponent(contatoEncoded);
+            const contato = decodeURIComponent(contatoEncoded);
             try {
-                const res = await fetch('/api/gerar-token', {
+                const res = await fetch('/api/aprovar-contato', {
                     method:'POST', headers:{'Content-Type':'application/json','x-admin-senha':SENHA_MASTER},
-                    body:JSON.stringify({identificacao})
+                    body:JSON.stringify({contato})
                 });
                 const data = await res.json();
                 if (!data.success) return alert('Erro: ' + data.error);
-                const link = `${window.location.origin}/?token=${data.token}`;
-                await navigator.clipboard.writeText(link);
-                alert(`✅ Link copiado para ${identificacao}!\n\n${link}`);
-            } catch(e) { alert('Erro ao gerar link.'); }
+                carregarContatos(); // Atualiza a lista instantaneamente
+            } catch(e) { alert('Erro ao aprovar.'); }
         }
 
         async function limparContatos() {
             if (document.getElementById('senha').value !== SENHA_MASTER) return alert('Digite a senha master primeiro!');
-            if (!confirm('Limpar todos os contatos?')) return;
+            if (!confirm('Limpar toda a fila de contatos?')) return;
             await fetch('/api/limpar-contatos', { method:'POST', headers:{'x-admin-senha':SENHA_MASTER} });
             await carregarContatos();
         }
     </script>
-    </div> <script>
-        // ─── Login do admin ──────────────────────────────────────────
+    </div> <!-- fecha admin-painel -->
+
+    <script>
         (function() {
             const SENHA = '23100311';
             const jaLogado = sessionStorage.getItem('admin_logado');
