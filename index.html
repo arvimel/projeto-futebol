@@ -20,12 +20,17 @@
             background: linear-gradient(180deg, rgba(24,24,27,0.95) 0%, rgba(9,9,11,0.95) 100%);
         }
 
-        .video-container { aspect-ratio: 16/9; background: #000; position: relative; width: 100%; min-height: 320px; }
+        .video-container { aspect-ratio: 16/9; background: #000; position: relative; width: 100%; min-height: 250px; }
         #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.97); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 2px solid #10b981; }
-        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 12px; border-radius: 6px; font-size: 15px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; cursor: pointer; }
-        .btn-valor:hover { background: #059669; transform: scale(1.05); }
-        .destaque-times { font-size: 1.75rem; line-height: 1; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
-        .copia-cola-input { width: 100%; padding: 8px; background: #18181b; border: 1px solid #3f3f46; color: #34d399; border-radius: 6px; text-align: center; font-size: 12px; font-family: monospace; }
+        
+        /* Botões Mobile First - Maiores e mais clicáveis */
+        .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 16px 12px; border-radius: 8px; font-size: 1.1rem; transition: all 0.2s; font-weight: 900; color: white; text-align: center; cursor: pointer; }
+        .btn-valor:hover { background: #059669; border-color: #10b981; transform: scale(1.05); }
+        
+        .destaque-times { font-size: 1.5rem; line-height: 1.1; filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
+        @media (min-width: 768px) { .destaque-times { font-size: 2rem; } }
+        
+        .copia-cola-input { width: 100%; padding: 12px; background: #18181b; border: 1px solid #3f3f46; color: #34d399; border-radius: 8px; text-align: center; font-size: 14px; font-family: monospace; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes pulse-green { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)} 50%{box-shadow:0 0 0 8px rgba(16,185,129,0)} }
@@ -34,148 +39,51 @@
         .anim-count { animation: countup 0.6s ease-out; }
 
         /* ── Chat ── */
-        #chat-wrapper {
-            position: fixed;
-            bottom: 16px;
-            right: 16px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 8px;
-        }
-        #chat-box {
-            width: 320px;
-            max-height: 460px;
-            background: #111;
-            border: 1px solid #27272a;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.7);
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(.4,0,.2,1);
-        }
-        #chat-box.hidden-chat {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(20px) scale(0.96);
-            max-height: 0;
-        }
-        #chat-toggle-btn {
-            background: #16a34a;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 13px;
-            font-weight: 900;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 18px rgba(22,163,74,0.4);
-            transition: background 0.2s, transform 0.15s;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        #chat-toggle-btn:hover { background: #15803d; transform: scale(1.04); }
-
-        #chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .chat-msg { font-size: 12px; line-height: 1.5; word-break: break-word; padding: 2px 0; }
+        #chat-wrapper { position: fixed; bottom: 16px; right: 16px; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        #chat-box { width: 95vw; max-width: 360px; max-height: 60vh; background: #111; border: 1px solid #27272a; border-radius: 16px; display: flex; flex-direction: column; box-shadow: 0 8px 40px rgba(0,0,0,0.8); overflow: hidden; transition: all 0.3s cubic-bezier(.4,0,.2,1); }
+        #chat-box.hidden-chat { opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.96); max-height: 0; }
+        
+        #chat-toggle-btn { background: #16a34a; color: white; border: none; border-radius: 50px; padding: 14px 24px; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 18px rgba(22,163,74,0.4); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        #chat-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+        .chat-msg { font-size: 14px; line-height: 1.4; word-break: break-word; padding: 3px 0; }
         .chat-msg .chat-nome { font-weight: 900; }
         .chat-msg.tipo-admin .chat-nome { color: #facc15; }
         .chat-msg.tipo-user .chat-nome { color: #4ade80; }
-        .chat-msg.tipo-sistema { color: #71717a; font-style: italic; font-size: 11px; }
-        .chat-msg.tipo-voce .chat-nome { color: #60a5fa; }
-
-        #emoji-picker {
-            background: #18181b;
-            border: 1px solid #27272a;
-            border-radius: 12px;
-            padding: 8px;
-            display: none;
-            flex-wrap: wrap;
-            gap: 4px;
-            max-width: 310px;
-        }
-        #emoji-picker.open { display: flex; }
-        .emoji-btn { background: none; border: none; cursor: pointer; font-size: 20px; padding: 2px; border-radius: 6px; transition: background 0.15s; }
-        .emoji-btn:hover { background: #27272a; }
-
-        #sticker-picker {
-            background: #18181b;
-            border: 1px solid #27272a;
-            border-radius: 12px;
-            padding: 8px;
-            display: none;
-            flex-wrap: wrap;
-            gap: 6px;
-            max-width: 310px;
-        }
-        #sticker-picker.open { display: flex; }
-        .sticker-btn {
-            background: #27272a;
-            border: 1px solid #3f3f46;
-            border-radius: 8px;
-            padding: 4px 8px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 700;
-            color: #d4d4d8;
-            transition: background 0.15s, transform 0.1s;
-            white-space: nowrap;
-        }
-        .sticker-btn:hover { background: #3f3f46; transform: scale(1.05); }
-
-        #unread-badge {
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            font-weight: 900;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: -4px;
-            right: -4px;
-        }
+        .chat-msg.tipo-sistema { color: #71717a; font-style: italic; font-size: 12px; }
+        
+        #emoji-picker, #sticker-picker { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 8px; display: none; flex-wrap: wrap; gap: 6px; }
+        #emoji-picker.open, #sticker-picker.open { display: flex; }
+        .emoji-btn { background: none; border: none; cursor: pointer; font-size: 24px; padding: 4px; border-radius: 6px; }
+        .sticker-btn { background: #27272a; border: 1px solid #3f3f46; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 12px; font-weight: 700; color: #d4d4d8; white-space: nowrap; }
+        
+        #unread-badge { background: #ef4444; color: white; font-size: 12px; font-weight: 900; border-radius: 50%; width: 22px; height: 22px; display: none; align-items: center; justify-content: center; position: absolute; top: -6px; right: -6px; border: 2px solid #000; }
         #unread-badge.show { display: flex; }
-        #chat-locked-msg { padding: 8px 12px; background: #18181b; border-top: 1px solid #27272a; font-size: 11px; color: #a1a1aa; text-align: center; }
     </style>
 </head>
-<body class="p-1 sm:p-4 font-sans">
+<body class="p-2 sm:p-4 font-sans pb-32">
     <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b border-green-900 pb-4 gap-4 px-1">
-            <div>
-                <h1 class="text-green-500 font-black italic tracking-tighter text-3xl uppercase leading-none mb-1 flex items-center gap-2">
+        
+        <!-- Cabeçalho -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-green-900 pb-4 gap-4">
+            <div class="w-full md:w-auto">
+                <h1 class="text-green-500 font-black italic tracking-tighter text-2xl md:text-3xl uppercase leading-none mb-2 flex items-center gap-2">
                     ⚽ CANAL SPORT PRO
                 </h1>
-                <div class="bg-zinc-900/80 px-3 py-2 rounded-lg border-l-4 border-green-500">
+                <div class="bg-zinc-900/80 px-4 py-3 rounded-lg border-l-4 border-green-500 w-full">
                     <p id="display-titulo" class="destaque-times font-black text-white uppercase italic tracking-tighter">CARREGANDO PARTIDA...</p>
                 </div>
             </div>
-            <div class="flex items-center justify-between w-full md:w-auto gap-4 painel-esportivo p-3 rounded-xl">
+            <div class="flex items-center justify-between w-full md:w-auto gap-6 painel-esportivo p-4 rounded-xl">
                 <div class="text-right">
-                    <p class="text-[9px] text-zinc-400 uppercase font-black leading-none">Tempo Restante</p>
-                    <span id="timer" class="text-2xl font-black text-yellow-500 font-mono italic">05:00</span>
+                    <p class="text-xs md:text-[10px] text-zinc-400 uppercase font-black leading-none mb-1">Tempo Grátis</p>
+                    <span id="timer" class="text-4xl md:text-3xl font-black text-yellow-500 font-mono italic">05:00</span>
                 </div>
-                <div class="bg-red-600 px-3 py-2 rounded text-xs animate-pulse font-black uppercase text-white shadow-lg shadow-red-900/20">Ao Vivo</div>
+                <div class="bg-red-600 px-4 py-2 rounded text-sm font-black uppercase text-white shadow-lg shadow-red-900/40 animate-pulse">Ao Vivo</div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 w-full flex flex-col gap-4">
                 
                 <!-- ESPAÇO MKT 1: Banner de Imagem -->
@@ -183,74 +91,80 @@
                     <img id="img-mkt-1" src="/api/media/banner" class="w-full rounded-xl border-2 border-zinc-800 shadow-xl object-cover" style="max-height: 120px;" onerror="this.parentElement.style.display='none'" onload="this.parentElement.style.display='block'">
                 </a>
 
+                <!-- Reprodutor de Vídeo e Paywall -->
                 <div class="video-container overflow-hidden shadow-2xl rounded-xl border-2 border-zinc-800">
+                    
                     <div id="paywall">
+                        <!-- TELA DE OPÇÕES -->
                         <div id="paywall-valores" class="flex flex-col items-center w-full max-w-md">
-                            <h2 class="text-3xl font-black text-yellow-500 mb-2 uppercase italic">🔒 Sinal Bloqueado</h2>
+                            <h2 class="text-4xl font-black text-yellow-500 mb-4 uppercase italic text-center">🔒 Sinal Bloqueado</h2>
 
-                            <div class="w-full mb-4 p-3 rounded-xl border-2 border-blue-500 bg-blue-950/40 text-center">
-                                <p class="text-blue-300 text-sm font-black uppercase tracking-wider mb-1">👁️ Só quero assistir ao jogo</p>
-                                <p class="text-zinc-400 text-xs mb-2">Faça um PIX de <span class="text-white font-bold">R$ 2,00</span> para liberar o sinal.<br>Não participa do leilão.</p>
-                                <button onclick="mostrarPixAssistir()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-2 px-4 rounded-lg text-sm uppercase tracking-wide transition-all hover:scale-105">
+                            <div class="w-full mb-6 p-4 rounded-xl border-2 border-blue-500 bg-blue-950/60 text-center">
+                                <p class="text-blue-300 text-lg font-black uppercase tracking-wider mb-2">👁️ Quero Apenas Assistir</p>
+                                <p class="text-zinc-300 text-sm mb-3">Faça um PIX de <span class="text-white font-black text-lg">R$ 2,00</span> para liberar o sinal.<br><span class="text-xs text-zinc-400">(Acesso não participa do leilão)</span></p>
+                                <button onclick="mostrarPixAssistir()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 px-4 rounded-xl text-base uppercase tracking-wide transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:scale-105">
                                     📺 Pagar R$ 2,00 e Assistir
                                 </button>
                             </div>
 
-                            <div class="w-full flex items-center gap-2 mb-3">
+                            <div class="w-full flex items-center gap-3 mb-4">
                                 <div class="flex-1 h-px bg-zinc-700"></div>
-                                <span class="text-zinc-400 text-xs font-black uppercase">ou participe do leilão</span>
+                                <span class="text-zinc-400 text-sm font-black uppercase">ou participe do leilão</span>
                                 <div class="flex-1 h-px bg-zinc-700"></div>
                             </div>
 
-                            <p class="mb-1 text-zinc-300 text-base text-center">Maior lance leva o <span class="text-green-400 font-bold">prêmio acumulado!</span></p>
-                            <p class="mb-3 text-green-400 text-sm font-bold text-center">Lance mínimo: <span class="text-white font-bold">R$ 5,00</span></p>
-                            <div class="grid grid-cols-3 gap-2 w-full mb-4">
-                                <button onclick="gerarPixAsaas(5)" class="btn-valor">R$ 5,00</button>
-                                <button onclick="gerarPixAsaas(10)" class="btn-valor">R$ 10,00</button>
-                                <button onclick="gerarPixAsaas(20)" class="btn-valor">R$ 20,00</button>
-                                <button onclick="gerarPixAsaas(50)" class="btn-valor">R$ 50,00</button>
-                                <button onclick="gerarPixAsaas(100)" class="btn-valor">R$ 100,00</button>
-                                <button onclick="abrirValorLivre()" class="btn-valor bg-blue-600 border-blue-500 hover:bg-blue-500">Outro Valor</button>
+                            <p class="mb-1 text-zinc-200 text-lg text-center font-bold">Maior lance leva o <span class="text-green-400 font-black">prêmio acumulado!</span></p>
+                            <p class="mb-4 text-green-400 text-base font-bold text-center">Lance mínimo: <span class="text-white font-black">R$ 5,00</span></p>
+                            
+                            <div class="grid grid-cols-3 gap-3 w-full mb-4">
+                                <button onclick="gerarPixAsaas(5)" class="btn-valor">R$ 5</button>
+                                <button onclick="gerarPixAsaas(10)" class="btn-valor">R$ 10</button>
+                                <button onclick="gerarPixAsaas(20)" class="btn-valor">R$ 20</button>
+                                <button onclick="gerarPixAsaas(50)" class="btn-valor">R$ 50</button>
+                                <button onclick="gerarPixAsaas(100)" class="btn-valor">R$ 100</button>
+                                <button onclick="abrirValorLivre()" class="btn-valor bg-blue-700 border-blue-600 hover:bg-blue-600 text-sm">Outro</button>
                             </div>
                         </div>
 
-                        <!-- FILA DE APROVAÇÃO AUTOMÁTICA -->
-                        <div id="paywall-assistir" class="hidden flex-col items-center w-full max-w-md bg-zinc-900 p-4 rounded-xl border-2 border-blue-500">
-                            <p class="text-blue-300 text-xs font-black uppercase mb-1">📺 PIX para Assistir — R$ 2,00</p>
-                            <p class="text-zinc-400 text-[10px] text-center mb-3">Escaneie o QR Code ou copie a chave PIX abaixo e pague R$ 2,00.</p>
-                            <div id="qr-assistir" class="bg-white p-2 rounded-lg w-44 h-44 flex items-center justify-center shadow-xl mb-3">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=6dad5bac-5b64-4eff-a658-8cc4d1f22bb2" class="w-full h-full object-contain" />
+                        <!-- TELA DE ASSISTIR (FILA AUTOMÁTICA) -->
+                        <div id="paywall-assistir" class="hidden flex-col items-center w-full max-w-md bg-zinc-900 p-5 rounded-2xl border-2 border-blue-500 shadow-2xl">
+                            <p class="text-blue-300 text-sm font-black uppercase mb-2 text-center">📺 PIX para Assistir — R$ 2,00</p>
+                            <p class="text-zinc-300 text-xs text-center mb-4">Escaneie o QR Code ou copie a chave PIX abaixo.</p>
+                            <div id="qr-assistir" class="bg-white p-3 rounded-xl w-48 h-48 flex items-center justify-center shadow-xl mb-4">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=6dad5bac-5b64-4eff-a658-8cc4d1f22bb2" class="w-full h-full object-contain" />
                             </div>
-                            <p class="text-[10px] text-zinc-400 uppercase mb-1">Chave PIX (Aleatória):</p>
-                            <div class="relative w-full mb-3">
-                                <input type="text" id="chave-pix-assistir" class="copia-cola-input pr-16" readonly value="6dad5bac-5b64-4eff-a658-8cc4d1f22bb2">
-                                <button onclick="copiarChaveAssistir()" class="absolute right-1 top-1 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black px-2 py-1 rounded">COPIAR</button>
+                            <p class="text-xs text-zinc-400 uppercase font-bold mb-1">Chave PIX (Aleatória):</p>
+                            <div class="relative w-full mb-4">
+                                <input type="text" id="chave-pix-assistir" class="copia-cola-input pr-20 text-sm" readonly value="6dad5bac-5b64-4eff-a658-8cc4d1f22bb2">
+                                <button onclick="copiarChaveAssistir()" class="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black px-4 py-2 rounded-lg">COPIAR</button>
                             </div>
-                            <div class="w-full bg-zinc-800/60 rounded-lg p-3 border border-zinc-700 mt-1">
-                                <p class="text-[10px] text-zinc-400 font-bold uppercase mb-2 text-center">📲 Qual nome você usou no PIX?</p>
-                                <input type="text" id="contato-assistir" placeholder="Digite seu nome para identificação"
-                                    class="w-full bg-zinc-950 border border-zinc-700 p-2 rounded text-xs text-white outline-none focus:border-blue-500 mb-2">
+                            
+                            <div class="w-full bg-zinc-950/80 rounded-xl p-4 border border-zinc-700 mt-2">
+                                <p class="text-xs text-blue-300 font-black uppercase mb-3 text-center">📲 Informação de Pagamento</p>
+                                <input type="text" id="contato-assistir" placeholder="Nome exato usado no PIX..."
+                                    class="w-full bg-black border border-zinc-600 p-3 rounded-lg text-sm text-white outline-none focus:border-blue-500 mb-3 text-center">
                                 <button onclick="enviarContatoAssistir()" id="btn-enviar-contato"
-                                    class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-xs py-2 rounded uppercase transition">
+                                    class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-sm py-4 rounded-lg uppercase transition shadow-lg">
                                     ✅ Confirmar Pagamento
                                 </button>
-                                <p id="contato-status" class="text-[10px] text-yellow-400 font-bold text-center mt-2 hidden animate-pulse"></p>
+                                <p id="contato-status" class="text-xs text-yellow-400 font-bold text-center mt-3 hidden animate-pulse"></p>
                             </div>
-                            <button onclick="retornarTelaValores()" class="mt-3 text-zinc-500 text-xs underline">← Voltar</button>
+                            <button onclick="retornarTelaValores()" class="mt-4 text-zinc-400 font-bold text-sm underline hover:text-white">← Voltar às opções</button>
                         </div>
 
-                        <div id="paywall-qrcode" class="hidden flex-col items-center w-full max-w-md bg-zinc-900 p-4 rounded-xl border border-zinc-800">
-                            <p class="text-xs font-bold text-yellow-500 uppercase mb-2">Escaneie o código abaixo para pagar:</p>
-                            <div id="container-img-qrcode" class="bg-white p-2 rounded-lg w-44 h-44 flex items-center justify-center shadow-xl mb-3 pulse-green">
-                                <span class="text-black text-xs">Gerando PIX...</span>
+                        <!-- TELA DO QR CODE LANCE ASAAS -->
+                        <div id="paywall-qrcode" class="hidden flex-col items-center w-full max-w-md bg-zinc-900 p-6 rounded-2xl border-2 border-green-600 shadow-2xl">
+                            <p class="text-lg font-black text-yellow-500 uppercase mb-3 text-center">Escaneie para dar seu Lance:</p>
+                            <div id="container-img-qrcode" class="bg-white p-3 rounded-xl w-56 h-56 flex items-center justify-center shadow-xl mb-4 pulse-green">
+                                <span class="text-black font-bold">Gerando PIX...</span>
                             </div>
-                            <p class="text-[10px] text-zinc-400 uppercase mb-1">Ou use o PIX Copia e Cola:</p>
-                            <div class="relative w-full mb-3">
-                                <input type="text" id="input-copia-cola" class="copia-cola-input pr-16" readonly value="Carregando...">
-                                <button onclick="copiarPix()" class="absolute right-1 top-1 bg-green-600 hover:bg-green-500 text-black text-[10px] font-black px-2 py-1 rounded">COPIAR</button>
+                            <p class="text-xs text-zinc-400 uppercase font-bold mb-1">Copia e Cola:</p>
+                            <div class="relative w-full mb-4">
+                                <input type="text" id="input-copia-cola" class="copia-cola-input pr-20 text-sm" readonly value="Carregando...">
+                                <button onclick="copiarPix()" class="absolute right-1 top-1/2 -translate-y-1/2 bg-green-600 hover:bg-green-500 text-black font-black px-4 py-2 rounded-lg">COPIAR</button>
                             </div>
-                            <p class="text-xs text-green-500 animate-pulse font-bold uppercase text-center">⏳ Aguardando pagamento... O jogo abrirá sozinho!</p>
-                            <button onclick="retornarTelaValores()" class="mt-3 text-zinc-500 text-xs underline">← Voltar e escolher outro valor</button>
+                            <p class="text-sm text-green-400 animate-pulse font-black uppercase text-center mt-2">⏳ Aguardando... O jogo abrirá sozinho!</p>
+                            <button onclick="retornarTelaValores()" class="mt-4 text-zinc-400 font-bold text-sm underline hover:text-white">← Cancelar lance</button>
                         </div>
                     </div>
                     
@@ -259,64 +173,69 @@
                     </div>
                 </div>
 
-                <div id="btn-participar-watchers" style="display:none;" class="w-full">
-                    <button onclick="abrirModalLance()" class="w-full bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-black py-3 rounded-xl uppercase text-lg italic shadow-lg shadow-yellow-600/30 transition transform hover:scale-[1.01] border-2 border-yellow-300">
+                <!-- Botão Extra de Lance (Aparece para quem só pagou R$2) -->
+                <div id="btn-participar-watchers" style="display:none;" class="w-full mt-2">
+                    <button onclick="abrirModalLance()" class="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-black font-black py-4 rounded-xl uppercase text-lg md:text-xl italic shadow-[0_0_15px_rgba(234,179,8,0.3)] transition transform hover:scale-[1.02] border-2 border-yellow-300">
                         ⚡ Quero Participar do Leilão PIX!
                     </button>
                 </div>
 
-                <div class="painel-esportivo p-5 rounded-xl flex justify-between items-center shadow-lg px-4">
-                    <div class="w-2/3">
-                        <div class="flex justify-between mb-1">
-                            <span class="text-[10px] text-zinc-400 uppercase font-black tracking-widest">Meta Arrecadada</span>
-                            <span id="meta-porcentagem" class="text-[10px] text-green-400 font-black">0%</span>
+                <!-- Barra de Meta e Prêmio -->
+                <div class="painel-esportivo p-5 md:p-6 rounded-xl flex flex-col md:flex-row justify-between items-center shadow-xl gap-4">
+                    <div class="w-full md:w-2/3">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-xs md:text-sm text-zinc-300 uppercase font-black tracking-widest">Meta Arrecadada</span>
+                            <span id="meta-porcentagem" class="text-sm text-green-400 font-black">0%</span>
                         </div>
-                        <div class="h-3 bg-zinc-800 rounded-full overflow-hidden border border-zinc-700">
+                        <div class="h-4 bg-zinc-950 rounded-full overflow-hidden border border-zinc-700 shadow-inner">
                             <div id="fill-bar" class="h-full bg-gradient-to-r from-green-600 to-green-400 transition-all duration-1000" style="width: 0%"></div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <p class="text-[10px] text-zinc-400 uppercase font-black mb-1">Prêmio Acumulado</p>
-                        <p class="text-3xl font-black text-green-500 italic leading-none tracking-tighter">R$ <span id="display-premio">0,00</span></p>
+                    <div class="w-full md:w-auto text-center md:text-right border-t md:border-t-0 md:border-l border-zinc-700 pt-3 md:pt-0 md:pl-6">
+                        <p class="text-xs text-zinc-400 uppercase font-black mb-1">Prêmio Acumulado</p>
+                        <p class="text-4xl md:text-5xl font-black text-green-500 italic leading-none tracking-tighter drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">R$ <span id="display-premio">0,00</span></p>
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-4 w-full flex flex-col">
+            <!-- Coluna Direita -->
+            <div class="space-y-6 w-full flex flex-col">
 
                 <!-- ESPAÇO MKT 2: Vídeo Promocional -->
                 <div id="box-mkt-2" style="display:none;" class="w-full rounded-xl overflow-hidden border-2 border-zinc-800 shadow-xl bg-black">
                     <video id="vid-mkt-2" src="/api/media/video" autoplay loop muted playsinline class="w-full object-cover" onerror="this.parentElement.style.display='none'" onloadeddata="this.parentElement.style.display='block'"></video>
                 </div>
 
-                <!-- Comprovante PIX do ganhador -->
-                <div id="comprovante-box" style="display:none;" class="painel-esportivo p-4 rounded-xl border-yellow-500/50 shadow-xl">
-                    <h3 class="text-[11px] font-black text-yellow-400 uppercase tracking-widest mb-2 border-b border-zinc-800 pb-2 italic text-center">🏆 Comprovante do Ganhador</h3>
+                <!-- Comprovante PIX -->
+                <div id="comprovante-box" style="display:none;" class="painel-esportivo p-5 rounded-xl border-yellow-500/50 shadow-xl">
+                    <h3 class="text-sm font-black text-yellow-400 uppercase tracking-widest mb-3 border-b border-zinc-800 pb-2 italic text-center">🏆 Comprovante do Ganhador</h3>
                     <div class="text-center">
-                        <img src="/api/media/comprovante" id="img-comprovante-render" class="max-w-full rounded-lg mx-auto border border-zinc-700" onerror="document.getElementById('comprovante-box').style.display='none'" onload="document.getElementById('comprovante-box').style.display='block'">
+                        <img src="/api/media/comprovante" id="img-comprovante-render" class="max-w-full rounded-lg mx-auto border-2 border-zinc-700 shadow-lg" onerror="document.getElementById('comprovante-box').style.display='none'" onload="document.getElementById('comprovante-box').style.display='block'">
                     </div>
                 </div>
 
-                <div class="painel-esportivo p-4 rounded-xl shadow-xl">
-                    <h3 class="text-[11px] font-black text-green-500 uppercase tracking-widest mb-3 border-b border-zinc-800 pb-2 italic text-center">🏆 Líder do Leilão PIX</h3>
-                    <div id="lider-box" class="bg-green-950/30 border-2 border-green-500/50 p-4 rounded-xl text-center relative overflow-hidden shadow-[inset_0_0_15px_rgba(34,197,94,0.15)]">
-                        <div class="absolute top-0 right-0 bg-green-500 text-black font-black text-[8px] px-2 py-0.5 rounded-bl-lg">TOP 1</div>
-                        <p class="text-[9px] text-zinc-400 uppercase font-bold mb-0.5">Dono do Maior Lance</p>
-                        <p id="display-lider-nome" class="text-xl font-black text-white uppercase italic tracking-tighter leading-none mb-2">AGUARDANDO...</p>
-                        <div class="inline-block bg-black px-3 py-0.5 rounded-full border border-green-500/50">
-                            <p class="text-xl font-black text-green-500 leading-none">R$ <span id="display-lider-valor">0,00</span></p>
+                <!-- Líder do Leilão -->
+                <div class="painel-esportivo p-5 rounded-xl shadow-xl">
+                    <h3 class="text-sm font-black text-green-400 uppercase tracking-widest mb-3 border-b border-zinc-800 pb-2 italic text-center">🏆 Líder do Leilão PIX</h3>
+                    <div id="lider-box" class="bg-green-950/40 border-2 border-green-500 p-5 rounded-xl text-center relative overflow-hidden shadow-[inset_0_0_20px_rgba(34,197,94,0.2)]">
+                        <div class="absolute top-0 right-0 bg-green-500 text-black font-black text-[10px] px-3 py-1 rounded-bl-xl shadow-lg">TOP 1</div>
+                        <p class="text-xs text-zinc-300 uppercase font-bold mb-1 tracking-widest">Dono do Maior Lance</p>
+                        <p id="display-lider-nome" class="text-3xl md:text-2xl font-black text-white uppercase italic tracking-tighter leading-none mb-3 drop-shadow-md">AGUARDANDO...</p>
+                        <div class="inline-block bg-black px-5 py-2 rounded-full border border-green-500 shadow-lg">
+                            <p class="text-2xl md:text-xl font-black text-green-400 leading-none tracking-tight">R$ <span id="display-lider-valor">0,00</span></p>
                         </div>
                     </div>
                 </div>
 
                 <!-- ESPAÇO MKT 3: Flexível HTML -->
-                <div id="box-mkt-3" style="display:none;" class="w-full painel-esportivo p-4 rounded-xl shadow-xl border-purple-500/30 text-center text-sm text-zinc-300">
+                <div id="box-mkt-3" style="display:none;" class="w-full painel-esportivo p-5 rounded-xl shadow-xl border-purple-500/40 text-center text-base text-zinc-200">
                 </div>
 
-                <div class="painel-esportivo p-3 rounded-xl shadow-xl text-center">
-                    <h4 class="text-[9px] font-black text-yellow-500 uppercase tracking-wider mb-2 italic">📸 Galeria de Apoiadores</h4>
-                    <div class="relative w-full h-24 bg-black rounded-lg overflow-hidden border border-zinc-800 flex items-center justify-center">
-                        <div id="mural-slide" class="w-full h-full flex items-center justify-center text-xs font-bold text-zinc-500 uppercase tracking-tight p-2">
+                <!-- Galeria -->
+                <div class="painel-esportivo p-4 rounded-xl shadow-xl text-center">
+                    <h4 class="text-xs font-black text-yellow-500 uppercase tracking-wider mb-2 italic">📸 Galeria de Apoiadores</h4>
+                    <div class="relative w-full h-28 bg-black rounded-lg overflow-hidden border border-zinc-800 flex items-center justify-center">
+                        <div id="mural-slide" class="w-full h-full flex items-center justify-center text-sm font-bold text-zinc-500 uppercase tracking-tight p-2">
                             Apoiadores da Rodada
                         </div>
                     </div>
@@ -324,91 +243,97 @@
             </div>
         </div>
 
-        <!-- RODAPÉ DE SEGURANÇA E DESENVOLVIMENTO -->
-        <footer class="mt-8 pb-24 pt-6 border-t border-green-900/40 text-center flex flex-col items-center justify-center gap-4">
-            <div class="flex items-center gap-2 bg-black border border-green-900/50 px-4 py-2 rounded-full shadow-[0_0_15px_rgba(34,197,94,0.1)]">
-                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
-                <span class="text-[10px] text-green-400 font-black uppercase tracking-widest">Transação Segura & Criptografada</span>
+        <!-- RODAPÉ -->
+        <footer class="mt-12 mb-8 pt-8 border-t border-green-900/40 text-center flex flex-col items-center justify-center gap-5">
+            <div class="flex items-center gap-2 bg-black border border-green-900/50 px-5 py-3 rounded-full shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                <span class="text-xs text-green-400 font-black uppercase tracking-widest">Ambiente 100% Seguro</span>
             </div>
             <div>
-                <p class="text-[11px] text-zinc-400 font-bold tracking-wide">
+                <p class="text-sm text-zinc-400 font-bold tracking-wide">
                     &copy; 2026 Canal Sport Pro. Todos os direitos reservados.
                 </p>
-                <p class="text-[10px] text-zinc-600 mt-1 italic">
-                    Plataforma desenvolvida por Arnaldo Vieira | Infraestrutura & Segurança
+                <p class="text-xs text-zinc-600 mt-2 font-mono uppercase tracking-widest">
+                    Desenvolvido por Arnaldo Vieira | Infra & Sec
                 </p>
             </div>
         </footer>
 
     </div>
 
-    <!-- Botão flutuante "Oferte seu Lance" -->
-    <div id="btn-lance-flutuante" style="display:block;position:fixed;bottom:24px;left:24px;z-index:9998;">
+    <!-- Botão Flutuante (Fixo, Centralizado e Gigante no Mobile) -->
+    <div id="btn-lance-flutuante" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9998] w-[90%] max-w-[400px]">
         <button onclick="abrirModalLance()"
-            style="background:linear-gradient(135deg,#059669,#047857);color:white;border:2px solid rgba(255,255,255,0.2);border-radius:50px;padding:12px 24px;font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 0 20px rgba(5,150,105,0.7);text-transform:uppercase;letter-spacing:0.05em;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-            💰 Oferte seu Lance
+            class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white border-2 border-emerald-400/50 rounded-full py-4 text-[17px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(5,150,105,0.7)] transition-transform hover:scale-[1.02] active:scale-95">
+            💰 Oferte seu Lance Aqui!
         </button>
     </div>
 
-    <div id="modal-lance" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:99998;align-items:center;justify-content:center;padding:16px;">
-        <div style="background:#18181b;border:2px solid #10b981;border-radius:20px;padding:24px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px;max-height:90vh;overflow-y:auto;">
+    <!-- Modal de Lance -->
+    <div id="modal-lance" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99998;align-items:center;justify-content:center;padding:16px;">
+        <div style="background:#18181b;border:2px solid #10b981;border-radius:24px;padding:28px 20px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:18px;max-height:95vh;overflow-y:auto;box-shadow:0 0 50px rgba(16,185,129,0.2);">
             <div style="text-align:center;">
-                <div style="font-size:32px;">💰</div>
-                <p style="font-size:15px;font-weight:900;color:white;text-transform:uppercase;">Dar Lance no Leilão</p>
-                <p style="font-size:11px;color:#71717a;margin-top:4px;">Novo lance sem interromper o jogo!</p>
+                <div style="font-size:40px;line-height:1;">💰</div>
+                <p style="font-size:18px;font-weight:900;color:white;text-transform:uppercase;margin-top:8px;">Dar Lance no Leilão</p>
+                <p style="font-size:13px;color:#a1a1aa;margin-top:4px;">Não interrompe o jogo!</p>
             </div>
-            <div style="background:#0a0a0a;border:1px solid #10b981;border-radius:10px;padding:10px;text-align:center;">
-                <p style="font-size:9px;color:#6b7280;text-transform:uppercase;font-weight:900;margin-bottom:2px;">Prêmio Acumulado</p>
-                <p style="font-size:1.4rem;font-weight:900;color:#4ade80;">R$ <span id="modal-premio-atual">0,00</span></p>
-                <p style="font-size:9px;color:#6b7280;margin-top:2px;">Líder: <span id="modal-lider-atual" style="color:white;font-weight:700;">Aguardando...</span></p>
+            
+            <div style="background:#050505;border:1px solid #10b981;border-radius:12px;padding:16px;text-align:center;">
+                <p style="font-size:11px;color:#9ca3af;text-transform:uppercase;font-weight:900;letter-spacing:1px;margin-bottom:4px;">Prêmio Atual</p>
+                <p style="font-size:2rem;font-weight:900;color:#4ade80;line-height:1;">R$ <span id="modal-premio-atual">0,00</span></p>
+                <p style="font-size:12px;color:#9ca3af;margin-top:8px;">Líder: <span id="modal-lider-atual" style="color:white;font-weight:900;">Aguardando...</span></p>
             </div>
-            <div id="modal-lance-valores" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+
+            <div id="modal-lance-valores" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
                 <button onclick="selecionarValorLance(5)"  class="btn-lance-modal">R$ 5</button>
                 <button onclick="selecionarValorLance(10)" class="btn-lance-modal">R$ 10</button>
                 <button onclick="selecionarValorLance(20)" class="btn-lance-modal">R$ 20</button>
                 <button onclick="selecionarValorLance(50)" class="btn-lance-modal">R$ 50</button>
                 <button onclick="selecionarValorLance(100)" class="btn-lance-modal">R$ 100</button>
-                <button onclick="selecionarValorLancePersonalizado()" class="btn-lance-modal" style="background:#1e40af;border-color:#3b82f6;">Outro</button>
+                <button onclick="selecionarValorLancePersonalizado()" class="btn-lance-modal" style="background:#1d4ed8;border-color:#2563eb;">Outro</button>
             </div>
-            <div id="modal-lance-qr" style="display:none;flex-direction:column;align-items:center;gap:8px;">
-                <p style="font-size:11px;font-weight:900;color:#facc15;text-transform:uppercase;">Escaneie para pagar:</p>
-                <div id="modal-lance-qr-img" style="background:white;padding:8px;border-radius:10px;width:160px;height:160px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <span style="color:black;font-size:11px;">Gerando...</span>
+
+            <div id="modal-lance-qr" style="display:none;flex-direction:column;align-items:center;gap:12px;">
+                <p style="font-size:14px;font-weight:900;color:#facc15;text-transform:uppercase;">Escaneie para pagar:</p>
+                <div id="modal-lance-qr-img" style="background:white;padding:12px;border-radius:12px;width:180px;height:180px;display:flex;align-items:center;justify-content:center;">
+                    <span style="color:black;font-size:14px;font-weight:bold;">Gerando...</span>
                 </div>
-                <p style="font-size:9px;color:#6b7280;text-transform:uppercase;">Ou copie o código PIX:</p>
+                <p style="font-size:11px;color:#a1a1aa;text-transform:uppercase;font-weight:bold;">Ou copie o código PIX:</p>
                 <div style="position:relative;width:100%;">
                     <input type="text" id="modal-lance-pix-code" readonly
-                        style="width:100%;background:#09090b;border:1px solid #27272a;border-radius:8px;padding:8px 60px 8px 10px;color:#4ade80;font-size:10px;font-family:monospace;outline:none;box-sizing:border-box;">
+                        style="width:100%;background:#09090b;border:1px solid #3f3f46;border-radius:10px;padding:14px 80px 14px 14px;color:#34d399;font-size:13px;font-family:monospace;outline:none;">
                     <button onclick="copiarPixModal()"
-                        style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:#16a34a;border:none;border-radius:6px;padding:3px 8px;color:black;font-size:10px;font-weight:900;cursor:pointer;">COPIAR</button>
+                        style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:#10b981;border:none;border-radius:8px;padding:8px 12px;color:black;font-size:12px;font-weight:900;cursor:pointer;">COPIAR</button>
                 </div>
-                <p style="font-size:11px;color:#4ade80;font-weight:900;text-align:center;">⏳ Aguardando pagamento...</p>
-                <button onclick="voltarEscolhaLance()" style="background:none;border:none;color:#52525b;font-size:11px;cursor:pointer;text-decoration:underline;">← Escolher outro valor</button>
+                <p style="font-size:14px;color:#4ade80;font-weight:900;text-align:center;margin-top:4px;">⏳ Processando pagamento...</p>
+                <button onclick="voltarEscolhaLance()" style="background:none;border:none;color:#9ca3af;font-size:13px;font-weight:bold;cursor:pointer;text-decoration:underline;margin-top:4px;">← Cancelar e escolher outro</button>
             </div>
+
             <button onclick="fecharModalLance()"
-                style="background:#27272a;border:none;border-radius:10px;padding:10px;color:#a1a1aa;font-size:12px;font-weight:900;cursor:pointer;text-transform:uppercase;">
-                ✕ Fechar e continuar assistindo
+                style="background:#27272a;border:none;border-radius:12px;padding:16px;color:#d4d4d8;font-size:14px;font-weight:900;cursor:pointer;text-transform:uppercase;margin-top:8px;">
+                ✕ Fechar
             </button>
         </div>
     </div>
 
     <style>
-        .btn-lance-modal { background:#1f2937;border:1px solid #374151;border-radius:10px;padding:12px 8px;font-size:14px;font-weight:900;color:white;cursor:pointer;transition:all 0.2s;text-align:center; }
+        .btn-lance-modal { background:#1f2937;border:1px solid #374151;border-radius:12px;padding:16px 8px;font-size:16px;font-weight:900;color:white;cursor:pointer;transition:all 0.2s;text-align:center; }
         .btn-lance-modal:hover { background:#059669;border-color:#10b981;transform:scale(1.05); }
     </style>
 
+    <!-- Estrutura do Chat -->
     <div id="chat-wrapper">
         <div id="chat-box" class="hidden-chat">
-            <div style="background:#18181b;padding:10px 14px;border-bottom:1px solid #27272a;display:flex;align-items:center;justify-content:space-between;">
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <span style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s infinite;"></span>
-                    <span style="font-size:12px;font-weight:900;color:#a1a1aa;text-transform:uppercase;letter-spacing:0.06em;">Chat da Live</span>
+            <div style="background:#18181b;padding:14px 16px;border-bottom:1px solid #27272a;display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s infinite;"></span>
+                    <span style="font-size:14px;font-weight:900;color:#e4e4e7;text-transform:uppercase;letter-spacing:0.05em;">Chat ao Vivo</span>
                 </div>
-                <button onclick="fecharChat()" style="background:none;border:none;color:#52525b;cursor:pointer;font-size:18px;line-height:1;padding:0 2px;">✕</button>
+                <button onclick="fecharChat()" style="background:none;border:none;color:#a1a1aa;cursor:pointer;font-size:22px;line-height:1;padding:0 4px;">✕</button>
             </div>
 
-            <div id="chat-messages" style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:4px;min-height:200px;max-height:260px;scrollbar-width:thin;scrollbar-color:#27272a transparent;">
-                <div style="color:#52525b;font-style:italic;font-size:11px;">Conectando ao chat...</div>
+            <div id="chat-messages" style="flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:6px;min-height:250px;max-height:350px;">
+                <div style="color:#71717a;font-style:italic;font-size:13px;text-align:center;margin-top:20px;">Conectando ao servidor...</div>
             </div>
 
             <div id="sticker-picker">
@@ -421,35 +346,37 @@
                 <button class="sticker-btn" onclick="enviarFigurinha('😤 JUIZ LADRÃO!')">😤 JUIZ LADRÃO!</button>
                 <button class="sticker-btn" onclick="enviarFigurinha('💸 PIX FEITO!')">💸 PIX FEITO!</button>
             </div>
-
             <div id="emoji-picker"></div>
 
-            <div id="chat-input-area" style="padding:8px 10px;background:#18181b;border-top:1px solid #27272a;display:flex;flex-direction:column;gap:6px;">
-                <div style="display:flex;gap:6px;align-items:center;">
-                    <button onclick="toggleEmoji()" style="background:#27272a;border:none;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:16px;">😊</button>
-                    <button onclick="toggleStickers()" style="background:#27272a;border:none;border-radius:8px;padding:5px 8px;cursor:pointer;font-size:13px;font-weight:900;color:#d4d4d8;">🏷️</button>
-                    <input type="text" id="chat-input" placeholder="Mensagem..." maxlength="200" style="flex:1;background:#09090b;border:1px solid #27272a;border-radius:8px;padding:6px 10px;color:white;font-size:12px;outline:none;">
-                    <button onclick="enviarMsgChat()" style="background:#16a34a;border:none;border-radius:8px;padding:6px 12px;color:white;font-size:12px;font-weight:900;cursor:pointer;">▶</button>
+            <div id="chat-input-area" style="padding:12px;background:#18181b;border-top:1px solid #27272a;display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <button onclick="toggleEmoji()" style="background:#27272a;border:none;border-radius:10px;padding:8px 10px;cursor:pointer;font-size:20px;">😊</button>
+                    <button onclick="toggleStickers()" style="background:#27272a;border:none;border-radius:10px;padding:8px 10px;cursor:pointer;font-size:16px;font-weight:900;color:#d4d4d8;">🏷️</button>
+                    <!-- font-size 16px obrigatorio no input para o iphone nao dar zoom automatico na tela -->
+                    <input type="text" id="chat-input" placeholder="Sua mensagem..." maxlength="200" style="flex:1;background:#09090b;border:1px solid #3f3f46;border-radius:10px;padding:10px 12px;color:white;font-size:16px;outline:none;">
+                    <button onclick="enviarMsgChat()" style="background:#16a34a;border:none;border-radius:10px;padding:10px 16px;color:white;font-size:16px;font-weight:900;cursor:pointer;">▶</button>
                 </div>
-                <div style="font-size:10px;color:#52525b;text-align:center;">
-                    Enviando como: <span id="chat-nome-display" style="color:#86efac;font-weight:700;">Visitante</span>
-                    <button onclick="abrirModalNome()" style="background:none;border:none;color:#52525b;cursor:pointer;font-size:10px;text-decoration:underline;margin-left:6px;padding:0;">✏️ trocar</button>
+                <div style="font-size:11px;color:#71717a;text-align:center;">
+                    Enviando como: <span id="chat-nome-display" style="color:#86efac;font-weight:900;">Visitante</span>
+                    <button onclick="abrirModalNome()" style="background:none;border:none;color:#a1a1aa;cursor:pointer;font-size:11px;text-decoration:underline;margin-left:8px;font-weight:bold;">Trocar nome</button>
                 </div>
             </div>
 
-            <div id="chat-locked-msg" style="display:none;">
-                🔒 Apenas apoiadores podem enviar mensagens. <a onclick="retornarTelaValores(); document.getElementById('paywall').style.display='flex'" href="#" style="color:#4ade80;font-weight:700;">Apoiar agora</a>
+            <div id="chat-locked-msg" style="display:none;padding:16px;text-align:center;">
+                <p style="font-size:13px;color:#a1a1aa;margin-bottom:6px;">🔒 Apenas usuários liberados no jogo podem usar o chat.</p>
+                <a onclick="retornarTelaValores(); document.getElementById('paywall').style.display='flex'" href="#" style="color:#4ade80;font-weight:900;font-size:14px;text-decoration:underline;">Quero me tornar apoiador</a>
             </div>
         </div>
 
         <div style="position:relative;align-self:flex-end;">
             <button id="chat-toggle-btn" onclick="abrirChat()">
-                💬 <span id="chat-btn-label">Chat ao Vivo</span>
+                💬 <span id="chat-btn-label">Chat da Live</span>
             </button>
             <span id="unread-badge">0</span>
         </div>
     </div>
 
+    <!-- ── SCRIPTS ── -->
     <script>
         const VALOR_MINIMO = 5.00;
         let urlVideoAtual = "";
@@ -458,6 +385,7 @@
         let premioAnterior = 0;
         let tsMediaAtual = 0;
 
+        // Funções do Modal de Lance
         function abrirModalLance() {
             document.getElementById('modal-lance').style.display = 'flex';
             document.getElementById('modal-lance-qr').style.display = 'none';
@@ -478,6 +406,7 @@
             if(isNaN(vFinal) || vFinal < VALOR_MINIMO) return alert('Valor inválido!');
             gerarPixLanceModal(vFinal);
         }
+        
         async function gerarPixLanceModal(valorEscolhido) {
             let nomeDoador = getNomeChat();
             if (nomeDoador === 'Visitante') {
@@ -488,7 +417,7 @@
             
             document.getElementById('modal-lance-valores').style.display = 'none';
             document.getElementById('modal-lance-qr').style.display = 'flex';
-            document.getElementById('modal-lance-qr-img').innerHTML = `<span style="color:black;font-size:11px;">Gerando PIX...</span>`;
+            document.getElementById('modal-lance-qr-img').innerHTML = `<span style="color:black;font-size:14px;font-weight:bold;">Gerando PIX...</span>`;
 
             try {
                 const response = await fetch('/api/criar-pix', {
@@ -508,9 +437,10 @@
         }
         function copiarPixModal() {
             const input = document.getElementById('modal-lance-pix-code');
-            navigator.clipboard.writeText(input.value).then(() => alert("Código PIX copiado!"));
+            navigator.clipboard.writeText(input.value).then(() => alert("Código PIX copiado com sucesso!"));
         }
 
+        // Sistema Antifraude e Identificação (Seguro)
         async function gerarFingerprintDispositivo() {
             const dadosMatriz = [
                 navigator.userAgent, screen.width + 'x' + screen.height,
@@ -528,19 +458,16 @@
             };
 
             try {
-                if (!window.crypto || !window.crypto.subtle) {
-                    return gerarHashSimples(dadosMatriz);
-                }
+                if (!window.crypto || !window.crypto.subtle) { return gerarHashSimples(dadosMatriz); }
                 const encoder = new TextEncoder();
                 const data = encoder.encode(dadosMatriz);
                 const hashBuffer = await crypto.subtle.digest('SHA-256', data);
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 32);
-            } catch (err) {
-                return gerarHashSimples(dadosMatriz);
-            }
+            } catch (err) { return gerarHashSimples(dadosMatriz); }
         }
 
+        // Funções do Chat
         function getNomeChat() { return localStorage.getItem('chat_nome') || 'Visitante'; }
         function setNomeChat(nome) {
             localStorage.setItem('chat_nome', nome);
@@ -555,57 +482,38 @@
             chatAberto = true;
             document.getElementById('chat-box').classList.remove('hidden-chat');
             document.getElementById('chat-toggle-btn').style.display = 'none';
-            unreadCount = 0;
-            atualizarBadge();
+            unreadCount = 0; atualizarBadge();
         }
-
         function fecharChat() {
             chatAberto = false;
             document.getElementById('chat-box').classList.add('hidden-chat');
             document.getElementById('chat-toggle-btn').style.display = 'flex';
         }
-
         function atualizarBadge() {
             const badge = document.getElementById('unread-badge');
             if (unreadCount > 0 && !chatAberto) {
                 badge.innerText = unreadCount > 9 ? '9+' : unreadCount;
                 badge.classList.add('show');
-            } else {
-                badge.classList.remove('show');
-            }
+            } else { badge.classList.remove('show'); }
         }
 
         function toggleEmoji() {
-            const ep = document.getElementById('emoji-picker');
-            const sp = document.getElementById('sticker-picker');
-            sp.classList.remove('open');
-            ep.classList.toggle('open');
+            const ep = document.getElementById('emoji-picker'); const sp = document.getElementById('sticker-picker');
+            sp.classList.remove('open'); ep.classList.toggle('open');
             if (ep.classList.contains('open')) gerarBotoesEmoji();
         }
-
         function toggleStickers() {
-            const ep = document.getElementById('emoji-picker');
-            const sp = document.getElementById('sticker-picker');
-            ep.classList.remove('open');
-            sp.classList.toggle('open');
+            const ep = document.getElementById('emoji-picker'); const sp = document.getElementById('sticker-picker');
+            ep.classList.remove('open'); sp.classList.toggle('open');
         }
-
         function gerarBotoesEmoji() {
             const ep = document.getElementById('emoji-picker');
             const emojis = ['⚽','🔥','🏆','👏','😂','😤','😱','🎯','💸','🥅','🚀','❤️','😍','🤩','🔴','🟡','🟢','⬆️','👍','👎','🤣','😭','🥳','🎉','💪','🦁','🐯','🏅','🎁','🤑','😎','🫶','✅','⚡','🌟','💥','🫡'];
             ep.innerHTML = emojis.map(e => `<button class="emoji-btn" onclick="inserirEmoji('${e}')">${e}</button>`).join('');
         }
+        function inserirEmoji(emoji) { const input = document.getElementById('chat-input'); input.value += emoji; input.focus(); }
 
-        function inserirEmoji(emoji) {
-            const input = document.getElementById('chat-input');
-            input.value += emoji;
-            input.focus();
-        }
-
-        async function enviarFigurinha(texto) {
-            document.getElementById('sticker-picker').classList.remove('open');
-            await postarMensagem(texto, true);
-        }
+        async function enviarFigurinha(texto) { document.getElementById('sticker-picker').classList.remove('open'); await postarMensagem(texto, true); }
 
         async function enviarMsgChat() {
             const input = document.getElementById('chat-input');
@@ -617,9 +525,7 @@
             await postarMensagem(texto, false);
         }
 
-        function temAcessoPago() {
-            return !!(localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token'));
-        }
+        function temAcessoPago() { return !!(localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token')); }
 
         async function postarMensagem(texto, ehFigurinha = false) {
             if (!temAcessoPago()) { mostrarBloqueioChat(); return; }
@@ -627,15 +533,11 @@
             if (nome === 'Visitante' && !localStorage.getItem('chat_nome_perguntado')) {
                 abrirModalNome((nomeFinal) => {
                     nome = nomeFinal;
-                    fetch('/api/chat', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' })
-                    }).catch(e => console.error('Erro ao enviar msg', e));
+                    fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' }) }).catch(e => {});
                 });
                 return;
             }
-            try {
-                await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' }) });
-            } catch(e) {}
+            try { await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' }) }); } catch(e) {}
         }
 
         function mostrarBloqueioChat() {
@@ -657,7 +559,7 @@
             if (msg.tipo === 'voce') nomeColor = '#60a5fa';
             
             if (msg.tipo === 'sistema') {
-                div.innerHTML = `<span style="color:#71717a;font-style:italic;font-size:11px;">${msg.mensagem}</span>`;
+                div.innerHTML = `<span style="color:#71717a;font-style:italic;font-size:12px;">${msg.mensagem}</span>`;
             } else {
                 div.innerHTML = `<span style="font-weight:900;color:${nomeColor};">${escapeHtml(msg.nome)}:</span> <span style="color:#e4e4e7;">${escapeHtml(msg.mensagem)}</span>`;
             }
@@ -672,8 +574,7 @@
 
         async function buscarMensagensChat() {
             try {
-                const res = await fetch('/api/chat');
-                const msgs = await res.json();
+                const res = await fetch('/api/chat'); const msgs = await res.json();
                 const novas = msgs.filter(m => m.id > ultimoIdChat);
                 if (novas.length === 0) return;
 
@@ -681,25 +582,20 @@
                     const jaExiste = document.querySelector(`[data-id="${msg.id}"]`);
                     if (jaExiste) { jaExiste.dataset.id = msg.id; return; }
                     adicionarMsgLocal(msg);
-
-                    if (!chatAberto) {
-                        unreadCount++;
-                        atualizarBadge();
-                    }
+                    if (!chatAberto) { unreadCount++; atualizarBadge(); }
                 });
                 ultimoIdChat = msgs[msgs.length - 1]?.id || ultimoIdChat;
             } catch(e) {}
         }
 
+        // ATUALIZAÇÃO DO STATUS DA LIVE (REGRAS DE LEILÃO E RESET DE TEMPO)
         function atualizarDisplay(data) {
             const novoPremioBruto = data.acumulado || 0;
             const elPremio = document.getElementById('display-premio');
 
             if (novoPremioBruto !== premioAnterior) {
                 elPremio.innerText = novoPremioBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-                elPremio.classList.remove('anim-count');
-                void elPremio.offsetWidth;
-                elPremio.classList.add('anim-count');
+                elPremio.classList.remove('anim-count'); void elPremio.offsetWidth; elPremio.classList.add('anim-count');
                 premioAnterior = novoPremioBruto;
             }
 
@@ -710,6 +606,7 @@
             document.getElementById('fill-bar').style.width = porcentagem + '%';
             document.getElementById('meta-porcentagem').innerText = porcentagem + '%';
 
+            // REGRA DEFINITIVA DE RESET (BOMBA NUCLEAR)
             if (data.epoch) {
                 const epochSalvo = localStorage.getItem('soccer_epoch');
                 
@@ -719,42 +616,37 @@
                 else if (epochSalvo !== String(data.epoch)) {
                     localStorage.setItem('soccer_epoch', String(data.epoch));
                     
+                    // APAGA TUDO: Tempo expirado, contagem atual, e qualquer passe VIP que a pessoa tenha
                     localStorage.removeItem('soccer_timer_expired');
                     localStorage.removeItem('soccer_timer');
+                    localStorage.removeItem('soccer_token_device');
+                    localStorage.removeItem('acesso_token');
+                    localStorage.removeItem('acesso_fp');
                     
-                    if (!temAcessoPago()) {
-                        alert('🔄 Nova rodada iniciada! Seu acesso grátis de 5 minutos foi renovado!');
-                        window.location.reload();
-                    }
+                    alert('🔄 NOVA PARTIDA INICIADA!\n\nO relógio foi zerado para todos os espectadores.');
+                    window.location.reload();
                 }
             }
         }
 
         async function carregarDados() {
             try {
-                const [resStatus, resSupa] = await Promise.all([
-                    fetch('/api/status-leilao'),
-                    fetch('/api/data')
-                ]);
+                const [resStatus, resSupa] = await Promise.all([fetch('/api/status-leilao'), fetch('/api/data')]);
                 const dataStatus = await resStatus.json();
                 const dataSupa = await resSupa.json();
 
                 atualizarDisplay(dataStatus);
 
                 if (dataSupa.titulo) document.getElementById('display-titulo').innerText = dataSupa.titulo;
-
                 if (dataSupa.mktBannerLink) document.getElementById('link-mkt-1').href = dataSupa.mktBannerLink;
+                
                 if (dataSupa.mktFlexHtml) {
                     const box3 = document.getElementById('box-mkt-3');
-                    box3.innerHTML = dataSupa.mktFlexHtml;
-                    box3.style.display = 'block';
-                } else {
-                    document.getElementById('box-mkt-3').style.display = 'none';
-                }
+                    box3.innerHTML = dataSupa.mktFlexHtml; box3.style.display = 'block';
+                } else { document.getElementById('box-mkt-3').style.display = 'none'; }
 
                 if (dataSupa.tsMedia && dataSupa.tsMedia !== tsMediaAtual) {
-                    tsMediaAtual = dataSupa.tsMedia;
-                    const suffix = "?t=" + tsMediaAtual;
+                    tsMediaAtual = dataSupa.tsMedia; const suffix = "?t=" + tsMediaAtual;
                     document.getElementById('img-comprovante-render').src = "/api/media/comprovante" + suffix;
                     document.getElementById('img-mkt-1').src = "/api/media/banner" + suffix;
                     document.getElementById('vid-mkt-2').src = "/api/media/video" + suffix;
@@ -762,13 +654,9 @@
 
                 if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual && idPartidaAtual !== "") {
                     idPartidaAtual = dataSupa.idPartida;
-                    localStorage.removeItem('soccer_timer_expired');
-                    localStorage.removeItem('soccer_timer');
-                    window.location.reload();
-                    return;
-                } else if (dataSupa.idPartida) {
-                    idPartidaAtual = dataSupa.idPartida;
-                }
+                    localStorage.removeItem('soccer_timer_expired'); localStorage.removeItem('soccer_timer');
+                    window.location.reload(); return;
+                } else if (dataSupa.idPartida) { idPartidaAtual = dataSupa.idPartida; }
 
                 let isExpired = localStorage.getItem('soccer_timer_expired') === 'true';
                 const temAcesso = temAcessoPago();
@@ -777,14 +665,13 @@
                     if (dataSupa.videoId.includes('twitch.tv')) {
                         const canal = dataSupa.videoId.split('/').pop().trim();
                         document.getElementById('twitch-inline-player').innerHTML = '';
-                        twitchPlayer = new Twitch.Player("twitch-inline-player", {
-                            channel: canal, width: "100%", height: "100%", parent: [window.location.hostname], autoplay: true, muted: false
-                        });
+                        twitchPlayer = new Twitch.Player("twitch-inline-player", { channel: canal, width: "100%", height: "100%", parent: [window.location.hostname], autoplay: true, muted: false });
                     }
                 }
             } catch (e) {}
         }
 
+        // Funções de Pagamento Leilão (Asaas)
         function abrirValorLivre() {
             let valorDigito = prompt(`Digite o valor do seu lance (mínimo R$ ${VALOR_MINIMO.toFixed(2).replace('.', ',')}):`);
             if (!valorDigito) return;
@@ -803,70 +690,50 @@
             setNomeChat(nomeDoador.trim().substring(0, 25));
             document.getElementById('paywall-valores').classList.add('hidden');
             const qrcodeDiv = document.getElementById('paywall-qrcode');
-            qrcodeDiv.classList.remove('hidden');
-            qrcodeDiv.classList.add('flex');
+            qrcodeDiv.classList.remove('hidden'); qrcodeDiv.classList.add('flex');
 
             try {
-                const response = await fetch('/api/criar-pix', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ valor: valorEscolhido, nome: nomeDoador.trim() })
-                });
+                const response = await fetch('/api/criar-pix', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ valor: valorEscolhido, nome: nomeDoador.trim() }) });
                 const data = await response.json();
                 if (data.success) {
                     document.getElementById('container-img-qrcode').innerHTML = `<img src="data:image/png;base64,${data.encodedImage}" class="w-full h-full object-contain" />`;
                     document.getElementById('input-copia-cola').value = data.payload;
                     escutarPagamentoAsaas(data.paymentId);
-                } else {
-                    alert("Erro: " + data.error); retornarTelaValores();
-                }
+                } else { alert("Erro: " + data.error); retornarTelaValores(); }
             } catch (err) { alert("Erro ao conectar."); retornarTelaValores(); }
         }
 
+        // Funções da Fila de Espera (Acesso R$ 2)
         function mostrarPixAssistir() {
             document.getElementById('paywall-valores').classList.add('hidden');
             const div = document.getElementById('paywall-assistir');
-            div.classList.remove('hidden');
-            div.classList.add('flex');
+            div.classList.remove('hidden'); div.classList.add('flex');
         }
 
         function copiarChaveAssistir() {
             const chave = '6dad5bac-5b64-4eff-a658-8cc4d1f22bb2';
-            navigator.clipboard.writeText(chave).then(() => {
-                alert('Chave PIX copiada! Pague R$ 2,00 e aguarde a liberação.');
-            }).catch(() => {
-                document.getElementById('chave-pix-assistir').select();
-                document.execCommand('copy');
-                alert('Chave PIX copiada!');
-            });
+            navigator.clipboard.writeText(chave).then(() => { alert('Chave PIX copiada com sucesso!');
+            }).catch(() => { document.getElementById('chave-pix-assistir').select(); document.execCommand('copy'); alert('Chave PIX copiada!'); });
         }
 
         let pollingAssistir = null;
-
         async function enviarContatoAssistir() {
             const input = document.getElementById('contato-assistir');
             const contato = input.value.trim();
-            if (!contato) return alert('Por favor, informe o nome usado no PIX.');
+            if (!contato) return alert('Por favor, digite o nome exato que aparecerá no comprovante PIX.');
 
             const btn = document.getElementById('btn-enviar-contato');
-            btn.innerText = "⏳ Aguardando aprovação...";
-            btn.disabled = true;
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
-            input.disabled = true;
+            btn.innerText = "⏳ Aguardando liberação do Admin...";
+            btn.disabled = true; btn.classList.add('opacity-50', 'cursor-not-allowed'); input.disabled = true;
 
             const statusTxt = document.getElementById('contato-status');
             statusTxt.classList.remove('hidden');
-            statusTxt.innerText = "Você está na fila. Assim que o admin confirmar o PIX, a live será liberada automaticamente. Não feche a página.";
+            statusTxt.innerText = "Seu nome está na fila. Não feche a página, o acesso será automático após a aprovação.";
 
             try {
-                await fetch('/api/contato-assistir', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contato })
-                });
-
+                await fetch('/api/contato-assistir', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contato }) });
                 if(pollingAssistir) clearInterval(pollingAssistir);
                 
-                // MUDANÇA AQUI: Liberação direta e blindada contra delay do banco
                 pollingAssistir = setInterval(async () => {
                     try {
                         const res = await fetch('/api/status-contato?c=' + encodeURIComponent(contato));
@@ -874,75 +741,56 @@
                         
                         if (data.aprovado) {
                             clearInterval(pollingAssistir);
-                            statusTxt.innerText = "✅ PIX confirmado! Entrando na live...";
+                            statusTxt.innerText = "✅ Aprovado! Destravando a tela...";
                             statusTxt.classList.replace('text-yellow-400', 'text-green-500');
                             
-                            // Autoriza o acesso direto no celular do usuário
-                            localStorage.removeItem('soccer_timer_expired');
-                            localStorage.removeItem('soccer_timer');
+                            localStorage.removeItem('soccer_timer_expired'); localStorage.removeItem('soccer_timer');
                             const finger = await gerarFingerprintDispositivo();
                             localStorage.setItem('soccer_token_device', finger);
                             
-                            if (data.token) {
-                                localStorage.setItem('acesso_token', data.token);
-                                localStorage.setItem('acesso_fp', finger);
-                            }
+                            if (data.token) { localStorage.setItem('acesso_token', data.token); localStorage.setItem('acesso_fp', finger); }
                             
-                            alert("✅ Pagamento confirmado! Obrigado pelo apoio. Bom jogo!");
-                            window.location.href = '/'; // Recarrega a página limpa e pronta para assistir
+                            window.location.href = '/'; 
                         }
                     } catch(e) {}
                 }, 3000);
-
             } catch(e) {
-                btn.innerText = "✅ Confirmar Pagamento";
-                btn.disabled = false;
-                btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                input.disabled = false;
-                alert("Erro de conexão.");
+                btn.innerText = "✅ Confirmar Pagamento"; btn.disabled = false; btn.classList.remove('opacity-50', 'cursor-not-allowed'); input.disabled = false;
+                alert("Erro de conexão. Tente novamente.");
             }
         }
 
         function copiarPix() {
             const input = document.getElementById('input-copia-cola');
-            navigator.clipboard.writeText(input.value).then(() => {
-                alert("Código PIX copiado!");
-            }).catch(() => {
-                input.select(); document.execCommand('copy'); alert("Código PIX copiado!");
-            });
+            navigator.clipboard.writeText(input.value).then(() => { alert("Código PIX copiado!");
+            }).catch(() => { input.select(); document.execCommand('copy'); alert("Código PIX copiado!"); });
         }
 
         function retornarTelaValores() {
             document.getElementById('paywall-valores').classList.remove('hidden');
-            document.getElementById('paywall-qrcode').classList.add('hidden');
-            document.getElementById('paywall-qrcode').classList.remove('flex');
-            document.getElementById('paywall-assistir').classList.add('hidden');
-            document.getElementById('paywall-assistir').classList.remove('flex');
+            document.getElementById('paywall-qrcode').classList.add('hidden'); document.getElementById('paywall-qrcode').classList.remove('flex');
+            document.getElementById('paywall-assistir').classList.add('hidden'); document.getElementById('paywall-assistir').classList.remove('flex');
         }
 
         function escutarPagamentoAsaas(paymentId, isModal = false) {
             const checagem = setInterval(async () => {
                 try {
-                    const res = await fetch(`/api/verificar-liberacao?id=${paymentId}`);
-                    const data = await res.json();
+                    const res = await fetch(`/api/verificar-liberacao?id=${paymentId}`); const data = await res.json();
                     if (data.liberado === true) {
                         clearInterval(checagem);
-                        localStorage.removeItem('soccer_timer_expired');
-                        localStorage.removeItem('soccer_timer');
-                        const finger = await gerarFingerprintDispositivo();
-                        localStorage.setItem('soccer_token_device', finger);
+                        localStorage.removeItem('soccer_timer_expired'); localStorage.removeItem('soccer_timer');
+                        const finger = await gerarFingerprintDispositivo(); localStorage.setItem('soccer_token_device', finger);
                         alert("✅ Pagamento confirmado! Lance Computado. Obrigado pelo apoio!");
-                        if (isModal) fecharModalLance();
-                        else window.location.reload();
+                        if (isModal) fecharModalLance(); else window.location.reload();
                     }
                 } catch (e) {}
             }, 3000);
         }
 
         const mockFotos = [
-            "<div class='text-center p-2'><span class='text-green-400 font-bold'>🏆 Arnaldo V.</span><br><span class='text-[10px] text-zinc-400'>Apoiou com R$ 100,00</span></div>",
-            "<div class='text-center p-2'><span class='text-blue-400 font-bold'>🔥 Wilson Silva</span><br><span class='text-[10px] text-zinc-400'>Mandou o Pix de R$ 50,00</span></div>",
-            "<div class='text-center p-2'><span class='text-purple-400 font-bold'>⚽ Marcos T.</span><br><span class='text-[10px] text-zinc-400'>Entrou com R$ 20,00</span></div>"
+            "<div class='text-center p-2'><span class='text-green-400 font-black text-sm md:text-base'>🏆 Arnaldo V.</span><br><span class='text-[11px] text-zinc-400 font-bold'>Apoiou com R$ 100,00</span></div>",
+            "<div class='text-center p-2'><span class='text-blue-400 font-black text-sm md:text-base'>🔥 Wilson Silva</span><br><span class='text-[11px] text-zinc-400 font-bold'>Mandou o Pix de R$ 50,00</span></div>",
+            "<div class='text-center p-2'><span class='text-purple-400 font-black text-sm md:text-base'>⚽ Marcos T.</span><br><span class='text-[11px] text-zinc-400 font-bold'>Entrou com R$ 20,00</span></div>"
         ];
         let fotoIdx = 0;
         function rodarMural() {
@@ -962,9 +810,7 @@
             const temAcessoDevice = tokenDevice && tokenDevice === currentFinger;
 
             if (temAcessoDevice || temAcessoToken) {
-                timerDisplay.innerText = "AO VIVO";
-                timerDisplay.style.color = "#22c55e";
-                timerDisplay.style.fontSize = "1rem";
+                timerDisplay.innerText = "AO VIVO"; timerDisplay.style.color = "#22c55e"; timerDisplay.style.fontSize = "1.5rem";
                 document.getElementById('btn-participar-watchers').style.display = 'block';
                 return;
             }
@@ -976,26 +822,18 @@
             if (timeLeft <= 0) { bloquearAcesso(); return; }
 
             const countdown = setInterval(() => {
-                let min = Math.floor(timeLeft / 60);
-                let sec = timeLeft % 60;
+                let min = Math.floor(timeLeft / 60); let sec = timeLeft % 60;
                 timerDisplay.innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
                 
-                if (timeLeft <= 0) { 
-                    clearInterval(countdown); 
-                    bloquearAcesso(); 
-                } else { 
-                    timeLeft--; 
-                    localStorage.setItem('soccer_timer', timeLeft); 
-                }
+                if (timeLeft <= 0) { clearInterval(countdown); bloquearAcesso(); } 
+                else { timeLeft--; localStorage.setItem('soccer_timer', timeLeft); }
             }, 1000);
         }
 
         function bloquearAcesso() {
-            localStorage.setItem('soccer_timer', '0');
-            localStorage.setItem('soccer_timer_expired', 'true');
-            timerDisplay.innerText = "EXPIRADO";
-            paywall.style.display = 'flex';
-            videoWrapper.innerHTML = '';
+            localStorage.setItem('soccer_timer', '0'); localStorage.setItem('soccer_timer_expired', 'true');
+            timerDisplay.innerText = "EXPIRADO"; timerDisplay.style.color = "#ef4444";
+            paywall.style.display = 'flex'; videoWrapper.innerHTML = '';
             if (twitchPlayer) { try { twitchPlayer.pause(); } catch(e){} }
             if (!localStorage.getItem('chat_nome')) mostrarBloqueioChat();
             document.getElementById('btn-participar-watchers').style.display = 'none';
@@ -1012,26 +850,23 @@
             modal.id = 'modal-nome-chat';
             modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;';
             modal.innerHTML = `
-                <div style="background:#18181b;border:1px solid #27272a;border-radius:16px;padding:24px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:14px;">
+                <div style="background:#18181b;border:1px solid #27272a;border-radius:20px;padding:28px 20px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:16px;box-shadow:0 0 30px rgba(0,0,0,0.8);">
                     <div style="text-align:center;">
-                        <div style="font-size:28px;margin-bottom:4px;">💬</div>
-                        <p style="font-size:14px;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.05em;">Como quer aparecer no chat?</p>
+                        <div style="font-size:36px;margin-bottom:8px;line-height:1;">💬</div>
+                        <p style="font-size:16px;font-weight:900;color:white;text-transform:uppercase;letter-spacing:0.05em;">Identifique-se no Chat</p>
                     </div>
-                    <input id="modal-nome-input" type="text" maxlength="25" placeholder="Seu nome no chat..." style="background:#09090b;border:1px solid #3f3f46;border-radius:8px;padding:10px 12px;color:white;font-size:13px;outline:none;width:100%;box-sizing:border-box;">
-                    <button id="modal-nome-confirmar" style="flex:1;background:#16a34a;border:none;border-radius:8px;padding:10px;color:white;font-size:13px;font-weight:900;cursor:pointer;text-transform:uppercase;">✅ Confirmar</button>
+                    <input id="modal-nome-input" type="text" maxlength="25" placeholder="Digite seu nome..." style="background:#09090b;border:1px solid #3f3f46;border-radius:12px;padding:14px;color:white;font-size:16px;outline:none;width:100%;box-sizing:border-box;text-align:center;">
+                    <button id="modal-nome-confirmar" style="flex:1;background:#16a34a;border:none;border-radius:12px;padding:14px;color:white;font-size:15px;font-weight:900;cursor:pointer;text-transform:uppercase;">✅ Entrar no Chat</button>
                 </div>`;
             document.body.appendChild(modal);
 
-            const input = document.getElementById('modal-nome-input');
-            input.focus();
+            const input = document.getElementById('modal-nome-input'); input.focus();
 
             function confirmar() {
                 const digitado = input.value.trim().substring(0, 25);
                 const nomeFinal = digitado || nomeAleatorio;
-                setNomeChat(nomeFinal);
-                localStorage.setItem('chat_nome_perguntado', '1');
-                modal.remove();
-                if (callback) callback(nomeFinal);
+                setNomeChat(nomeFinal); localStorage.setItem('chat_nome_perguntado', '1');
+                modal.remove(); if (callback) callback(nomeFinal);
             }
 
             document.getElementById('modal-nome-confirmar').addEventListener('click', confirmar);
@@ -1040,16 +875,13 @@
 
         window.onload = async () => {
             const params = new URLSearchParams(window.location.search);
-            const tokenParam = params.get('token');
-            const liberarParam = params.get('liberar');
+            const tokenParam = params.get('token'); const liberarParam = params.get('liberar');
 
             if (tokenParam) {
                 window.history.replaceState({}, '', '/');
                 try {
                     const fp = await gerarFingerprintDispositivo();
-                    const res = await fetch('/api/usar-token', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenParam, fingerprint: fp })
-                    });
+                    const res = await fetch('/api/usar-token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenParam, fingerprint: fp }) });
                     const data = await res.json();
                     if (data.success) {
                         localStorage.setItem('acesso_token', tokenParam); localStorage.setItem('acesso_fp', fp); localStorage.setItem('soccer_token_device', fp); localStorage.removeItem('soccer_timer_expired'); localStorage.removeItem('soccer_timer');
@@ -1062,13 +894,10 @@
                 alert('✅ Acesso liberado! Bom jogo!');
             }
 
-            const tokenSalvo = localStorage.getItem('acesso_token');
-            const fpSalvo = localStorage.getItem('acesso_fp');
+            const tokenSalvo = localStorage.getItem('acesso_token'); const fpSalvo = localStorage.getItem('acesso_fp');
             if (tokenSalvo && fpSalvo) {
                 fetch('/api/usar-token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenSalvo, fingerprint: fpSalvo })
-                }).then(r => r.json()).then(d => {
-                    if (!d.success) { localStorage.removeItem('acesso_token'); localStorage.removeItem('acesso_fp'); }
-                }).catch(() => {});
+                }).then(r => r.json()).then(d => { if (!d.success) { localStorage.removeItem('acesso_token'); localStorage.removeItem('acesso_fp'); } }).catch(() => {});
             }
 
             const temAcesso = localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token');
@@ -1077,16 +906,13 @@
 
             document.getElementById('chat-nome-display').innerText = getNomeChat();
 
-            carregarDados();
-            await startTimer();
-            setInterval(carregarDados, 5000);
-            setInterval(buscarMensagensChat, 2500);
+            carregarDados(); await startTimer();
+            setInterval(carregarDados, 5000); setInterval(buscarMensagensChat, 2500);
             rodarMural(); setInterval(rodarMural, 3000);
 
             document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMsgChat(); });
 
             fecharChat();
-
             if (!temAcessoPago()) mostrarBloqueioChat();
         };
     </script>
