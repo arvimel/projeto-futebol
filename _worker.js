@@ -1,10 +1,11 @@
+// _worker.js
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE",
       "Access-Control-Allow-Headers": "Content-Type, x-webhook-token, x-admin-senha",
     };
     if (request.method === "OPTIONS") {
@@ -27,7 +28,6 @@ export default {
     };
     const VALOR_MINIMO = 5.00;
 
-    // ── Proteção global: bloqueia bots e requisições suspeitas ──────
     const userAgent = request.headers.get("User-Agent") || "";
     const rotasProtegidas = ["/api/criar-pix", "/api/usar-token", "/api/webhook-asaas"];
 
@@ -45,6 +45,44 @@ export default {
     }
 
     // ═══════════════════════════════════════════════════════════════
+    // MÍDIA API (Upload e Servir Arquivos Base64)
+    // ═══════════════════════════════════════════════════════════════
+    if (request.method === "GET" && url.pathname.startsWith("/api/media/")) {
+      const id = url.pathname.replace("/api/media/", "");
+      const data = await env.DB.get("MEDIA_" + id);
+      if (!data) return new Response("Not found", { status: 404 });
+      try {
+          const parsed = JSON.parse(data);
+          const binary = Uint8Array.from(atob(parsed.base64), c => c.charCodeAt(0));
+          return new Response(binary, {
+              headers: { 
+                  "Content-Type": parsed.mime, 
+                  "Cache-Control": "public, max-age=60" 
+              }
+          });
+      } catch(e) {
+          return new Response("Error parsing media", { status: 500 });
+      }
+    }
+
+    if (request.method === "POST" && url.pathname.startsWith("/api/media/")) {
+      const senhaHeader = request.headers.get("x-admin-senha");
+      if (senhaHeader !== "23100311") return new Response("Unauthorized", { status: 401 });
+      const id = url.pathname.replace("/api/media/", "");
+      const { mime, base64, ts } = await request.json();
+      await env.DB.put("MEDIA_" + id, JSON.stringify({ mime, base64, ts }));
+      return json({ success: true });
+    }
+
+    if (request.method === "DELETE" && url.pathname.startsWith("/api/media/")) {
+       const senhaHeader = request.headers.get("x-admin-senha");
+       if (senhaHeader !== "23100311") return new Response("Unauthorized", { status: 401 });
+       const id = url.pathname.replace("/api/media/", "");
+       await env.DB.delete("MEDIA_" + id);
+       return json({ success: true });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
     // POST /api/update  →  salva dados da sessão (admin)
     // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/update") {
@@ -57,9 +95,6 @@ export default {
       return new Response("OK", { status: 200, headers: corsHeaders });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // GET /api/data  →  retorna dados da sessão
-    // ═══════════════════════════════════════════════════════════════
     if (url.pathname === "/api/data") {
       const value = await env.DB.get("SESSAO_LIVE");
       return new Response(value || "{}", {
@@ -67,9 +102,6 @@ export default {
       });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // GET /api/status-leilao  →  acumulado + líder + maior lance
-    // ═══════════════════════════════════════════════════════════════
     if (url.pathname === "/api/status-leilao") {
       const raw = await env.DB.get("LEILAO_STATUS");
       const status = raw
@@ -78,25 +110,17 @@ export default {
       return json(status);
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // GET /api/chat  →  retorna mensagens do chat (últimas 80)
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "GET" && url.pathname === "/api/chat") {
       const raw = await env.DB.get("CHAT_MENSAGENS");
       const msgs = raw ? JSON.parse(raw) : [];
       return json(msgs);
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/chat  →  envia mensagem no chat
-    // Body: { nome, mensagem, tipo } — tipo: "user" | "admin" | "sistema"
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/chat") {
       try {
         const { nome, mensagem, tipo } = await request.json();
         if (!nome || !mensagem) return json({ success: false, error: "Campos obrigatórios." }, 400);
 
-        // Rate limit: máx 10 msgs por IP por minuto
         const ip = request.headers.get("CF-Connecting-IP") || "unknown";
         const rlChatKey = `RATELIMIT_CHAT_${ip}`;
         const rlChatRaw = await env.DB.get(rlChatKey);
@@ -128,9 +152,6 @@ export default {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/limpar-chat  →  limpa todas as mensagens (admin)
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/limpar-chat") {
       const senhaHeader = request.headers.get("x-admin-senha");
       if (senhaHeader !== "23100311") {
@@ -140,9 +161,6 @@ export default {
       return json({ success: true });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/gerar-token  →  admin gera token único (100 min)
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/gerar-token") {
       const senhaHeader = request.headers.get("x-admin-senha");
       if (senhaHeader !== "23100311") {
@@ -150,7 +168,6 @@ export default {
       }
       const { identificacao } = await request.json();
 
-      // Token criptograficamente seguro
       const array = new Uint8Array(32);
       crypto.getRandomValues(array);
       const token = Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -159,21 +176,16 @@ export default {
         `TOKEN_ACESSO_${token}`,
         JSON.stringify({
           identificacao,
-          fingerprint: null,     // vinculado no primeiro uso
+          fingerprint: null,
           criadoEm: Date.now(),
         }),
-        { expirationTtl: 6000 } // 100 minutos
+        { expirationTtl: 6000 }
       );
 
       return json({ success: true, token });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/usar-token  →  usuário ativa/valida token
-    // Vincula ao fingerprint do dispositivo no primeiro uso
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/usar-token") {
-      // Rate limit: máx 5 tentativas por IP por hora
       const ip = request.headers.get("CF-Connecting-IP") || "unknown";
       const rlKey = `RATELIMIT_TOKEN_${ip}`;
       const rlRaw = await env.DB.get(rlKey);
@@ -197,18 +209,16 @@ export default {
 
       const dados = JSON.parse(raw);
 
-      // Primeiro uso: vincula fingerprint ao token
       if (!dados.fingerprint) {
         dados.fingerprint = fingerprint;
         await env.DB.put(
           `TOKEN_ACESSO_${token}`,
           JSON.stringify(dados),
-          { expirationTtl: 6000 } // 100 minutos
+          { expirationTtl: 6000 }
         );
         return json({ success: true, mensagem: "Acesso liberado!" });
       }
 
-      // Usos seguintes: valida se é o mesmo dispositivo
       if (dados.fingerprint !== fingerprint) {
         return json({ success: false, error: "Este link só funciona no dispositivo que o ativou pela primeira vez." }, 403);
       }
@@ -216,9 +226,6 @@ export default {
       return json({ success: true, mensagem: "Acesso confirmado!" });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/criar-pix  →  cria cobrança PIX no Asaas
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/criar-pix") {
       try {
         const { valor, nome } = await request.json();
@@ -299,9 +306,6 @@ export default {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // GET /api/verificar-liberacao?id=XXX
-    // ═══════════════════════════════════════════════════════════════
     if (url.pathname === "/api/verificar-liberacao") {
       const paymentId = url.searchParams.get("id");
       if (!paymentId) return json({ liberado: false, error: "ID não informado." }, 400);
@@ -324,9 +328,6 @@ export default {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/webhook-asaas
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/webhook-asaas") {
       try {
         const tokenRecebido = request.headers.get("asaas-access-token") || "";
@@ -352,9 +353,6 @@ export default {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/zerar-leilao  →  zera leilão E reseta timer dos usuários
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/zerar-leilao") {
       const senhaHeader = request.headers.get("x-admin-senha");
       if (senhaHeader !== "23100311") {
@@ -370,16 +368,12 @@ export default {
       return json({ success: true, epoch: novoEpoch });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/contato-assistir  →  salva contato de quem quer assistir
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/contato-assistir") {
       try {
         const { contato } = await request.json();
         if (!contato) return json({ success: false }, 400);
         const raw = await env.DB.get("CONTATOS_ASSISTIR");
         const lista = raw ? JSON.parse(raw) : [];
-        // Evita duplicatas
         const jaExiste = lista.some(c => c.contato === contato);
         if (!jaExiste) {
           lista.push({ contato, ts: Date.now() });
@@ -389,18 +383,12 @@ export default {
       } catch(e) { return json({ success: false, error: e.message }, 500); }
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // GET /api/contatos-assistir  →  lista contatos (admin)
-    // ═══════════════════════════════════════════════════════════════
     if (url.pathname === "/api/contatos-assistir") {
       const raw = await env.DB.get("CONTATOS_ASSISTIR");
       const contatos = raw ? JSON.parse(raw) : [];
       return json({ contatos });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // POST /api/limpar-contatos  →  apaga lista de contatos (admin)
-    // ═══════════════════════════════════════════════════════════════
     if (request.method === "POST" && url.pathname === "/api/limpar-contatos") {
       const senhaH = request.headers.get("x-admin-senha");
       if (senhaH !== "23100311") return new Response("Unauthorized", { status: 401 });
@@ -412,7 +400,6 @@ export default {
   },
 };
 
-// ─── Função compartilhada: atualiza prêmio acumulado + líder ──────
 async function atualizarLeilao(env, paymentId) {
   const lanceRaw = await env.DB.get(`PAGAMENTO_${paymentId}`);
   if (!lanceRaw) return;
