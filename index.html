@@ -7,7 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
     <style>
-        body { background-color: #050505; color: white; overflow-x: hidden; }
+        /* Melhorias Visuais Esportivas */
+        body { 
+            background-color: #050505; 
+            background-image: radial-gradient(circle at 50% 0%, #064e3b 0%, #050505 80%);
+            color: white; 
+            overflow-x: hidden; 
+        }
+        .painel-esportivo {
+            border: 1px solid #16a34a;
+            box-shadow: inset 0 0 10px rgba(22, 163, 74, 0.1), 0 4px 20px rgba(0,0,0,0.6);
+            background: linear-gradient(180deg, rgba(24,24,27,0.95) 0%, rgba(9,9,11,0.95) 100%);
+        }
+
         .video-container { aspect-ratio: 16/9; background: #000; position: relative; width: 100%; min-height: 320px; }
         #paywall { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.97); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; border: 2px solid #10b981; }
         .btn-valor { background: #1f2937; border: 1px solid #374151; padding: 12px; border-radius: 6px; font-size: 15px; transition: all 0.2s; font-weight: bold; color: white; text-align: center; cursor: pointer; }
@@ -145,16 +157,18 @@
 </head>
 <body class="p-1 sm:p-4 font-sans">
     <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b border-zinc-800 pb-4 gap-4 px-1">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b border-green-900 pb-4 gap-4 px-1">
             <div>
-                <h1 class="text-green-500 font-black italic tracking-tighter text-3xl uppercase leading-none mb-1">CANAL SPORT PRO</h1>
+                <h1 class="text-green-500 font-black italic tracking-tighter text-3xl uppercase leading-none mb-1 flex items-center gap-2">
+                    ⚽ CANAL SPORT PRO
+                </h1>
                 <div class="bg-zinc-900/80 px-3 py-2 rounded-lg border-l-4 border-green-500">
                     <p id="display-titulo" class="destaque-times font-black text-white uppercase italic tracking-tighter">CARREGANDO PARTIDA...</p>
                 </div>
             </div>
-            <div class="flex items-center justify-between w-full md:w-auto gap-4 bg-zinc-900 p-3 rounded-xl border border-zinc-800">
+            <div class="flex items-center justify-between w-full md:w-auto gap-4 painel-esportivo p-3 rounded-xl">
                 <div class="text-right">
-                    <p class="text-[9px] text-zinc-500 uppercase font-black leading-none">Tempo Restante</p>
+                    <p class="text-[9px] text-zinc-400 uppercase font-black leading-none">Tempo Restante</p>
                     <span id="timer" class="text-2xl font-black text-yellow-500 font-mono italic">05:00</span>
                 </div>
                 <div class="bg-red-600 px-3 py-2 rounded text-xs animate-pulse font-black uppercase text-white shadow-lg shadow-red-900/20">Ao Vivo</div>
@@ -163,8 +177,12 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div class="lg:col-span-2 w-full flex flex-col gap-4">
-                <div class="video-container overflow-hidden shadow-2xl">
-                    
+                
+                <a id="link-mkt-1" href="#" target="_blank" style="display:none;" class="block w-full transition transform hover:scale-[1.01]">
+                    <img id="img-mkt-1" src="/api/media/banner" class="w-full rounded-xl border-2 border-zinc-800 shadow-xl object-cover" style="max-height: 120px;" onerror="this.parentElement.style.display='none'" onload="this.parentElement.style.display='block'">
+                </a>
+
+                <div class="video-container overflow-hidden shadow-2xl rounded-xl border-2 border-zinc-800">
                     <div id="paywall">
                         <div id="paywall-valores" class="flex flex-col items-center w-full max-w-md">
                             <h2 class="text-3xl font-black text-yellow-500 mb-2 uppercase italic">🔒 Sinal Bloqueado</h2>
@@ -240,18 +258,24 @@
                     </div>
                 </div>
 
-                <div class="bg-zinc-900/50 p-5 rounded-xl border border-zinc-800 flex justify-between items-center shadow-lg px-4">
+                <div id="btn-participar-watchers" style="display:none;" class="w-full">
+                    <button onclick="abrirModalLance()" class="w-full bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-black py-3 rounded-xl uppercase text-lg italic shadow-lg shadow-yellow-600/30 transition transform hover:scale-[1.01] border-2 border-yellow-300">
+                        ⚡ Quero Participar do Leilão PIX!
+                    </button>
+                </div>
+
+                <div class="painel-esportivo p-5 rounded-xl flex justify-between items-center shadow-lg px-4">
                     <div class="w-2/3">
                         <div class="flex justify-between mb-1">
-                            <span class="text-[10px] text-zinc-500 uppercase font-black tracking-widest">Meta Arrecadada</span>
-                            <span id="meta-porcentagem" class="text-[10px] text-green-500 font-black">0%</span>
+                            <span class="text-[10px] text-zinc-400 uppercase font-black tracking-widest">Meta Arrecadada</span>
+                            <span id="meta-porcentagem" class="text-[10px] text-green-400 font-black">0%</span>
                         </div>
-                        <div class="h-3 bg-zinc-800 rounded-full overflow-hidden">
+                        <div class="h-3 bg-zinc-800 rounded-full overflow-hidden border border-zinc-700">
                             <div id="fill-bar" class="h-full bg-gradient-to-r from-green-600 to-green-400 transition-all duration-1000" style="width: 0%"></div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="text-[10px] text-zinc-500 uppercase font-black mb-1">Prêmio Acumulado</p>
+                        <p class="text-[10px] text-zinc-400 uppercase font-black mb-1">Prêmio Acumulado</p>
                         <p class="text-3xl font-black text-green-500 italic leading-none tracking-tighter">R$ <span id="display-premio">0,00</span></p>
                     </div>
                 </div>
@@ -259,25 +283,33 @@
 
             <div class="space-y-4 w-full flex flex-col">
 
-                <!-- Comprovante PIX do ganhador -->
-                <div id="comprovante-box" style="display:none;" class="bg-zinc-900/30 p-4 rounded-xl border-2 border-yellow-500/60 shadow-xl">
-                    <h3 class="text-[11px] font-black text-yellow-400 uppercase tracking-widest mb-2 border-b border-zinc-800 pb-2 italic text-center">🏆 Comprovante do Ganhador</h3>
-                    <div id="comprovante-conteudo" class="text-center"></div>
+                <div id="box-mkt-2" style="display:none;" class="w-full rounded-xl overflow-hidden border-2 border-zinc-800 shadow-xl bg-black">
+                    <video id="vid-mkt-2" src="/api/media/video" autoplay loop muted playsinline class="w-full object-cover" onerror="this.parentElement.style.display='none'" onloadeddata="this.parentElement.style.display='block'"></video>
                 </div>
 
-                <div class="bg-zinc-900/30 p-4 rounded-xl border border-zinc-800 shadow-xl">
+                <div id="comprovante-box" style="display:none;" class="painel-esportivo p-4 rounded-xl border-yellow-500/50 shadow-xl">
+                    <h3 class="text-[11px] font-black text-yellow-400 uppercase tracking-widest mb-2 border-b border-zinc-800 pb-2 italic text-center">🏆 Comprovante do Ganhador</h3>
+                    <div class="text-center">
+                        <img src="/api/media/comprovante" id="img-comprovante-render" class="max-w-full rounded-lg mx-auto border border-zinc-700" onerror="document.getElementById('comprovante-box').style.display='none'" onload="document.getElementById('comprovante-box').style.display='block'">
+                    </div>
+                </div>
+
+                <div class="painel-esportivo p-4 rounded-xl shadow-xl">
                     <h3 class="text-[11px] font-black text-green-500 uppercase tracking-widest mb-3 border-b border-zinc-800 pb-2 italic text-center">🏆 Líder do Leilão PIX</h3>
-                    <div id="lider-box" class="bg-green-950/20 border-2 border-green-500/50 p-4 rounded-xl text-center relative overflow-hidden">
+                    <div id="lider-box" class="bg-green-950/30 border-2 border-green-500/50 p-4 rounded-xl text-center relative overflow-hidden shadow-[inset_0_0_15px_rgba(34,197,94,0.15)]">
                         <div class="absolute top-0 right-0 bg-green-500 text-black font-black text-[8px] px-2 py-0.5 rounded-bl-lg">TOP 1</div>
                         <p class="text-[9px] text-zinc-400 uppercase font-bold mb-0.5">Dono do Maior Lance</p>
                         <p id="display-lider-nome" class="text-xl font-black text-white uppercase italic tracking-tighter leading-none mb-2">AGUARDANDO...</p>
-                        <div class="inline-block bg-black px-3 py-0.5 rounded-full border border-green-500/30">
+                        <div class="inline-block bg-black px-3 py-0.5 rounded-full border border-green-500/50">
                             <p class="text-xl font-black text-green-500 leading-none">R$ <span id="display-lider-valor">0,00</span></p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-zinc-900/30 p-3 rounded-xl border border-zinc-800 shadow-xl text-center">
+                <div id="box-mkt-3" style="display:none;" class="w-full painel-esportivo p-4 rounded-xl shadow-xl border-purple-500/30 text-center text-sm text-zinc-300">
+                    </div>
+
+                <div class="painel-esportivo p-3 rounded-xl shadow-xl text-center">
                     <h4 class="text-[9px] font-black text-yellow-500 uppercase tracking-wider mb-2 italic">📸 Galeria de Apoiadores</h4>
                     <div class="relative w-full h-24 bg-black rounded-lg overflow-hidden border border-zinc-800 flex items-center justify-center">
                         <div id="mural-slide" class="w-full h-full flex items-center justify-center text-xs font-bold text-zinc-500 uppercase tracking-tight p-2">
@@ -289,15 +321,13 @@
         </div>
     </div>
 
-    <!-- Botão flutuante Dar Lance -->
-    <div id="btn-lance-flutuante" style="display:none;position:fixed;bottom:80px;left:16px;z-index:9998;">
+    <div id="btn-lance-flutuante" style="display:block;position:fixed;bottom:24px;left:24px;z-index:9998;">
         <button onclick="abrirModalLance()"
-            style="background:linear-gradient(135deg,#059669,#047857);color:white;border:none;border-radius:50px;padding:10px 18px;font-size:13px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 4px 18px rgba(5,150,105,0.5);text-transform:uppercase;letter-spacing:0.05em;">
-            💰 Dar Lance
+            style="background:linear-gradient(135deg,#059669,#047857);color:white;border:2px solid rgba(255,255,255,0.2);border-radius:50px;padding:12px 24px;font-size:14px;font-weight:900;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 0 20px rgba(5,150,105,0.7);text-transform:uppercase;letter-spacing:0.05em;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            💰 Oferte seu Lance
         </button>
     </div>
 
-    <!-- Modal de lance sem sair do jogo -->
     <div id="modal-lance" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:99998;align-items:center;justify-content:center;padding:16px;">
         <div style="background:#18181b;border:2px solid #10b981;border-radius:20px;padding:24px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px;max-height:90vh;overflow-y:auto;">
             <div style="text-align:center;">
@@ -404,7 +434,64 @@
         let twitchPlayer = null;
         let idPartidaAtual = "";
         let premioAnterior = 0;
+        let tsMediaAtual = 0;
         const URL_DO_SEU_WORKER = "/";
+
+        // Funções de UI do Lance (Garantindo funcionalidade)
+        function abrirModalLance() {
+            document.getElementById('modal-lance').style.display = 'flex';
+            document.getElementById('modal-lance-qr').style.display = 'none';
+            document.getElementById('modal-lance-valores').style.display = 'grid';
+            document.getElementById('modal-premio-atual').innerText = document.getElementById('display-premio').innerText;
+            document.getElementById('modal-lider-atual').innerText = document.getElementById('display-lider-nome').innerText;
+        }
+        function fecharModalLance() { document.getElementById('modal-lance').style.display = 'none'; }
+        function voltarEscolhaLance() {
+            document.getElementById('modal-lance-qr').style.display = 'none';
+            document.getElementById('modal-lance-valores').style.display = 'grid';
+        }
+        async function selecionarValorLance(valor) {
+            gerarPixLanceModal(valor);
+        }
+        async function selecionarValorLancePersonalizado() {
+            let val = prompt(`Valor do lance (mínimo R$ ${VALOR_MINIMO}):`);
+            if(!val) return;
+            let vFinal = parseFloat(val.replace(',','.').replace('R$',''));
+            if(isNaN(vFinal) || vFinal < VALOR_MINIMO) return alert('Valor inválido!');
+            gerarPixLanceModal(vFinal);
+        }
+        async function gerarPixLanceModal(valorEscolhido) {
+            let nomeDoador = getNomeChat();
+            if (nomeDoador === 'Visitante') {
+                nomeDoador = prompt("Digite seu nome completo para o Ranking:");
+                if (!nomeDoador) return alert("Você precisa digitar seu nome!");
+                setNomeChat(nomeDoador.trim().substring(0, 25));
+            }
+            
+            document.getElementById('modal-lance-valores').style.display = 'none';
+            document.getElementById('modal-lance-qr').style.display = 'flex';
+            document.getElementById('modal-lance-qr-img').innerHTML = `<span style="color:black;font-size:11px;">Gerando PIX...</span>`;
+
+            try {
+                const response = await fetch('/api/criar-pix', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ valor: valorEscolhido, nome: nomeDoador })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('modal-lance-qr-img').innerHTML = `<img src="data:image/png;base64,${data.encodedImage}" style="width:100%;height:100%;object-fit:contain;" />`;
+                    document.getElementById('modal-lance-pix-code').value = data.payload;
+                    escutarPagamentoAsaas(data.paymentId, true);
+                } else {
+                    alert("Erro: " + data.error); voltarEscolhaLance();
+                }
+            } catch (err) { alert("Erro de rede."); voltarEscolhaLance(); }
+        }
+        function copiarPixModal() {
+            const input = document.getElementById('modal-lance-pix-code');
+            navigator.clipboard.writeText(input.value).then(() => alert("Código PIX copiado!"));
+        }
 
         // ─── Fingerprint Único Antifraude do Dispositivo ───
         async function gerarFingerprintDispositivo() {
@@ -458,7 +545,6 @@
             }
         }
 
-         Kakao = {};
         function toggleEmoji() {
             const ep = document.getElementById('emoji-picker');
             const sp = document.getElementById('sticker-picker');
@@ -506,18 +592,14 @@
         }
 
         async function postarMensagem(texto, ehFigurinha = false) {
-            // So usuarios que pagaram podem usar o chat
             if (!temAcessoPago()) {
                 mostrarBloqueioChat();
                 return;
             }
-
             let nome = getNomeChat();
             if (nome === 'Visitante' && !localStorage.getItem('chat_nome_perguntado')) {
-                // Pede nome antes — depois que confirmar, envia
                 abrirModalNome((nomeFinal) => {
                     nome = nomeFinal;
-                    // So manda pro servidor; o polling traz de volta sem duplicar
                     fetch('/api/chat', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -526,15 +608,13 @@
                 });
                 return;
             }
-
-            // So manda pro servidor; o polling traz de volta sem duplicar
             try {
                 await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, mensagem: texto, tipo: 'user' })
                 });
-            } catch(e) { console.error('Erro ao enviar msg', e); }
+            } catch(e) {}
         }
 
         function mostrarBloqueioChat() {
@@ -613,7 +693,6 @@
             const elMeta = document.getElementById('meta-porcentagem');
             if (elMeta) elMeta.innerText = porcentagem + '%';
 
-            // Reset Inteligente por Epoch
             if (data.epoch) {
                 const epochSalvo = localStorage.getItem('soccer_epoch') || '0';
                 if (epochSalvo !== String(data.epoch)) {
@@ -643,24 +722,23 @@
                     document.getElementById('display-titulo').innerText = dataSupa.titulo;
                 }
 
-                // Comprovante PIX do ganhador
-                const comprovanteBox = document.getElementById('comprovante-box');
-                const comprovanteConteudo = document.getElementById('comprovante-conteudo');
-                if (dataSupa.comprovante && dataSupa.comprovante.trim()) {
-                    comprovanteBox.style.display = 'block';
-                    const c = dataSupa.comprovante.trim();
-                    // Se for URL de imagem
-                    if (c.match(/\.(jpg|jpeg|png|gif|webp)/i) || c.startsWith('data:image')) {
-                        comprovanteConteudo.innerHTML = `<img src="${c}" style="max-width:100%;border-radius:8px;margin:0 auto;" />`;
-                    } else if (c.startsWith('http')) {
-                        // Link externo
-                        comprovanteConteudo.innerHTML = `<a href="${c}" target="_blank" style="color:#facc15;font-weight:900;font-size:13px;text-decoration:underline;">📎 Ver comprovante completo</a>`;
-                    } else {
-                        // Texto simples
-                        comprovanteConteudo.innerHTML = `<p style="color:#d4d4d8;font-size:12px;white-space:pre-wrap;">${c}</p>`;
-                    }
+                // Atualizar áreas de MKT
+                if (dataSupa.mktBannerLink) document.getElementById('link-mkt-1').href = dataSupa.mktBannerLink;
+                if (dataSupa.mktFlexHtml) {
+                    const box3 = document.getElementById('box-mkt-3');
+                    box3.innerHTML = dataSupa.mktFlexHtml;
+                    box3.style.display = 'block';
                 } else {
-                    comprovanteBox.style.display = 'none';
+                    document.getElementById('box-mkt-3').style.display = 'none';
+                }
+
+                // Atualizar cache das mídias se houve upload recente
+                if (dataSupa.tsMedia && dataSupa.tsMedia !== tsMediaAtual) {
+                    tsMediaAtual = dataSupa.tsMedia;
+                    const suffix = "?t=" + tsMediaAtual;
+                    document.getElementById('img-comprovante-render').src = "/api/media/comprovante" + suffix;
+                    document.getElementById('img-mkt-1').src = "/api/media/banner" + suffix;
+                    document.getElementById('vid-mkt-2').src = "/api/media/video" + suffix;
                 }
 
                 if (dataSupa.idPartida && dataSupa.idPartida !== idPartidaAtual && idPartidaAtual !== "") {
@@ -775,7 +853,7 @@
             document.getElementById('paywall-assistir').classList.remove('flex');
         }
 
-        function escutarPagamentoAsaas(paymentId) {
+        function escutarPagamentoAsaas(paymentId, isModal = false) {
             const checagem = setInterval(async () => {
                 try {
                     const res = await fetch(`/api/verificar-liberacao?id=${paymentId}`);
@@ -785,12 +863,12 @@
                         localStorage.removeItem('soccer_timer_expired');
                         localStorage.removeItem('soccer_timer');
                         
-                        // Vincula a liberação permanente ao Fingerprint do Dispositivo no LocalStorage
                         const finger = await gerarFingerprintDispositivo();
                         localStorage.setItem('soccer_token_device', finger);
                         
-                        alert("✅ Pagamento confirmado! Obrigado pelo apoio. Bom jogo!");
-                        window.location.reload();
+                        alert("✅ Pagamento confirmado! Lance Computado. Obrigado pelo apoio!");
+                        if (isModal) fecharModalLance();
+                        else window.location.reload();
                     }
                 } catch (e) { console.error("Erro ao checar recebimento."); }
             }, 3000);
@@ -813,17 +891,16 @@
         const videoWrapper = document.getElementById('wrapper-player');
 
         async function startTimer() {
-            // Verifica acesso pago por fingerprint ou token
             const tokenDevice = localStorage.getItem('soccer_token_device');
             const currentFinger = await gerarFingerprintDispositivo();
             const temAcessoToken = localStorage.getItem('acesso_token') && localStorage.getItem('acesso_fp') === currentFinger;
             const temAcessoDevice = tokenDevice && tokenDevice === currentFinger;
 
             if (temAcessoDevice || temAcessoToken) {
-                // Usuário pagou — mostra "AO VIVO" no lugar do timer e não bloqueia
                 timerDisplay.innerText = "AO VIVO";
                 timerDisplay.style.color = "#22c55e";
                 timerDisplay.style.fontSize = "1rem";
+                document.getElementById('btn-participar-watchers').style.display = 'block'; // Mostra botão de leilão p/ quem liberou o acesso
                 return;
             }
 
@@ -849,11 +926,10 @@
             videoWrapper.innerHTML = '';
             if (twitchPlayer) { try { twitchPlayer.pause(); } catch(e){} }
             if (!localStorage.getItem('chat_nome')) mostrarBloqueioChat();
+            document.getElementById('btn-participar-watchers').style.display = 'none';
         }
 
-        // ─── Modal de nome do chat ──────────────────────────────────────
         function abrirModalNome(callback) {
-            // Remove modal anterior se existir
             const antigo = document.getElementById('modal-nome-chat');
             if (antigo) antigo.remove();
 
@@ -909,7 +985,7 @@
         window.onload = async () => {
             const params = new URLSearchParams(window.location.search);
             const tokenParam = params.get('token');
-            const liberarParam = params.get('liberar'); // compatibilidade links antigos
+            const liberarParam = params.get('liberar');
 
             if (tokenParam) {
                 window.history.replaceState({}, '', '/');
@@ -922,7 +998,6 @@
                     });
                     const data = await res.json();
                     if (data.success) {
-                        // Vincula acesso ao dispositivo
                         localStorage.setItem('acesso_token', tokenParam);
                         localStorage.setItem('acesso_fp', fp);
                         localStorage.setItem('soccer_token_device', fp);
@@ -936,7 +1011,6 @@
                     alert('Erro ao validar acesso. Tente novamente.');
                 }
             } else if (liberarParam) {
-                // Compatibilidade com links antigos
                 const finger = await gerarFingerprintDispositivo();
                 localStorage.setItem('soccer_token_device', finger);
                 localStorage.removeItem('soccer_timer_expired');
@@ -945,7 +1019,6 @@
                 alert('✅ Acesso liberado! Bom jogo!');
             }
 
-            // Revalida acesso salvo silenciosamente
             const tokenSalvo = localStorage.getItem('acesso_token');
             const fpSalvo = localStorage.getItem('acesso_fp');
             if (tokenSalvo && fpSalvo) {
@@ -961,7 +1034,6 @@
                 }).catch(() => {});
             }
 
-            // Pede nome do chat se ainda não foi definido (e tem acesso liberado)
             const temAcesso = localStorage.getItem('soccer_token_device') || localStorage.getItem('acesso_token');
             const nomePerguntado = localStorage.getItem('chat_nome_perguntado');
             if (temAcesso && !nomePerguntado) {
@@ -983,7 +1055,6 @@
 
             fecharChat();
 
-            // Bloqueia input do chat imediatamente se nao pagou
             if (!temAcessoPago()) {
                 mostrarBloqueioChat();
             }
